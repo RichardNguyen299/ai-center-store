@@ -13,11 +13,15 @@
     adminEmail: 'ganhteam321@gmail.com'
   };
 
-  // Dọn dẹp cache URL cũ trên trình duyệt để luôn trỏ về URL chuẩn xác
+  // Dọn dẹp cache URL và Key cũ trên trình duyệt để luôn trỏ về cấu hình chuẩn xác
   if (typeof localStorage !== 'undefined') {
     const cachedUrl = localStorage.getItem('aic_supabase_url');
     if (cachedUrl && cachedUrl !== 'https://tmowmprowizdrbamhivx.supabase.co') {
       localStorage.removeItem('aic_supabase_url');
+    }
+    const cachedKey = localStorage.getItem('aic_supabase_key');
+    if (cachedKey && cachedKey !== DEFAULT_CONFIG.anonKey) {
+      localStorage.removeItem('aic_supabase_key');
     }
   }
 
@@ -269,7 +273,7 @@
         title: product.title,
         version: product.version || 'v1.0',
         subtitle: product.subtitle || '',
-        category: product.category,
+        category: product.category || 'flow',
         category_name: product.categoryName || 'Google Flow AI',
         format: product.format || '9:16',
         price: product.price || 0,
@@ -332,7 +336,7 @@
       if (!client) return null;
       const row = {
         code: order.code || ('AIC' + Math.random().toString(36).substring(2, 8).toUpperCase()),
-        product_id: order.id || null,
+        product_id: order.productId || order.id || null,
         title: order.title,
         slug: order.slug || order.id || '',
         amount: order.amount || 0,
