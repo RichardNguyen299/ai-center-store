@@ -107,19 +107,20 @@ Mở file [`js/supabase.js`](js/supabase.js) và dán thông tin của bạn và
 
 ## BƯỚC 5: CẬP NHẬT TÊN MIỀN VERCEL VÀO SUPABASE & GOOGLE
 
-Sau khi có tên miền từ Vercel (ví dụ: `https://ai-center-store.vercel.app`):
+Tên miền Vercel chính thức của bạn: **`https://ai-center-store-omega.vercel.app`**
 
 1. **Trong Supabase**:
    - Vào **Authentication** -> **URL Configuration**.
-   - **Site URL**: Điền `https://ai-center-store.vercel.app`.
-   - **Redirect URLs**: Thêm:
-     - `https://ai-center-store.vercel.app/**`
+   - **Site URL**: Điền `https://ai-center-store-omega.vercel.app`
+   - **Redirect URLs**: Đảm bảo có các dòng:
+     - `https://ai-center-store-omega.vercel.app/**`
      - `http://localhost:8080/**`
+     - `http://localhost:8081/**`
    - Bấm **Save**.
 
 2. **Trong Google Cloud Console**:
-   - Vào **Credentials** -> Bấm vào tên OAuth Client bạn đã tạo.
-   - Thêm `https://ai-center-store.vercel.app` vào **Authorized JavaScript origins**.
+   - Vào **Credentials** -> Bấm vào tên OAuth Client `AI Center Store Web`.
+   - Thêm `https://ai-center-store-omega.vercel.app` vào **Authorized JavaScript origins**.
    - Bấm **Save**.
 
 ---
