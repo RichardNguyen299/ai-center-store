@@ -2229,6 +2229,38 @@ footer.site-footer-premium {
   line-height: 1.5;
 }
 
+/* Column title icon badge */
+.footer-title-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #fbbf24;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.footer-col:nth-child(1) .footer-title-icon {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.14);
+  border-color: rgba(56, 189, 248, 0.32);
+}
+.footer-col:nth-child(2) .footer-title-icon {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.14);
+  border-color: rgba(251, 191, 36, 0.32);
+}
+.footer-col:nth-child(3) .footer-title-icon {
+  color: #c084fc;
+  background: rgba(168, 85, 247, 0.14);
+  border-color: rgba(168, 85, 247, 0.32);
+}
+
 /* Links lists (Columns 2 & 3) */
 .footer-links-list {
   list-style: none;
@@ -2244,18 +2276,87 @@ footer.site-footer-premium {
   line-height: 1.5;
 }
 
-.footer-links-list a {
+.footer-links-list a,
+.footer-links-list .footer-author-role {
   color: #cbd5e1;
   text-decoration: none;
-  transition: color 0.2s, transform 0.2s;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 12px;
 }
 
 .footer-links-list a:hover {
   color: #ffffff;
   transform: translateX(3px);
+}
+
+/* Professional Vector Micro-Badges for Category & About Links */
+.f-icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  flex-shrink: 0;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.footer-links-list a:hover .f-icon-badge,
+.footer-links-list li:hover .f-icon-badge {
+  transform: scale(1.15) translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.f-icon-amber {
+  color: #fbbf24;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.1));
+  border-color: rgba(245, 158, 11, 0.38);
+}
+.f-icon-cyan {
+  color: #22d3ee;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.22), rgba(8, 145, 178, 0.1));
+  border-color: rgba(6, 182, 212, 0.38);
+}
+.f-icon-purple {
+  color: #c084fc;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.22), rgba(147, 51, 234, 0.1));
+  border-color: rgba(168, 85, 247, 0.38);
+}
+.f-icon-blue {
+  color: #60a5fa;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.22), rgba(37, 99, 235, 0.1));
+  border-color: rgba(59, 130, 246, 0.38);
+}
+.f-icon-gold {
+  color: #facc15;
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.25), rgba(202, 138, 4, 0.12));
+  border-color: rgba(250, 204, 21, 0.45);
+}
+.f-icon-facebook {
+  color: #60a5fa;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.22), rgba(29, 78, 216, 0.12));
+  border-color: rgba(59, 130, 246, 0.38);
+}
+.f-icon-youtube {
+  color: #f87171;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.22), rgba(185, 28, 28, 0.12));
+  border-color: rgba(239, 68, 68, 0.38);
+}
+.f-icon-tiktok {
+  color: #fb7185;
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.22), rgba(190, 18, 60, 0.12));
+  border-color: rgba(244, 63, 94, 0.38);
+}
+.f-icon-zalo {
+  color: #34d399;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(5, 150, 105, 0.12));
+  border-color: rgba(16, 185, 129, 0.38);
 }
 
 .footer-author-role {

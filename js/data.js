@@ -273,7 +273,9 @@ Tự động ghép người mẫu KOC vào khung cảnh ấm cúng, tương tác
   ecosystem: [
     {
       name: "Cửa hàng App & Chatbot",
+      name_en: "AI Apps & Chatbot Store",
       desc: "App, chatbot & mẫu prompt tạo video AI",
+      desc_en: "AI video generation apps, chatbots & prompt templates",
       url: "#",
       current: true,
       color: "#22C55E",
@@ -281,7 +283,9 @@ Tự động ghép người mẫu KOC vào khung cảnh ấm cúng, tương tác
     },
     {
       name: "Video AI Đa Nền Tảng",
+      name_en: "Multi-Platform AI Video",
       desc: "Sản xuất video AI đa nền tảng viral",
+      desc_en: "Produce viral multi-platform AI videos",
       url: "https://videoai.hocvalamai.net",
       current: false,
       color: "#34D399",
@@ -289,7 +293,9 @@ Tự động ghép người mẫu KOC vào khung cảnh ấm cúng, tương tác
     },
     {
       name: "Công Cụ AI Edit Video",
+      name_en: "AI Video Editing Tool",
       desc: "Dựng & edit video tự động bằng AI",
+      desc_en: "Automated video cutting & editing with AI",
       url: "https://autoedit.hocvalamai.net",
       current: false,
       color: "#2DD4BF",
@@ -297,7 +303,9 @@ Tự động ghép người mẫu KOC vào khung cảnh ấm cúng, tương tác
     },
     {
       name: "Tạo Video Chuyên Nghiệp",
+      name_en: "Professional AI Video",
       desc: "Sản xuất video AI + cách kiếm tiền",
+      desc_en: "AI video production + monetization mastery",
       url: "https://videoai.hocvalamai.net",
       current: false,
       color: "#22D3EE",
@@ -305,7 +313,9 @@ Tự động ghép người mẫu KOC vào khung cảnh ấm cúng, tương tác
     },
     {
       name: "Học Viết App Trên Flow",
+      name_en: "Build Apps on Flow",
       desc: "Tự tay dựng app tạo video trên Flow",
+      desc_en: "Build custom video generation apps on Flow",
       url: "https://vietapp.hocvalamai.net",
       current: false,
       color: "#FBBF24",
@@ -313,7 +323,9 @@ Tự động ghép người mẫu KOC vào khung cảnh ấm cúng, tương tác
     },
     {
       name: "Skill Claude Master",
+      name_en: "Claude Master Skill",
       desc: "Học tạo Skill cho Claude từ số 0",
+      desc_en: "Learn building Claude Skills from scratch",
       url: "https://skillclaude.hocvalamai.net",
       current: false,
       color: "#A78BFA",
@@ -321,10 +333,12 @@ Tự động ghép người mẫu KOC vào khung cảnh ấm cúng, tương tác
     },
     {
       name: "Làm Video Bằng AI Agent",
+      name_en: "Videos with AI Agents",
       desc: "AI Agent làm video triệu view & bán hàng",
+      desc_en: "AI Agents producing million-view viral videos",
       url: "https://videoagent.hocvalamai.net",
       current: false,
-      color: "#FBBF24",
+      color: "#EC4899",
       icon: "🎞️"
     }
   ],

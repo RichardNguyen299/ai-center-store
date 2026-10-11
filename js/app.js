@@ -31,64 +31,178 @@
   const I18N_DICT = {
     vi: {
       site_title: 'AI Center Store — Kho App & Chatbot Tạo Video AI',
+      brand_sub: 'App & Chatbot tạo video AI',
       nav_products: 'Sản phẩm',
       nav_account: 'Tài khoản',
+
+      // Hero
       hero_badge: 'AI Center Store · Hệ Thống Tự Động Hóa Video Veo 3',
+      hero_h1: 'Kho App & Chatbot <span class="mint gradient-text">tạo video AI</span>',
       hero_lead: 'Sản xuất video thương mại triệu view trong vài phút với Google Flow & Chatbot tạo prompt — Mua 1 lần, sở hữu vĩnh viễn, nhận link tự động sau 30 giây.',
       search_placeholder: 'Tìm kiếm app Flow, chatbot kịch bản, mẫu video TikTok...',
       search_btn: 'Tìm kiếm',
-      footer_search_title: '🔍 Tìm kiếm',
-      footer_search_placeholder: 'Tìm nội dung',
-      footer_search_hint: 'Tìm nhanh app AI, kịch bản, chatbot video',
-      footer_cat_title: '📁 Danh mục',
-      cat_flow: 'Google Flow AI (App Veo3)',
-      cat_chatbot: 'Chatbot AI & Prompts',
-      cat_prompt: 'Mẫu Prompt Video',
-      cat_all: 'Tất cả sản phẩm',
-      footer_about_title: 'ℹ️ Giới thiệu',
-      footer_fb: 'Facebook cá nhân',
-      footer_yt: 'Kênh Youtube',
-      footer_tiktok: 'Kênh TikTok',
-      footer_copyright: 'Copyright 2026 — AI Center Store. All rights reserved.',
+
+      // Bento categories
+      bento_flow_tag: '⚡ Veo3 Engine',
+      bento_flow_title: 'Google Flow & Apps',
+      bento_flow_desc: 'App tự động tạo video 9:16 bán hàng, KOC review, so sánh sản phẩm — nạp ảnh là xuất video hoàn chỉnh.',
+      bento_flow_cta: 'Xem các App Flow',
+      bento_bot_tag: '🤖 Trợ Lý Kịch Bản',
+      bento_bot_title: 'Chatbot AI & Prompts',
+      bento_bot_desc: 'Trợ lý AI viết kịch bản phân cảnh, tạo prompt ảnh và video theo từng nhịp — không cần biết viết câu lệnh.',
+      bento_bot_cta: 'Xem các Chatbot',
+
+      // Trust strip
+      trust_1: 'Mở link tải tự động <b>24/7</b>',
+      trust_2: 'Hơn <b>1.200+</b> Creator tin dùng',
+      trust_3: 'Cập nhật phiên bản mới <b>Trọn đời</b>',
+      trust_4: 'Hỗ trợ kỹ thuật 1:1 qua <b>Zalo</b>',
+
+      // Shelf groups
+      shelf_flow: 'App Google Flow (Veo3)',
+      shelf_chatbot: 'Chatbot AI & Prompts',
+      shelf_prompt: 'Mẫu Prompt Video',
+      shelf_other: 'Sản phẩm & Tiện ích khác',
+      shelf_products_count: 'sản phẩm',
+
+      // Cards
       card_detail: 'Chi tiết ➔',
       card_sold: 'đã bán',
       card_premium: '★ Premium',
       card_new: 'Mới',
       card_from: 'Chỉ từ',
       card_free: 'Miễn phí',
-      detail_buy_now: 'Mua vĩnh viễn',
+
+      // Why Choose Us
+      why_eyebrow: 'GIÁ TRỊ VƯỢT TRỘI',
+      why_title: 'Vì sao 1.200+ Creator chọn AI Center Store?',
+      why_1_title: 'Nhận link ngay sau thanh toán',
+      why_1_desc: 'Hệ thống xác nhận chuyển khoản tự động và mở link sản phẩm cho bạn trong chưa đầy một phút, bất kể ngày đêm.',
+      why_2_title: 'Cập nhật miễn phí trọn đời',
+      why_2_desc: 'Sản phẩm được cập nhật tính năng và prompt mới liên tục. Bạn vào lại bằng mã đơn đã mua mà không phải trả thêm phí.',
+      why_3_title: 'Hỗ trợ trực tiếp 1:1 qua Zalo',
+      why_3_desc: 'Gặp vướng mắc khi cài đặt hoặc chạy app? Nhắn ngay Zalo hotline 0996 358 358 để được chuyên viên kỹ thuật hỗ trợ tận tình.',
+
+      // Ecosystem section
+      eco_eyebrow: 'HỆ SINH THÁI AI CENTER',
+      eco_title: 'Khám phá toàn bộ nền tảng của chúng tôi',
+      eco_here: 'Bạn đang ở đây',
+
+      // Detail view
+      detail_buy_now: 'Mua ngay — nhận link tự động',
       detail_trial: 'Dùng thử 60 phút',
+      detail_trial_note: 'Gói dùng thử dùng được <b>60 phút</b>. Có thể nâng cấp lên vĩnh viễn sau, chỉ trả phần chênh lệch.',
+      detail_intro: 'Giới thiệu sản phẩm',
+      detail_back: 'Quay về danh sách sản phẩm',
+      detail_err_title: 'Không tìm thấy sản phẩm',
+      detail_err_desc: 'Sản phẩm có thể đã ngừng bán hoặc đường dẫn không đúng.',
+
+      // Floating Zalo
+      zalo_float: 'Tư vấn Zalo',
+
+      // Footer (Icons are rendered cleanly via SVG badges)
+      footer_search_title: 'Tìm kiếm',
+      footer_search_placeholder: 'Tìm nội dung',
+      footer_search_hint: 'Tìm nhanh app AI, kịch bản, chatbot video',
+      footer_cat_title: 'Danh mục',
+      cat_flow: 'Google Flow AI (App Veo3)',
+      cat_chatbot: 'Chatbot AI & Prompts',
+      cat_prompt: 'Mẫu Prompt Video',
+      cat_all: 'Tất cả sản phẩm',
+      footer_about_title: 'Giới thiệu',
+      footer_admin_role: 'Admin: ',
+      footer_fb: 'Facebook cá nhân',
+      footer_yt: 'Kênh Youtube',
+      footer_tiktok: 'Kênh TikTok',
+      footer_copyright: 'Copyright 2026 — AI Center Store. All rights reserved.',
       btn_back_to_top: 'Lên đầu trang'
     },
     en: {
-      site_title: 'AI Center Store — AI Video Apps & Chatbots',
+      site_title: 'AI Center Store — AI Video Apps & Chatbots Hub',
+      brand_sub: 'AI Video Apps & Chatbots',
       nav_products: 'Products',
       nav_account: 'Account',
+
+      // Hero
       hero_badge: 'AI Center Store · Veo 3 Video Automation System',
-      hero_lead: 'Create million-view commercial videos in minutes with Google Flow & prompt chatbots — Pay once, lifetime ownership, instant download in 30 seconds.',
+      hero_h1: 'AI Video Apps & Chatbots <span class="mint gradient-text">Store</span>',
+      hero_lead: 'Produce million-view commercial videos in minutes with Google Flow & prompt chatbots — Pay once, lifetime ownership, instant download in 30 seconds.',
       search_placeholder: 'Search Flow apps, script chatbots, TikTok video templates...',
       search_btn: 'Search',
-      footer_search_title: '🔍 Search',
-      footer_search_placeholder: 'Search store...',
-      footer_search_hint: 'Quickly find AI apps, scripts, video chatbots',
-      footer_cat_title: '📁 Categories',
-      cat_flow: 'Google Flow AI (Veo3 Apps)',
-      cat_chatbot: 'AI Chatbots & Prompts',
-      cat_prompt: 'Video Prompt Templates',
-      cat_all: 'All Products',
-      footer_about_title: 'ℹ️ About',
-      footer_fb: 'Personal Facebook',
-      footer_yt: 'YouTube Channel',
-      footer_tiktok: 'TikTok Channel',
-      footer_copyright: 'Copyright 2026 — AI Center Store. All rights reserved.',
+
+      // Bento categories
+      bento_flow_tag: '⚡ Veo3 Engine',
+      bento_flow_title: 'Google Flow & Apps',
+      bento_flow_desc: 'Automated video apps for 9:16 sales, KOC reviews, product comparisons — feed images to get complete videos.',
+      bento_flow_cta: 'Explore Flow Apps',
+      bento_bot_tag: '🤖 Script Assistant',
+      bento_bot_title: 'AI Chatbots & Prompts',
+      bento_bot_desc: 'AI assistant for multi-scene scripts, scene-by-scene prompts — no prompt engineering skills required.',
+      bento_bot_cta: 'Explore Chatbots',
+
+      // Trust strip
+      trust_1: 'Instant automated link <b>24/7</b>',
+      trust_2: 'Over <b>1,200+</b> Creators onboard',
+      trust_3: 'Free new version updates <b>Lifetime</b>',
+      trust_4: '1-on-1 technical support via <b>Zalo</b>',
+
+      // Shelf groups
+      shelf_flow: 'Google Flow AI (Veo3 Apps)',
+      shelf_chatbot: 'AI Chatbots & Prompts',
+      shelf_prompt: 'Video Prompt Templates',
+      shelf_other: 'Other Tools & Products',
+      shelf_products_count: 'products',
+
+      // Cards
       card_detail: 'Details ➔',
       card_sold: 'sold',
       card_premium: '★ Premium',
       card_new: 'New',
       card_from: 'From',
       card_free: 'Free',
-      detail_buy_now: 'Buy Lifetime',
+
+      // Why Choose Us
+      why_eyebrow: 'WHY CHOOSE US',
+      why_title: 'Why 1,200+ Creators Trust AI Center Store?',
+      why_1_title: 'Instant Download After Payment',
+      why_1_desc: 'Automated transfer verification unlocks your product link in less than one minute, day or night.',
+      why_2_title: 'Free Lifetime Updates',
+      why_2_desc: 'Products are continuously updated with new features and prompts. Re-access anytime using your order code.',
+      why_3_title: '1-on-1 Direct Support via Zalo',
+      why_3_desc: 'Need help installing or running apps? Reach out to our hotline on Zalo 0996 358 358 for dedicated assistance.',
+
+      // Ecosystem section
+      eco_eyebrow: 'AI CENTER ECOSYSTEM',
+      eco_title: 'Explore All Platforms in Our Ecosystem',
+      eco_here: 'You are here',
+
+      // Detail view
+      detail_buy_now: 'Buy Now — Instant Link',
       detail_trial: 'Try 60-min Trial',
+      detail_trial_note: 'Trial package valid for <b>60 minutes</b>. Upgrade to lifetime later by paying only the difference.',
+      detail_intro: 'Product Overview',
+      detail_back: 'Back to products list',
+      detail_err_title: 'Product Not Found',
+      detail_err_desc: 'This product might be discontinued or the link is invalid.',
+
+      // Floating Zalo
+      zalo_float: 'Zalo Support',
+
+      // Footer (Icons are rendered cleanly via SVG badges)
+      footer_search_title: 'Search',
+      footer_search_placeholder: 'Search store...',
+      footer_search_hint: 'Quickly find AI apps, scripts, video chatbots',
+      footer_cat_title: 'Categories',
+      cat_flow: 'Google Flow AI (Veo3 Apps)',
+      cat_chatbot: 'AI Chatbots & Prompts',
+      cat_prompt: 'Video Prompt Templates',
+      cat_all: 'All Products',
+      footer_about_title: 'About',
+      footer_admin_role: 'Admin: ',
+      footer_fb: 'Personal Facebook',
+      footer_yt: 'YouTube Channel',
+      footer_tiktok: 'TikTok Channel',
+      footer_copyright: 'Copyright 2026 — AI Center Store. All rights reserved.',
       btn_back_to_top: 'Back to top'
     }
   };
@@ -116,6 +230,9 @@
       btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
     });
 
+    // Update document title
+    document.title = t('site_title');
+
     // Update all elements with data-i18n
     $$('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -136,21 +253,37 @@
     const navSanPham = $('#navSanPham');
     if (navSanPham) navSanPham.textContent = t('nav_products');
 
-    // Update Search box placeholder
+    // Update Search box placeholder & submit button
     const timOng = $('#timOng');
     if (timOng) timOng.placeholder = t('search_placeholder');
 
     const timSubmitBtn = $('#timForm button[type="submit"] span');
     if (timSubmitBtn) timSubmitBtn.textContent = t('search_btn');
 
-    // Update Hero elements if present
+    // Update Hero elements
+    const heroH1 = $('#heroH1');
+    if (heroH1) heroH1.innerHTML = t('hero_h1');
+
     const heroBadge = $('.pill-text');
     if (heroBadge) heroBadge.textContent = t('hero_badge');
 
     const heroLead = $('.hero-store .lead');
     if (heroLead) heroLead.textContent = t('hero_lead');
 
-    // Re-render product catalog to update card tags, from/free, etc.
+    // Update Trust Strip
+    const trust1 = $('#trust1');
+    if (trust1) trust1.innerHTML = t('trust_1');
+    const trust2 = $('#trust2');
+    if (trust2) trust2.innerHTML = t('trust_2');
+    const trust3 = $('#trust3');
+    if (trust3) trust3.innerHTML = t('trust_3');
+    const trust4 = $('#trust4');
+    if (trust4) trust4.innerHTML = t('trust_4');
+
+    // Re-render Ecosystem Hub (7 bilingual cards)
+    renderEcosystem();
+
+    // Re-render product catalog to update shelf headers, card tags, from/free, etc.
     renderHomeCatalog();
 
     // If currently viewing a product detail, re-render it
@@ -220,12 +353,13 @@
     }
 
     if (items.length === 0) {
+      const isEn = (currentLang === 'en');
       container.innerHTML = `
         <div class="empty">
           <svg class="ic" style="width:48px;height:48px;color:var(--caption);margin:0 auto 14px"><use href="#i-search"/></svg>
-          <h3 style="margin-bottom:8px">Không tìm thấy sản phẩm phù hợp</h3>
-          <p class="caption">Hãy thử tìm với từ khóa khác như "so sánh", "koc", "review"...</p>
-          <button class="btn btn-secondary btn-sm" id="btnResetSearch" style="margin-top:16px">Xem tất cả sản phẩm</button>
+          <h3 style="margin-bottom:8px">${isEn ? 'No matching products found' : 'Không tìm thấy sản phẩm phù hợp'}</h3>
+          <p class="caption">${isEn ? 'Try searching with keywords like "comparison", "koc", "review"...' : 'Hãy thử tìm với từ khóa khác như "so sánh", "koc", "review"...'}</p>
+          <button class="btn btn-secondary btn-sm" id="btnResetSearch" style="margin-top:16px">${isEn ? 'View all products' : 'Xem tất cả sản phẩm'}</button>
         </div>
       `;
       $('#btnResetSearch')?.addEventListener('click', () => {
@@ -237,10 +371,11 @@
       return;
     }
 
+    const isEn = (currentLang === 'en');
     const groups = [
-      { id: 'flow', title: 'App Google Flow (Veo3)' },
-      { id: 'chatbot', title: 'Chatbot AI' },
-      { id: 'prompt', title: 'Mẫu Prompt' }
+      { id: 'flow', title: isEn ? 'Google Flow AI (Veo3 Apps)' : 'App Google Flow (Veo3)' },
+      { id: 'chatbot', title: isEn ? 'AI Chatbots & Prompts' : 'Chatbot AI' },
+      { id: 'prompt', title: isEn ? 'Video Prompt Templates' : 'Mẫu Prompt' }
     ];
 
     let html = '';
@@ -254,7 +389,7 @@
             <div class="ke-dau">
               <i></i>
               <h2>${g.title}</h2>
-              <span class="ke-dem">${sp.length} sản phẩm</span>
+              <span class="ke-dem">${sp.length} ${isEn ? 'products' : 'sản phẩm'}</span>
               <span class="ke-line"></span>
             </div>
             <div class="luoi-sp">
@@ -272,8 +407,8 @@
         <div class="ke">
           <div class="ke-dau">
             <i></i>
-            <h2>Sản phẩm & Tiện ích khác</h2>
-            <span class="ke-dem">${otherItems.length} sản phẩm</span>
+            <h2>${isEn ? 'Other Tools & Products' : 'Sản phẩm & Tiện ích khác'}</h2>
+            <span class="ke-dem">${otherItems.length} ${isEn ? 'products' : 'sản phẩm'}</span>
             <span class="ke-line"></span>
           </div>
           <div class="luoi-sp">
@@ -300,16 +435,36 @@
     `).join('');
   }
 
+  const ECOSYSTEM_SVGS = [
+    // 1. Store
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>',
+    // 2. Multi-platform Video
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>',
+    // 3. AI Edit Tool
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>',
+    // 4. Pro Video
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>',
+    // 5. Build Flow Apps
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>',
+    // 6. Skill Claude Master
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>',
+    // 7. AI Agent Video
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>'
+  ];
+
   // Render Ecosystem
   function renderEcosystem() {
     const grid = $('#hstGrid');
     if (!grid) return;
-    grid.innerHTML = STORE_DATA.ecosystem.map(e => `
+    const isEn = (currentLang === 'en');
+    grid.innerHTML = STORE_DATA.ecosystem.map((e, idx) => `
       <a class="hst-card" href="${e.url}" ${e.current ? '' : 'target="_blank" rel="noopener"'}>
-        ${e.current ? '<span class="hst-here">Bạn đang ở đây</span>' : ''}
-        <span class="hst-ic">${e.icon}</span>
-        <span class="hst-name">${esc(e.name)}</span>
-        <span class="hst-desc">${esc(e.desc)}</span>
+        ${e.current ? `<span class="hst-here">${isEn ? 'You are here' : 'Bạn đang ở đây'}</span>` : ''}
+        <span class="hst-ic" style="color:${e.color};background:${e.color}18;border-color:${e.color}35">
+          ${ECOSYSTEM_SVGS[idx] || e.icon}
+        </span>
+        <span class="hst-name">${esc(isEn && e.name_en ? e.name_en : e.name)}</span>
+        <span class="hst-desc">${esc(isEn && e.desc_en ? e.desc_en : e.desc)}</span>
         <span class="hst-dom">${e.url === '#' ? 'hocvalamai.net' : e.url.replace('https://', '')} →</span>
       </a>
     `).join('');

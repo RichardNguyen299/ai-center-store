@@ -167,7 +167,12 @@
       <div class="footer-top-grid">
         <!-- Column 1: Search Pill -->
         <div class="footer-col">
-          <h4 class="footer-col-title" data-i18n="footer_search_title">🔍 Tìm kiếm</h4>
+          <h4 class="footer-col-title">
+            <span class="footer-title-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </span>
+            <span data-i18n="footer_search_title">Tìm kiếm</span>
+          </h4>
           <div class="footer-search-pill">
             <input type="text" id="footerSearchInput" class="footer-search-input" placeholder="Tìm nội dung" data-i18n-placeholder="footer_search_placeholder">
             <button type="button" id="footerSearchBtn" class="footer-search-btn" aria-label="Tìm kiếm">
@@ -179,40 +184,95 @@
 
         <!-- Column 2: Categories -->
         <div class="footer-col">
-          <h4 class="footer-col-title" data-i18n="footer_cat_title">📁 Danh mục</h4>
+          <h4 class="footer-col-title">
+            <span class="footer-title-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect></svg>
+            </span>
+            <span data-i18n="footer_cat_title">Danh mục</span>
+          </h4>
           <ul class="footer-links-list">
-            <li><a href="index.html#san-pham" class="footer-cat-link" data-cat="flow" data-i18n="cat_flow">Google Flow AI (App Veo3)</a></li>
-            <li><a href="index.html#san-pham" class="footer-cat-link" data-cat="chatbot" data-i18n="cat_chatbot">Chatbot AI &amp; Prompts</a></li>
-            <li><a href="index.html#san-pham" class="footer-cat-link" data-cat="prompt" data-i18n="cat_prompt">Mẫu Prompt Video</a></li>
-            <li><a href="index.html#san-pham" class="footer-cat-link" data-cat="all" data-i18n="cat_all">Tất cả sản phẩm</a></li>
+            <li>
+              <a href="index.html#san-pham" class="footer-cat-link" data-cat="flow">
+                <span class="f-icon-badge f-icon-amber">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                </span>
+                <span data-i18n="cat_flow">Google Flow AI (App Veo3)</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#san-pham" class="footer-cat-link" data-cat="chatbot">
+                <span class="f-icon-badge f-icon-cyan">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"></rect><circle cx="9" cy="13" r="1.5" fill="currentColor"></circle><circle cx="15" cy="13" r="1.5" fill="currentColor"></circle><line x1="12" y1="7" x2="12" y2="3"></line><circle cx="12" cy="3" r="1" fill="currentColor"></circle></svg>
+                </span>
+                <span data-i18n="cat_chatbot">Chatbot AI &amp; Prompts</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#san-pham" class="footer-cat-link" data-cat="prompt">
+                <span class="f-icon-badge f-icon-purple">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </span>
+                <span data-i18n="cat_prompt">Mẫu Prompt Video</span>
+              </a>
+            </li>
+            <li>
+              <a href="index.html#san-pham" class="footer-cat-link" data-cat="all">
+                <span class="f-icon-badge f-icon-blue">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </span>
+                <span data-i18n="cat_all">Tất cả sản phẩm</span>
+              </a>
+            </li>
           </ul>
         </div>
 
         <!-- Column 3: About Author -->
         <div class="footer-col">
-          <h4 class="footer-col-title" data-i18n="footer_about_title">ℹ️ Giới thiệu</h4>
+          <h4 class="footer-col-title">
+            <span class="footer-title-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </span>
+            <span data-i18n="footer_about_title">Giới thiệu</span>
+          </h4>
           <ul class="footer-links-list" id="footerAuthorLinks">
             <li>
-              <span class="footer-author-role">Admin: <b id="footerAuthorName" class="footer-author-highlight">Xuân Linh</b></span>
+              <span class="footer-author-role">
+                <span class="f-icon-badge f-icon-gold">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                </span>
+                <span>Admin: <b id="footerAuthorName" class="footer-author-highlight">Xuân Linh</b></span>
+              </span>
             </li>
             <li>
               <a id="footerLinkFb" href="https://www.facebook.com" target="_blank" rel="noopener">
-                <span>📘</span> <span data-i18n="footer_fb">Facebook cá nhân</span>
+                <span class="f-icon-badge f-icon-facebook">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </span>
+                <span data-i18n="footer_fb">Facebook cá nhân</span>
               </a>
             </li>
             <li>
               <a id="footerLinkYt" href="https://www.youtube.com" target="_blank" rel="noopener">
-                <span>▶️</span> <span data-i18n="footer_yt">Kênh Youtube</span>
+                <span class="f-icon-badge f-icon-youtube">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                </span>
+                <span data-i18n="footer_yt">Kênh Youtube</span>
               </a>
             </li>
             <li>
               <a id="footerLinkTiktok" href="https://www.tiktok.com" target="_blank" rel="noopener">
-                <span>🎵</span> <span data-i18n="footer_tiktok">Kênh TikTok</span>
+                <span class="f-icon-badge f-icon-tiktok">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.97v7.54c0 1.9-.53 3.84-1.64 5.38-1.57 2.16-4.22 3.32-6.9 3.03-2.67-.29-5.06-1.89-6.24-4.31-1.18-2.42-.99-5.38.48-7.61 1.48-2.23 4.09-3.49 6.77-3.23v4.11c-1.39-.24-2.85.22-3.79 1.25-.94 1.03-1.2 2.53-.67 3.86.53 1.33 1.83 2.19 3.26 2.16 1.43-.03 2.69-.93 3.16-2.28.21-.6.3-1.24.3-1.88V.02z"/></svg>
+                </span>
+                <span data-i18n="footer_tiktok">Kênh TikTok</span>
               </a>
             </li>
             <li>
               <a id="footerLinkZalo" href="https://zalo.me/0996358358" target="_blank" rel="noopener">
-                <span>💬</span> <span>Hotline / Zalo: <b id="footerAuthorPhone">0996 358 358</b></span>
+                <span class="f-icon-badge f-icon-zalo">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                </span>
+                <span>Hotline / Zalo: <b id="footerAuthorPhone">0996 358 358</b></span>
               </a>
             </li>
           </ul>
@@ -603,11 +663,61 @@
           });
         }
 
+        var ACCOUNT_I18N = {
+          vi: {
+            nav_products: 'Sản phẩm',
+            nav_account: 'Tài khoản',
+            footer_search_title: 'Tìm kiếm',
+            footer_search_placeholder: 'Tìm nội dung',
+            footer_search_hint: 'Tìm nhanh app AI, kịch bản, chatbot video',
+            footer_cat_title: 'Danh mục',
+            cat_flow: 'Google Flow AI (App Veo3)',
+            cat_chatbot: 'Chatbot AI & Prompts',
+            cat_prompt: 'Mẫu Prompt Video',
+            cat_all: 'Tất cả sản phẩm',
+            footer_about_title: 'Giới thiệu',
+            footer_fb: 'Facebook cá nhân',
+            footer_yt: 'Kênh Youtube',
+            footer_tiktok: 'Kênh TikTok',
+            footer_copyright: 'Copyright 2026 — AI Center Store. All rights reserved.'
+          },
+          en: {
+            nav_products: 'Products',
+            nav_account: 'Account',
+            footer_search_title: 'Search',
+            footer_search_placeholder: 'Search store...',
+            footer_search_hint: 'Quickly find AI apps, scripts, video chatbots',
+            footer_cat_title: 'Categories',
+            cat_flow: 'Google Flow AI (Veo3 Apps)',
+            cat_chatbot: 'AI Chatbots & Prompts',
+            cat_prompt: 'Video Prompt Templates',
+            cat_all: 'All Products',
+            footer_about_title: 'About',
+            footer_fb: 'Personal Facebook',
+            footer_yt: 'YouTube Channel',
+            footer_tiktok: 'TikTok Channel',
+            footer_copyright: 'Copyright 2026 — AI Center Store. All rights reserved.'
+          }
+        };
+
+        function applyLang(lang) {
+          var dict = ACCOUNT_I18N[lang] || ACCOUNT_I18N.vi;
+          document.querySelectorAll('[data-i18n]').forEach(function(el) {
+            var k = el.getAttribute('data-i18n');
+            if (k && dict[k]) el.textContent = dict[k];
+          });
+          document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+            var k = el.getAttribute('data-i18n-placeholder');
+            if (k && dict[k]) el.setAttribute('placeholder', dict[k]);
+          });
+        }
+
         var savedLang = localStorage.getItem('aic_lang') || 'vi';
         var flagEl = $('#currentLangFlag');
         var codeEl = $('#currentLangCode');
         if (flagEl) flagEl.textContent = savedLang === 'en' ? '🇬🇧' : '🇻🇳';
         if (codeEl) codeEl.textContent = savedLang.toUpperCase();
+        applyLang(savedLang);
 
         document.querySelectorAll('.lang-option-item').forEach(function(item) {
           if (!item.dataset.bound) {
@@ -620,6 +730,7 @@
               document.querySelectorAll('.lang-option-item').forEach(function(b) {
                 b.classList.toggle('active', b.getAttribute('data-lang') === lang);
               });
+              applyLang(lang);
               if (langBox) langBox.classList.remove('show');
               if (langBtn) langBtn.classList.remove('open');
             });
