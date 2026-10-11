@@ -82,6 +82,7 @@
     if (tabId === 'products') renderProductsTable();
     if (tabId === 'orders') renderOrdersTable();
     if (tabId === 'users') renderUsersTable();
+    if (tabId === 'settings') renderSettings();
   }
 
   function formatOrderTitle(o) {
@@ -412,6 +413,38 @@
     renderOverview();
   }
 
+  // Settings & Author Management
+  function renderSettings() {
+    const author = DB.getAuthor();
+    if (!author) return;
+    if ($('#author_name')) $('#author_name').value = author.name || '';
+    if ($('#author_title')) $('#author_title').value = author.title || '';
+    if ($('#author_phone')) $('#author_phone').value = author.phone || '';
+    if ($('#author_zalo')) $('#author_zalo').value = author.zalo || '';
+    if ($('#author_facebook')) $('#author_facebook').value = author.facebook_url || '';
+    if ($('#author_youtube')) $('#author_youtube').value = author.youtube_url || '';
+    if ($('#author_tiktok')) $('#author_tiktok').value = author.tiktok_url || '';
+    if ($('#author_bio')) $('#author_bio').value = author.bio || '';
+  }
+
+  function saveAuthorForm(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const current = DB.getAuthor() || {};
+    const updated = {
+      ...current,
+      name: $('#author_name')?.value.trim() || 'Xuân Linh',
+      title: $('#author_title')?.value.trim() || 'Admin & Sáng lập viên',
+      phone: $('#author_phone')?.value.trim() || '0996 358 358',
+      zalo: $('#author_zalo')?.value.trim() || '0996358358',
+      facebook_url: $('#author_facebook')?.value.trim() || 'https://www.facebook.com',
+      youtube_url: $('#author_youtube')?.value.trim() || 'https://www.youtube.com',
+      tiktok_url: $('#author_tiktok')?.value.trim() || 'https://www.tiktok.com',
+      bio: $('#author_bio')?.value.trim() || ''
+    };
+    DB.saveAuthor(updated);
+    showToast('💾 Đã lưu thông tin Tác giả và đồng bộ Cloud!');
+  }
+
   // Global methods bound to window.AdminApp for inline event handlers
   window.AdminApp = {
     switchTab,
@@ -469,6 +502,9 @@
     // Product form submit
     $('#productForm')?.addEventListener('submit', saveProductForm);
 
+    // Author form submit
+    $('#authorForm')?.addEventListener('submit', saveAuthorForm);
+
     // Auto extract clean YouTube ID from paste or input
     $('#p_video')?.addEventListener('input', () => {
       const val = $('#p_video').value.trim();
@@ -506,6 +542,7 @@
         renderProductsTable();
         renderOrdersTable();
         renderUsersTable();
+        renderSettings();
       }
     });
 
@@ -516,12 +553,13 @@
 
     // Listen for storage changes across tabs (e.g. user ordered something in store tab)
     window.addEventListener('storage', (e) => {
-      if (e.key === 'aic_orders_v3' || e.key === 'aic_products_v3' || e.key === 'aic_db_timestamp') {
+      if (e.key === 'aic_orders_v3' || e.key === 'aic_products_v3' || e.key === 'aic_author_v3' || e.key === 'aic_db_timestamp') {
         DB.load();
         if (currentTab === 'overview') renderOverview();
         else if (currentTab === 'products') renderProductsTable();
         else if (currentTab === 'orders') renderOrdersTable();
         else if (currentTab === 'users') renderUsersTable();
+        else if (currentTab === 'settings') renderSettings();
       }
     });
 
@@ -531,6 +569,7 @@
       else if (currentTab === 'products') renderProductsTable();
       else if (currentTab === 'orders') renderOrdersTable();
       else if (currentTab === 'users') renderUsersTable();
+      else if (currentTab === 'settings') renderSettings();
     });
 
     // Handle sync requests from store page (critical for file:// mode)

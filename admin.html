@@ -324,6 +324,65 @@
            TAB 5: CÀI ĐẶT (SETTINGS)
            ========================================= -->
       <section class="tab-panel" id="tab-settings">
+        <!-- Thẻ cấu hình Thông tin Tác giả -->
+        <div class="panel-card" style="max-width:680px;margin-bottom:24px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <h3 class="panel-card-title" style="margin-bottom:0">👤 Thông Tin Tác Giả & Mạng Xã Hội</h3>
+            <span class="badge" style="background:rgba(59,130,246,0.15);color:#60a5fa">Đồng bộ Footer Cửa Hàng</span>
+          </div>
+          <p class="caption" style="margin-bottom:20px">Thông tin tác giả được hiển thị tại Cột 3 & Mạng xã hội trong Footer của Cửa hàng, giúp tăng độ tin cậy và thương hiệu cá nhân.</p>
+
+          <form id="authorForm">
+            <div class="modal-grid-2">
+              <div class="field">
+                <label for="author_name">Tên tác giả / Quản trị viên (*)</label>
+                <input class="admin-input" id="author_name" type="text" placeholder="Ví dụ: Xuân Linh" required>
+              </div>
+              <div class="field">
+                <label for="author_title">Chức danh / Vai trò</label>
+                <input class="admin-input" id="author_title" type="text" placeholder="Ví dụ: Admin & Sáng lập viên">
+              </div>
+            </div>
+
+            <div class="modal-grid-2">
+              <div class="field">
+                <label for="author_phone">Số điện thoại hotline (*)</label>
+                <input class="admin-input" id="author_phone" type="text" placeholder="0996 358 358" required>
+              </div>
+              <div class="field">
+                <label for="author_zalo">Số Zalo liên hệ</label>
+                <input class="admin-input" id="author_zalo" type="text" placeholder="0996358358">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="author_facebook">Link Facebook cá nhân / Fanpage</label>
+              <input class="admin-input" id="author_facebook" type="url" placeholder="https://www.facebook.com">
+            </div>
+
+            <div class="field">
+              <label for="author_youtube">Link Kênh YouTube</label>
+              <input class="admin-input" id="author_youtube" type="url" placeholder="https://www.youtube.com">
+            </div>
+
+            <div class="field">
+              <label for="author_tiktok">Link Kênh TikTok</label>
+              <input class="admin-input" id="author_tiktok" type="url" placeholder="https://www.tiktok.com">
+            </div>
+
+            <div class="field">
+              <label for="author_bio">Tiểu sử ngắn / Giới thiệu</label>
+              <textarea class="admin-input" id="author_bio" rows="2" placeholder="Sáng tạo công cụ & Chatbot tạo video AI tự động"></textarea>
+            </div>
+
+            <div style="margin-top:20px;display:flex;justify-content:flex-end">
+              <button class="btn btn-primary" id="btnSaveAuthor" type="submit" style="padding:10px 22px;font-weight:700">
+                💾 Lưu thông tin Tác giả
+              </button>
+            </div>
+          </form>
+        </div>
+
         <div class="panel-card" style="max-width:680px">
           <h3 class="panel-card-title" style="margin-bottom:16px">Cấu hình hệ thống cửa hàng</h3>
           
@@ -334,12 +393,12 @@
 
           <div class="field">
             <label>Hotline / Zalo hỗ trợ</label>
-            <input class="admin-input" type="text" value="0996 358 358">
+            <input class="admin-input" type="text" value="0996 358 358" readonly>
           </div>
 
           <div class="field">
-            <label>Cơ chế lưu trữ</label>
-            <p class="caption">Hệ thống đang sử dụng <b>Local Database (localStorage)</b> hai chiều. Bất kỳ sản phẩm nào thêm/sửa/xóa tại trang quản trị này sẽ phản chiếu ngay lập tức trên trang chủ và trang chi tiết.</p>
+            <label>Cơ chế lưu trữ & Đồng bộ</label>
+            <p class="caption">Hệ thống đang tích hợp <b>Supabase Cloud PostgreSQL Database</b> hai chiều kết hợp bộ nhớ đệm cục bộ. Dữ liệu sản phẩm, đơn hàng và tác giả luôn được đồng bộ tức thì trên toàn hệ thống.</p>
           </div>
 
           <hr style="border:none;border-top:1px solid var(--admin-border);margin:24px 0">

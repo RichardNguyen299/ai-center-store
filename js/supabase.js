@@ -401,6 +401,48 @@
         .from('settings')
         .upsert({ key: 'general', value: settings, updated_at: new Date().toISOString() });
       return !error;
+    },
+
+    // 5. AUTHORS (TÁC GIẢ & MẠNG XÃ HỘI)
+    async getAuthor() {
+      const client = getClient();
+      if (!client) return null;
+      const { data, error } = await client.from('authors').select('*').eq('id', 'default').single();
+      if (error || !data) return null;
+      return {
+        id: data.id,
+        name: data.name,
+        title: data.title,
+        phone: data.phone,
+        zalo: data.zalo,
+        email: data.email,
+        youtube_url: data.youtube_url,
+        facebook_url: data.facebook_url,
+        tiktok_url: data.tiktok_url,
+        avatar_url: data.avatar_url,
+        bio: data.bio
+      };
+    },
+
+    async saveAuthor(author) {
+      const client = getClient();
+      if (!client) return false;
+      const row = {
+        id: 'default',
+        name: author.name || 'Xuân Linh',
+        title: author.title || 'Admin & Sáng lập viên',
+        phone: author.phone || '0996 358 358',
+        zalo: author.zalo || '0996358358',
+        email: author.email || 'ganhteam321@gmail.com',
+        youtube_url: author.youtube_url || 'https://www.youtube.com',
+        facebook_url: author.facebook_url || 'https://www.facebook.com',
+        tiktok_url: author.tiktok_url || 'https://www.tiktok.com',
+        avatar_url: author.avatar_url || '',
+        bio: author.bio || '',
+        updated_at: new Date().toISOString()
+      };
+      const { error } = await client.from('authors').upsert(row);
+      return !error;
     }
   };
 

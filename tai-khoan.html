@@ -160,10 +160,111 @@
     </div>
   </main>
 
-  <footer class="site">
+  <!-- Site Footer (Thiết kế 3 Cột & Thanh Bản Quyền Tiêu Chuẩn) -->
+  <footer class="site-footer-premium">
     <div class="container">
-      <p>© 2026 AI Center Store</p>
-      <p><a href="index.html#san-pham" style="color:var(--mint);font-weight:700">Khám phá sản phẩm</a> · <a href="tel:0996358358">Hotline: 0996 358 358</a></p>
+      <!-- 3 Columns Top Section -->
+      <div class="footer-top-grid">
+        <!-- Column 1: Search Pill -->
+        <div class="footer-col">
+          <h4 class="footer-col-title" data-i18n="footer_search_title">🔍 Tìm kiếm</h4>
+          <div class="footer-search-pill">
+            <input type="text" id="footerSearchInput" class="footer-search-input" placeholder="Tìm nội dung" data-i18n-placeholder="footer_search_placeholder">
+            <button type="button" id="footerSearchBtn" class="footer-search-btn" aria-label="Tìm kiếm">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+          </div>
+          <p class="footer-search-hint" data-i18n="footer_search_hint">Tìm nhanh app AI, kịch bản, chatbot video</p>
+        </div>
+
+        <!-- Column 2: Categories -->
+        <div class="footer-col">
+          <h4 class="footer-col-title" data-i18n="footer_cat_title">📁 Danh mục</h4>
+          <ul class="footer-links-list">
+            <li><a href="index.html#san-pham" class="footer-cat-link" data-cat="flow" data-i18n="cat_flow">Google Flow AI (App Veo3)</a></li>
+            <li><a href="index.html#san-pham" class="footer-cat-link" data-cat="chatbot" data-i18n="cat_chatbot">Chatbot AI &amp; Prompts</a></li>
+            <li><a href="index.html#san-pham" class="footer-cat-link" data-cat="prompt" data-i18n="cat_prompt">Mẫu Prompt Video</a></li>
+            <li><a href="index.html#san-pham" class="footer-cat-link" data-cat="all" data-i18n="cat_all">Tất cả sản phẩm</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: About Author -->
+        <div class="footer-col">
+          <h4 class="footer-col-title" data-i18n="footer_about_title">ℹ️ Giới thiệu</h4>
+          <ul class="footer-links-list" id="footerAuthorLinks">
+            <li>
+              <span class="footer-author-role">Admin: <b id="footerAuthorName" class="footer-author-highlight">Xuân Linh</b></span>
+            </li>
+            <li>
+              <a id="footerLinkFb" href="https://www.facebook.com" target="_blank" rel="noopener">
+                <span>📘</span> <span data-i18n="footer_fb">Facebook cá nhân</span>
+              </a>
+            </li>
+            <li>
+              <a id="footerLinkYt" href="https://www.youtube.com" target="_blank" rel="noopener">
+                <span>▶️</span> <span data-i18n="footer_yt">Kênh Youtube</span>
+              </a>
+            </li>
+            <li>
+              <a id="footerLinkTiktok" href="https://www.tiktok.com" target="_blank" rel="noopener">
+                <span>🎵</span> <span data-i18n="footer_tiktok">Kênh TikTok</span>
+              </a>
+            </li>
+            <li>
+              <a id="footerLinkZalo" href="https://zalo.me/0996358358" target="_blank" rel="noopener">
+                <span>💬</span> <span>Hotline / Zalo: <b id="footerAuthorPhone">0996 358 358</b></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Divider Line -->
+      <div class="footer-divider-line"></div>
+
+      <!-- Bottom Bar -->
+      <div class="footer-bottom-bar">
+        <!-- Left: Language Picker -->
+        <div class="lang-picker-wrapper" id="langPickerWrapper">
+          <button type="button" class="btn-lang-toggle" id="btnLangToggle" aria-haspopup="true" aria-expanded="false" title="Đổi ngôn ngữ / Switch language">
+            <span class="flag" id="currentLangFlag">🇻🇳</span>
+            <span class="code" id="currentLangCode">VI</span>
+            <span class="caret">▾</span>
+          </button>
+          <div class="lang-dropdown-box" id="langDropdownBox">
+            <button type="button" class="lang-option-item active" data-lang="vi">
+              <span>🇻🇳</span> <span>Tiếng Việt (VI)</span>
+            </button>
+            <button type="button" class="lang-option-item" data-lang="en">
+              <span>🇬🇧</span> <span>English (EN)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Center: Copyright & Social Buttons -->
+        <div class="footer-center-section">
+          <p class="footer-copy-text" data-i18n="footer_copyright">Copyright 2026 — AI Center Store. All rights reserved.</p>
+          <div class="footer-social-circles">
+            <a id="footerSocialFb" href="https://www.facebook.com" target="_blank" rel="noopener" class="social-circle-link" aria-label="Facebook">
+              <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a id="footerSocialYt" href="https://www.youtube.com" target="_blank" rel="noopener" class="social-circle-link" aria-label="YouTube">
+              <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+            <a id="footerSocialTiktok" href="https://www.tiktok.com" target="_blank" rel="noopener" class="social-circle-link" aria-label="TikTok">
+              <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.97v7.54c0 1.9-.53 3.84-1.64 5.38-1.57 2.16-4.22 3.32-6.9 3.03-2.67-.29-5.06-1.89-6.24-4.31-1.18-2.42-.99-5.38.48-7.61 1.48-2.23 4.09-3.49 6.77-3.23v4.11c-1.39-.24-2.85.22-3.79 1.25-.94 1.03-1.2 2.53-.67 3.86.53 1.33 1.83 2.19 3.26 2.16 1.43-.03 2.69-.93 3.16-2.28.21-.6.3-1.24.3-1.88V.02z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Back to Top Button -->
+        <button type="button" class="btn-footer-back-top" id="btnBackToTop" aria-label="Lên đầu trang" title="Lên đầu trang">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
+          </svg>
+        </button>
+      </div>
     </div>
   </footer>
 
@@ -428,16 +529,106 @@
 
       // Real-time synchronization across browser tabs
       window.addEventListener('storage', function(e) {
-        if (e.key === 'aic_orders_v3' || e.key === 'aic_products_v3' || e.key === 'aic_db_timestamp') {
+        if (e.key === 'aic_orders_v3' || e.key === 'aic_products_v3' || e.key === 'aic_author_v3' || e.key === 'aic_db_timestamp') {
           if (window.DB) DB.load();
           updateUI();
+          initFooter();
         }
       });
       window.addEventListener('aic_db_changed', function() {
         updateUI();
+        initFooter();
       });
 
+      // Footer & Author & Language Initializer
+      function initFooter() {
+        var author = (window.DB && window.DB.getAuthor) ? window.DB.getAuthor() : null;
+        if (author) {
+          if ($('#footerAuthorName')) $('#footerAuthorName').textContent = author.name || 'Xuân Linh';
+          if ($('#footerAuthorPhone')) $('#footerAuthorPhone').textContent = author.phone || '0996 358 358';
+          if ($('#footerLinkFb') && author.facebook_url) $('#footerLinkFb').href = author.facebook_url;
+          if ($('#footerLinkYt') && author.youtube_url) $('#footerLinkYt').href = author.youtube_url;
+          if ($('#footerLinkTiktok') && author.tiktok_url) $('#footerLinkTiktok').href = author.tiktok_url;
+          if ($('#footerLinkZalo') && (author.zalo || author.phone)) {
+            $('#footerLinkZalo').href = 'https://zalo.me/' + (author.zalo || author.phone).replace(/\s+/g, '');
+          }
+
+          if ($('#footerSocialFb') && author.facebook_url) $('#footerSocialFb').href = author.facebook_url;
+          if ($('#footerSocialYt') && author.youtube_url) $('#footerSocialYt').href = author.youtube_url;
+          if ($('#footerSocialTiktok') && author.tiktok_url) $('#footerSocialTiktok').href = author.tiktok_url;
+        }
+
+        // Search redirect to index
+        var sInput = $('#footerSearchInput');
+        var sBtn = $('#footerSearchBtn');
+        function doSearch() {
+          var q = sInput ? sInput.value.trim() : '';
+          if (q) window.location.href = 'index.html#san-pham?q=' + encodeURIComponent(q);
+        }
+        if (sBtn && !sBtn.dataset.bound) {
+          sBtn.dataset.bound = 'true';
+          sBtn.addEventListener('click', doSearch);
+        }
+        if (sInput && !sInput.dataset.bound) {
+          sInput.dataset.bound = 'true';
+          sInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); doSearch(); }
+          });
+        }
+
+        // Back to top
+        var btnTop = $('#btnBackToTop');
+        if (btnTop && !btnTop.dataset.bound) {
+          btnTop.dataset.bound = 'true';
+          btnTop.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        }
+
+        // Language toggle
+        var langBtn = $('#btnLangToggle');
+        var langBox = $('#langDropdownBox');
+        if (langBtn && !langBtn.dataset.bound) {
+          langBtn.dataset.bound = 'true';
+          langBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var isOpen = langBox ? langBox.classList.toggle('show') : false;
+            langBtn.classList.toggle('open', isOpen);
+          });
+          document.addEventListener('click', function(e) {
+            if (langBox && !e.target.closest('#langPickerWrapper')) {
+              langBox.classList.remove('show');
+              langBtn.classList.remove('open');
+            }
+          });
+        }
+
+        var savedLang = localStorage.getItem('aic_lang') || 'vi';
+        var flagEl = $('#currentLangFlag');
+        var codeEl = $('#currentLangCode');
+        if (flagEl) flagEl.textContent = savedLang === 'en' ? '🇬🇧' : '🇻🇳';
+        if (codeEl) codeEl.textContent = savedLang.toUpperCase();
+
+        document.querySelectorAll('.lang-option-item').forEach(function(item) {
+          if (!item.dataset.bound) {
+            item.dataset.bound = 'true';
+            item.addEventListener('click', function() {
+              var lang = item.getAttribute('data-lang') || 'vi';
+              localStorage.setItem('aic_lang', lang);
+              if (flagEl) flagEl.textContent = lang === 'en' ? '🇬🇧' : '🇻🇳';
+              if (codeEl) codeEl.textContent = lang.toUpperCase();
+              document.querySelectorAll('.lang-option-item').forEach(function(b) {
+                b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+              });
+              if (langBox) langBox.classList.remove('show');
+              if (langBtn) langBtn.classList.remove('open');
+            });
+          }
+        });
+      }
+
       initAuth();
+      initFooter();
     })();
   </script>
 </body>

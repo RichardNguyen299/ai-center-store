@@ -25,6 +25,139 @@
 
   let currentCategory = 'all';
   let searchQuery = '';
+  let currentLang = localStorage.getItem('aic_lang') || 'vi';
+
+  // I18N Bilingual Dictionary (Tiếng Việt & English - Mặc định là Tiếng Việt)
+  const I18N_DICT = {
+    vi: {
+      site_title: 'AI Center Store — Kho App & Chatbot Tạo Video AI',
+      nav_products: 'Sản phẩm',
+      nav_account: 'Tài khoản',
+      hero_badge: 'AI Center Store · Hệ Thống Tự Động Hóa Video Veo 3',
+      hero_lead: 'Sản xuất video thương mại triệu view trong vài phút với Google Flow & Chatbot tạo prompt — Mua 1 lần, sở hữu vĩnh viễn, nhận link tự động sau 30 giây.',
+      search_placeholder: 'Tìm kiếm app Flow, chatbot kịch bản, mẫu video TikTok...',
+      search_btn: 'Tìm kiếm',
+      footer_search_title: '🔍 Tìm kiếm',
+      footer_search_placeholder: 'Tìm nội dung',
+      footer_search_hint: 'Tìm nhanh app AI, kịch bản, chatbot video',
+      footer_cat_title: '📁 Danh mục',
+      cat_flow: 'Google Flow AI (App Veo3)',
+      cat_chatbot: 'Chatbot AI & Prompts',
+      cat_prompt: 'Mẫu Prompt Video',
+      cat_all: 'Tất cả sản phẩm',
+      footer_about_title: 'ℹ️ Giới thiệu',
+      footer_fb: 'Facebook cá nhân',
+      footer_yt: 'Kênh Youtube',
+      footer_tiktok: 'Kênh TikTok',
+      footer_copyright: 'Copyright 2026 — AI Center Store. All rights reserved.',
+      card_detail: 'Chi tiết ➔',
+      card_sold: 'đã bán',
+      card_premium: '★ Premium',
+      card_new: 'Mới',
+      card_from: 'Chỉ từ',
+      card_free: 'Miễn phí',
+      detail_buy_now: 'Mua vĩnh viễn',
+      detail_trial: 'Dùng thử 60 phút',
+      btn_back_to_top: 'Lên đầu trang'
+    },
+    en: {
+      site_title: 'AI Center Store — AI Video Apps & Chatbots',
+      nav_products: 'Products',
+      nav_account: 'Account',
+      hero_badge: 'AI Center Store · Veo 3 Video Automation System',
+      hero_lead: 'Create million-view commercial videos in minutes with Google Flow & prompt chatbots — Pay once, lifetime ownership, instant download in 30 seconds.',
+      search_placeholder: 'Search Flow apps, script chatbots, TikTok video templates...',
+      search_btn: 'Search',
+      footer_search_title: '🔍 Search',
+      footer_search_placeholder: 'Search store...',
+      footer_search_hint: 'Quickly find AI apps, scripts, video chatbots',
+      footer_cat_title: '📁 Categories',
+      cat_flow: 'Google Flow AI (Veo3 Apps)',
+      cat_chatbot: 'AI Chatbots & Prompts',
+      cat_prompt: 'Video Prompt Templates',
+      cat_all: 'All Products',
+      footer_about_title: 'ℹ️ About',
+      footer_fb: 'Personal Facebook',
+      footer_yt: 'YouTube Channel',
+      footer_tiktok: 'TikTok Channel',
+      footer_copyright: 'Copyright 2026 — AI Center Store. All rights reserved.',
+      card_detail: 'Details ➔',
+      card_sold: 'sold',
+      card_premium: '★ Premium',
+      card_new: 'New',
+      card_from: 'From',
+      card_free: 'Free',
+      detail_buy_now: 'Buy Lifetime',
+      detail_trial: 'Try 60-min Trial',
+      btn_back_to_top: 'Back to top'
+    }
+  };
+
+  function t(key) {
+    const dict = I18N_DICT[currentLang] || I18N_DICT.vi;
+    return dict[key] || (I18N_DICT.vi[key] || key);
+  }
+
+  function setLanguage(lang) {
+    if (lang !== 'vi' && lang !== 'en') lang = 'vi';
+    currentLang = lang;
+    try {
+      localStorage.setItem('aic_lang', lang);
+    } catch (e) {}
+
+    // Update Flag & Code in Footer
+    const flagEl = $('#currentLangFlag');
+    const codeEl = $('#currentLangCode');
+    if (flagEl) flagEl.textContent = lang === 'en' ? '🇬🇧' : '🇻🇳';
+    if (codeEl) codeEl.textContent = lang.toUpperCase();
+
+    // Update active dropdown items
+    $$('.lang-option-item').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+
+    // Update all elements with data-i18n
+    $$('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (key && I18N_DICT[lang] && I18N_DICT[lang][key]) {
+        el.textContent = I18N_DICT[lang][key];
+      }
+    });
+
+    // Update all elements with data-i18n-placeholder
+    $$('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (key && I18N_DICT[lang] && I18N_DICT[lang][key]) {
+        el.setAttribute('placeholder', I18N_DICT[lang][key]);
+      }
+    });
+
+    // Update Topbar Nav
+    const navSanPham = $('#navSanPham');
+    if (navSanPham) navSanPham.textContent = t('nav_products');
+
+    // Update Search box placeholder
+    const timOng = $('#timOng');
+    if (timOng) timOng.placeholder = t('search_placeholder');
+
+    const timSubmitBtn = $('#timForm button[type="submit"] span');
+    if (timSubmitBtn) timSubmitBtn.textContent = t('search_btn');
+
+    // Update Hero elements if present
+    const heroBadge = $('.pill-text');
+    if (heroBadge) heroBadge.textContent = t('hero_badge');
+
+    const heroLead = $('.hero-store .lead');
+    if (heroLead) heroLead.textContent = t('hero_lead');
+
+    // Re-render product catalog to update card tags, from/free, etc.
+    renderHomeCatalog();
+
+    // If currently viewing a product detail, re-render it
+    if (window.location.hash.startsWith('#san-pham')) {
+      handleRoute();
+    }
+  }
 
   // Render Product Card
   function renderCard(p) {
@@ -33,9 +166,9 @@
     const posterSrc = generatePosterSVG(p);
 
     const priceDisplay = p.gia_trial > 0
-      ? `<span class="gia-nhan">Chỉ từ</span> <span class="gia-moi">${vnd(p.gia_trial)}</span>`
+      ? `<span class="gia-nhan">${t('card_from')}</span> <span class="gia-moi">${vnd(p.gia_trial)}</span>`
       : `${hasDiscount ? `<span class="giam">-${discountPct}%</span><span class="gia-cu">${vnd(p.original_price)}</span>` : ''}
-         <span class="gia-moi">${p.price > 0 ? vnd(p.price) : 'Miễn phí'}</span>`;
+         <span class="gia-moi">${p.price > 0 ? vnd(p.price) : t('card_free')}</span>`;
 
     return `
       <a class="sp" href="#san-pham?id=${encodeURIComponent(p.id)}">
@@ -45,8 +178,8 @@
         </div>
         <div class="sp-than">
           <div class="nhan-hang">
-            ${p.isPremium ? '<span class="nhan nhan-premium">★ Premium</span>' : '<span class="nhan nhan-free">Miễn phí</span>'}
-            ${p.isNew ? '<span class="nhan nhan-moi">Mới</span>' : ''}
+            ${p.isPremium ? `<span class="nhan nhan-premium">${t('card_premium')}</span>` : `<span class="nhan nhan-free">${t('card_free')}</span>`}
+            ${p.isNew ? `<span class="nhan nhan-moi">${t('card_new')}</span>` : ''}
             ${p.format ? `<span class="nhan nhan-loai">${esc(p.format)}</span>` : ''}
           </div>
           <p class="sp-ten">
@@ -54,10 +187,10 @@
             ${p.version ? `<span class="ver">${esc(p.version)}</span>` : ''}
           </p>
           ${p.subtitle ? `<p class="sp-mota">${esc(p.subtitle)}</p>` : ''}
-          ${p.sold > 0 ? `<p class="sp-ban"><span class="sp-ban-dot"></span>${p.sold} đã bán</p>` : ''}
+          ${p.sold > 0 ? `<p class="sp-ban"><span class="sp-ban-dot"></span>${p.sold} ${t('card_sold')}</p>` : ''}
           <div class="sp-gia">
             <div class="sp-gia-trai">${priceDisplay}</div>
-            <span class="sp-cta-pill">Chi tiết ➔</span>
+            <span class="sp-cta-pill">${t('card_detail')}</span>
           </div>
         </div>
       </a>
@@ -259,7 +392,7 @@
 
     // CTA Buttons
     const btnBuy = $('#nutMua');
-    btnBuy.textContent = `Mua vĩnh viễn — ${vnd(product.price)}`;
+    btnBuy.textContent = `${t('detail_buy_now')} — ${vnd(product.price)}`;
     btnBuy.onclick = (e) => {
       e.preventDefault();
       openCheckoutModal(product, 'vinhvien');
@@ -267,7 +400,7 @@
 
     const btnTrial = $('#nutTrial');
     if (product.gia_trial > 0) {
-      btnTrial.textContent = `⏱️ Dùng thử 60 phút — ${vnd(product.gia_trial)}`;
+      btnTrial.textContent = `⏱️ ${t('detail_trial')} — ${vnd(product.gia_trial)}`;
       btnTrial.hidden = false;
       $('#trialNote').hidden = false;
       btnTrial.onclick = (e) => {
@@ -476,29 +609,46 @@
     const accountView = $('#view-account');
 
     if (hash.startsWith('#san-pham')) {
-      homeView.hidden = true;
-      detailView.hidden = false;
-      accountView.hidden = true;
-
       const rawQuery = hash.replace('#san-pham', '').replace(/^\?/, '');
       const params = new URLSearchParams(rawQuery);
 
-      // Auto unpack & save product payload if passed from Admin (file:// direct sync)
-      const pdata = params.get('pdata');
-      if (pdata) {
-        try {
-          const parsed = JSON.parse(decodeURIComponent(pdata));
-          if (parsed && parsed.id && typeof DB !== 'undefined') {
-            DB.updateOrAddProduct(parsed);
-          }
-        } catch (e) {
-          console.warn('Error parsing pdata:', e);
-        }
-      }
+      if (params.has('id')) {
+        homeView.hidden = true;
+        detailView.hidden = false;
+        accountView.hidden = true;
 
-      const productId = params.get('id') || 'app-2d-so-sanh-ca-the-gioi';
-      renderDetailPage(productId);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Auto unpack & save product payload if passed from Admin (file:// direct sync)
+        const pdata = params.get('pdata');
+        if (pdata) {
+          try {
+            const parsed = JSON.parse(decodeURIComponent(pdata));
+            if (parsed && parsed.id && typeof DB !== 'undefined') {
+              DB.updateOrAddProduct(parsed);
+            }
+          } catch (e) {
+            console.warn('Error parsing pdata:', e);
+          }
+        }
+
+        const productId = params.get('id');
+        renderDetailPage(productId);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        homeView.hidden = false;
+        detailView.hidden = true;
+        accountView.hidden = true;
+
+        if (params.has('q')) {
+          searchQuery = params.get('q');
+          if ($('#timOng')) $('#timOng').value = searchQuery;
+        }
+        if (params.has('cat')) {
+          currentCategory = params.get('cat');
+        }
+        renderHomeCatalog();
+        const shelves = $('#san-pham');
+        if (shelves) shelves.scrollIntoView({ behavior: 'smooth' });
+      }
     } else if (hash.startsWith('#tai-khoan') || hash.startsWith('#dang-nhap')) {
       homeView.hidden = true;
       detailView.hidden = true;
@@ -783,14 +933,16 @@
 
     // Listen for storage changes across tabs
     window.addEventListener('storage', (e) => {
-      if (e.key === 'aic_products_v3' || e.key === 'aic_orders_v3' || e.key === 'aic_db_timestamp') {
+      if (e.key === 'aic_products_v3' || e.key === 'aic_orders_v3' || e.key === 'aic_author_v3' || e.key === 'aic_db_timestamp') {
         if (typeof DB !== 'undefined') DB.load();
+        initFooter();
         handleRoute();
       }
     });
 
     // Listen for custom in-tab DB changes
     window.addEventListener('aic_db_changed', () => {
+      initFooter();
       handleRoute();
     });
 
@@ -800,8 +952,133 @@
         if (Array.isArray(event.data.products) && typeof DB !== 'undefined') {
           DB.syncProducts(event.data.products);
           renderHomeCatalog();
+          initFooter();
           handleRoute();
         }
+      }
+    });
+  }
+
+  // Initialize 3-Column Footer, Dynamic Author, Language Switcher & Back to Top
+  function initFooter() {
+    // 1. Author profile from DB
+    const author = (typeof DB !== 'undefined' && DB.getAuthor) ? DB.getAuthor() : null;
+    if (author) {
+      if ($('#footerAuthorName')) $('#footerAuthorName').textContent = author.name || 'Xuân Linh';
+      if ($('#footerAuthorPhone')) $('#footerAuthorPhone').textContent = author.phone || '0996 358 358';
+      if ($('#footerLinkFb') && author.facebook_url) $('#footerLinkFb').href = author.facebook_url;
+      if ($('#footerLinkYt') && author.youtube_url) $('#footerLinkYt').href = author.youtube_url;
+      if ($('#footerLinkTiktok') && author.tiktok_url) $('#footerLinkTiktok').href = author.tiktok_url;
+      if ($('#footerLinkZalo') && (author.zalo || author.phone)) {
+        $('#footerLinkZalo').href = `https://zalo.me/${(author.zalo || author.phone).replace(/\s+/g, '')}`;
+      }
+
+      if ($('#footerSocialFb') && author.facebook_url) $('#footerSocialFb').href = author.facebook_url;
+      if ($('#footerSocialYt') && author.youtube_url) $('#footerSocialYt').href = author.youtube_url;
+      if ($('#footerSocialTiktok') && author.tiktok_url) $('#footerSocialTiktok').href = author.tiktok_url;
+    }
+
+    // 2. Footer Search Input & Red Button
+    const searchInput = $('#footerSearchInput');
+    const searchBtn = $('#footerSearchBtn');
+
+    function executeFooterSearch() {
+      const q = searchInput ? searchInput.value.trim() : '';
+      if (!q) return;
+
+      const mainSearch = $('#timOng');
+      if (mainSearch) mainSearch.value = q;
+      searchQuery = q;
+
+      currentCategory = 'all';
+      $$('.dmuc-o').forEach(box => box.classList.remove('active'));
+
+      renderHomeCatalog();
+
+      const shelves = $('#san-pham');
+      if (shelves) {
+        shelves.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    if (searchBtn && !searchBtn.dataset.bound) {
+      searchBtn.dataset.bound = 'true';
+      searchBtn.addEventListener('click', executeFooterSearch);
+    }
+    if (searchInput && !searchInput.dataset.bound) {
+      searchInput.dataset.bound = 'true';
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          executeFooterSearch();
+        }
+      });
+    }
+
+    // 3. Category Links in Footer
+    $$('.footer-cat-link').forEach(link => {
+      if (!link.dataset.bound) {
+        link.dataset.bound = 'true';
+        link.addEventListener('click', (e) => {
+          const cat = link.getAttribute('data-cat') || 'all';
+          currentCategory = cat;
+          searchQuery = '';
+          if ($('#timOng')) $('#timOng').value = '';
+
+          $$('.dmuc-o').forEach(box => {
+            box.classList.toggle('active', box.getAttribute('data-loc') === cat);
+          });
+
+          renderHomeCatalog();
+          const shelves = $('#san-pham');
+          if (shelves) {
+            shelves.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      }
+    });
+
+    // 4. Back to Top Button
+    const btnTop = $('#btnBackToTop');
+    if (btnTop && !btnTop.dataset.bound) {
+      btnTop.dataset.bound = 'true';
+      btnTop.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
+
+    // 5. Language Switcher Dropdown & Options
+    const langBtn = $('#btnLangToggle');
+    const langBox = $('#langDropdownBox');
+
+    if (langBtn && !langBtn.dataset.bound) {
+      langBtn.dataset.bound = 'true';
+      langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = langBox?.classList.toggle('show');
+        langBtn.classList.toggle('open', isOpen);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (langBox && !e.target.closest('#langPickerWrapper')) {
+          langBox.classList.remove('show');
+          langBtn?.classList.remove('open');
+        }
+      });
+    }
+
+    $$('.lang-option-item').forEach(item => {
+      if (!item.dataset.bound) {
+        item.dataset.bound = 'true';
+        item.addEventListener('click', () => {
+          const lang = item.getAttribute('data-lang') || 'vi';
+          setLanguage(lang);
+          langBox?.classList.remove('show');
+          langBtn?.classList.remove('open');
+        });
       }
     });
   }
@@ -831,6 +1108,8 @@
     renderCourses();
     renderEcosystem();
     setupEventListeners();
+    initFooter();
+    setLanguage(currentLang);
 
     // Khởi tạo trạng thái đăng nhập từ Supabase
     if (window.SupabaseAuth) {

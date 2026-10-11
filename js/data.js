@@ -524,6 +524,7 @@ const DB = {
     ORDERS: 'aic_orders_db',
     USERS: 'aic_users_db',
     SETTINGS: 'aic_settings_db',
+    AUTHOR: 'aic_author_db',
     VERSION: 'aic_db_version'
   },
 
@@ -535,7 +536,8 @@ const DB = {
       products: this.getProducts(),
       orders: this.getOrders(),
       users: this.getUsers(),
-      settings: this.getSettings()
+      settings: this.getSettings(),
+      author: this.getAuthor()
     };
   },
 
@@ -670,8 +672,13 @@ const DB = {
               localStorage.setItem(this.KEYS.SETTINGS, JSON.stringify(cloudSettings));
             }
 
+            const cloudAuthor = await window.SupabaseDB.getAuthor();
+            if (cloudAuthor) {
+              localStorage.setItem(this.KEYS.AUTHOR, JSON.stringify(cloudAuthor));
+            }
+
             window.dispatchEvent(new CustomEvent('aic_db_synced', {
-              detail: { products: cloudProducts, orders: cloudOrders, users: cloudUsers, settings: cloudSettings }
+              detail: { products: cloudProducts, orders: cloudOrders, users: cloudUsers, settings: cloudSettings, author: cloudAuthor }
             }));
             return true;
           }
@@ -693,6 +700,9 @@ const DB = {
               if (data.settings) {
                 localStorage.setItem(this.KEYS.SETTINGS, JSON.stringify(data.settings));
               }
+              if (data.author) {
+                localStorage.setItem(this.KEYS.AUTHOR, JSON.stringify(data.author));
+              }
               window.dispatchEvent(new CustomEvent('aic_db_synced', { detail: data }));
               return true;
             }
@@ -711,6 +721,45 @@ const DB = {
         localStorage.setItem('aic_db_timestamp', Date.now().toString());
         window.dispatchEvent(new CustomEvent('aic_db_changed', { detail: { type } }));
       } catch (e) {}
+    }
+  },
+
+  // Author CRUD
+  getAuthor() {
+    try {
+      return JSON.parse(localStorage.getItem(this.KEYS.AUTHOR)) || {
+        name: "Xuân Linh",
+        title: "Admin & Sáng lập viên",
+        phone: "0996 358 358",
+        zalo: "0996358358",
+        email: "ganhteam321@gmail.com",
+        youtube_url: "https://www.youtube.com",
+        facebook_url: "https://www.facebook.com",
+        tiktok_url: "https://www.tiktok.com",
+        avatar_url: "",
+        bio: "Sáng tạo công cụ & Chatbot tạo video AI tự động"
+      };
+    } catch (e) {
+      return {
+        name: "Xuân Linh",
+        title: "Admin & Sáng lập viên",
+        phone: "0996 358 358",
+        zalo: "0996358358",
+        email: "ganhteam321@gmail.com",
+        youtube_url: "https://www.youtube.com",
+        facebook_url: "https://www.facebook.com",
+        tiktok_url: "https://www.tiktok.com",
+        avatar_url: "",
+        bio: "Sáng tạo công cụ & Chatbot tạo video AI tự động"
+      };
+    }
+  },
+
+  saveAuthor(author) {
+    localStorage.setItem(this.KEYS.AUTHOR, JSON.stringify(author));
+    this.broadcastChange('author');
+    if (window.SupabaseDB) {
+      window.SupabaseDB.saveAuthor(author).catch(() => {});
     }
   },
 

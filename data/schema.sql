@@ -76,6 +76,25 @@ CREATE TABLE IF NOT EXISTS public.settings (
 );
 
 -- =============================================================================
+-- 5B. BẢNG AUTHORS (THÔNG TIN TÁC GIẢ & MẠNG XÃ HỘI)
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS public.authors (
+  id TEXT PRIMARY KEY DEFAULT 'default',
+  name TEXT NOT NULL DEFAULT 'Xuân Linh',
+  title TEXT DEFAULT 'Admin & Sáng lập viên',
+  phone TEXT DEFAULT '0996 358 358',
+  zalo TEXT DEFAULT '0996358358',
+  email TEXT DEFAULT 'ganhteam321@gmail.com',
+  youtube_url TEXT DEFAULT 'https://www.youtube.com',
+  facebook_url TEXT DEFAULT 'https://www.facebook.com',
+  tiktok_url TEXT DEFAULT 'https://www.tiktok.com',
+  avatar_url TEXT DEFAULT '',
+  bio TEXT DEFAULT 'Sáng tạo công cụ & Chatbot tạo video AI tự động',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- =============================================================================
 -- 6. TỰ ĐỘNG TẠO PROFILE KHI ĐĂNG NHẬP GOOGLE LẦN ĐẦU (TRIGGER)
 -- =============================================================================
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -210,6 +229,18 @@ CREATE POLICY "Chỉ Admin được sửa cấu hình cửa hàng"
   USING (public.is_admin())
   WITH CHECK (public.is_admin());
 
+-- Chính sách cho AUTHORS (Tác Giả)
+ALTER TABLE public.authors ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Mọi người được đọc thông tin tác giả"
+  ON public.authors FOR SELECT
+  USING (true);
+
+CREATE POLICY "Chỉ Admin được sửa thông tin tác giả"
+  ON public.authors FOR ALL
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+
 -- =============================================================================
 -- 9. DỮ LIỆU MẪU BAN ĐẦU (SEED DATA)
 -- =============================================================================
@@ -226,6 +257,28 @@ VALUES (
   }'::jsonb
 )
 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
+
+-- Thông tin tác giả mặc định
+INSERT INTO public.authors (id, name, title, phone, zalo, email, youtube_url, facebook_url, tiktok_url, bio)
+VALUES (
+  'default',
+  'Xuân Linh',
+  'Admin & Sáng lập viên',
+  '0996 358 358',
+  '0996358358',
+  'ganhteam321@gmail.com',
+  'https://www.youtube.com',
+  'https://www.facebook.com',
+  'https://www.tiktok.com',
+  'Sáng tạo công cụ & Chatbot tạo video AI tự động'
+)
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  phone = EXCLUDED.phone,
+  youtube_url = EXCLUDED.youtube_url,
+  facebook_url = EXCLUDED.facebook_url,
+  tiktok_url = EXCLUDED.tiktok_url,
+  updated_at = NOW();
 
 -- Danh sách sản phẩm khởi tạo
 INSERT INTO public.products (
