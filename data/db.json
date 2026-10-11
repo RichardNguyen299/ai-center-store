@@ -1,11 +1,11 @@
 ﻿{
   "version": "v2.6",
-  "lastUpdated": "2026-10-07T04:11:36.960Z",
+  "lastUpdated": "2026-10-11T09:15:21.103Z",
   "settings": {
-    "storeName": "AI Center Store — Kho App & Chatbot Tạo Video AI",
     "hotline": "0996 358 358",
-    "supportZalo": "0996358358",
-    "storageMode": "server_synced"
+    "storeName": "AI Center Store — Kho App & Chatbot Tạo Video AI",
+    "storageMode": "supabase_cloud",
+    "supportZalo": "0996358358"
   },
   "products": [
     {
@@ -14,25 +14,37 @@
       "version": "v1.0",
       "subtitle": "App dùng để so sánh 2 sản phẩm nào đó bất kỳ",
       "category": "flow",
-      "categoryName": "Google Flow AI",
+      "category_name": "Google Flow AI",
       "format": "9:16",
-      "isPremium": true,
-      "isNew": true,
-      "active": true,
       "price": 99000,
       "original_price": 150000,
       "gia_trial": 9000,
-      "sold": 57,
-      "remainingSlots": 143,
+      "sold": 58,
+      "remaining_slots": 143,
       "demo_video_id": "aoG_YF3C_bM",
-      "posterTheme": {
+      "poster_theme": {
         "badge": "APP SO SÁNH",
-        "highlight": "CẢ THẾ GIỚI",
-        "tagline": "So sánh mọi thứ bằng video 2D Veo3",
         "color": "#D97706",
+        "tagline": "So sánh mọi thứ bằng video 2D Veo3",
+        "highlight": "CẢ THẾ GIỚI",
         "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
       },
-      "description": "Tạo video người mẫu 2D giải thích so sánh là công cụ giúp bạn tạo nhanh các video dạng 2D phân tích, so sánh và giải thích nội dung bằng AI. Chỉ cần nhập chủ đề so sánh, chọn ảnh người dẫn chuyện và thêm mô tả hình ảnh cho các đối tượng cần so sánh.\n\nBạn có thể tùy chỉnh hình ảnh minh họa theo ý muốn, ví dụ như so sánh Veo 3 Omni Flash và SeaDance 2.0, PC gaming và MacBook, hai sản phẩm công nghệ, hai phương pháp làm việc hoặc hai lựa chọn bất kỳ. AI sẽ tự động tạo hình ảnh cho các object cần so sánh, xây dựng nội dung, tạo video và lồng tiếng.\n\nChỉ với vài bước đơn giản, bạn có thể tạo ra video người que giải thích so sánh chuyên nghiệp mà không cần biết vẽ, không cần dựng hoạt hình và không cần tự viết kịch bản từ đầu.\n\nMua 1 lần dùng vĩnh viễn."
+      "description": "Tạo video người mẫu 2D giải thích so sánh là công cụ giúp bạn tạo nhanh các video dạng 2D phân tích, so sánh và giải thích nội dung bằng AI. Chỉ cần nhập chủ đề so sánh, chọn ảnh người dẫn chuyện và thêm mô tả hình ảnh cho các đối tượng cần so sánh.\r\n\r\nBạn có thể tùy chỉnh hình ảnh minh họa theo ý muốn, ví dụ như so sánh Veo 3 Omni Flash và SeaDance 2.0, PC gaming và MacBook, hai sản phẩm công nghệ, hai phương pháp làm việc hoặc hai lựa chọn bất kỳ. AI sẽ tự động tạo hình ảnh cho các object cần so sánh, xây dựng nội dung, tạo video và lồng tiếng.\r\n\r\nChỉ với vài bước đơn giản, bạn có thể tạo ra video người que giải thích so sánh chuyên nghiệp mà không cần biết vẽ, không cần dựng hoạt hình và không cần tự viết kịch bản từ đầu.\r\n\r\nMua 1 lần dùng vĩnh viễn.",
+      "is_premium": true,
+      "is_new": true,
+      "active": true,
+      "created_at": "2026-10-11T07:53:48.930825+00:00",
+      "updated_at": "2026-10-11T07:53:48.930825+00:00",
+      "posterTheme": {
+        "badge": "APP SO SÁNH",
+        "color": "#D97706",
+        "tagline": "So sánh mọi thứ bằng video 2D Veo3",
+        "highlight": "CẢ THẾ GIỚI",
+        "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
+      },
+      "isPremium": true,
+      "isNew": true,
+      "remainingSlots": 149
     },
     {
       "id": "giang",
@@ -40,25 +52,36 @@
       "version": "v1.0",
       "subtitle": "Ứng dụng tạo video AI tự động chuyên nghiệp",
       "category": "flow",
-      "categoryName": "Google Flow AI",
+      "category_name": "Google Flow AI",
       "format": "9:16",
-      "isPremium": true,
-      "isNew": true,
-      "active": true,
       "price": 99000,
       "original_price": 150000,
       "gia_trial": 9000,
       "sold": 1,
-      "remainingSlots": 99,
+      "remaining_slots": 99,
       "demo_video_id": "aoG_YF3C_bM",
-      "posterTheme": {
+      "poster_theme": {
         "badge": "AI GIANG",
-        "highlight": "APP AI VIDEO",
-        "tagline": "Tạo video AI chuyên nghiệp nhanh chóng",
         "color": "#F59E0B",
+        "tagline": "Tạo video AI chuyên nghiệp nhanh chóng",
+        "highlight": "APP AI VIDEO",
         "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
       },
-      "description": "Ứng dụng hỗ trợ sáng tạo nội dung và tạo video AI tự động chất lượng cao. Tích hợp sẵn mẫu video 9:16, kịch bản thu hút và tối ưu hiển thị trên các nền tảng mạng xã hội."
+      "description": "Ứng dụng hỗ trợ sáng tạo nội dung và tạo video AI tự động chất lượng cao. Tích hợp sẵn mẫu video 9:16, kịch bản thu hút và tối ưu hiển thị trên các nền tảng mạng xã hội.",
+      "is_premium": true,
+      "is_new": true,
+      "active": true,
+      "created_at": "2026-10-11T07:53:48.930825+00:00",
+      "updated_at": "2026-10-11T07:53:48.930825+00:00",
+      "posterTheme": {
+        "badge": "AI GIANG",
+        "color": "#F59E0B",
+        "tagline": "Tạo video AI chuyên nghiệp nhanh chóng",
+        "highlight": "APP AI VIDEO",
+        "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
+      },
+      "isPremium": true,
+      "isNew": true
     },
     {
       "id": "app-koc-ban-long-den",
@@ -66,25 +89,36 @@
       "version": "v1.0",
       "subtitle": "Bán lồng đèn như thật",
       "category": "flow",
-      "categoryName": "Google Flow AI",
+      "category_name": "Google Flow AI",
       "format": "9:16",
-      "isPremium": true,
-      "isNew": true,
-      "active": true,
       "price": 99000,
       "original_price": 160000,
       "gia_trial": 9000,
       "sold": 28,
-      "remainingSlots": 172,
+      "remaining_slots": 172,
       "demo_video_id": "dQw4w9WgXcQ",
-      "posterTheme": {
+      "poster_theme": {
         "badge": "APP KOC",
-        "highlight": "BÁN LỒNG ĐÈN",
-        "tagline": "Ứng dụng KOC thông minh - Tự động bán hàng bứt phá",
         "color": "#D97706",
+        "tagline": "Ứng dụng KOC thông minh - Tự động bán hàng bứt phá",
+        "highlight": "BÁN LỒNG ĐÈN",
         "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
       },
-      "description": "Ứng dụng KOC thông minh giúp bạn tự động hóa toàn bộ quy trình quay video bán lồng đèn và các sản phẩm mùa lễ hội bằng công nghệ Veo 3.\n\nTự động ghép người mẫu KOC vào khung cảnh ấm cúng, tương tác trực tiếp với sản phẩm, lên giọng nói thu hút người mua và tạo chuyển đổi bán hàng thần tốc."
+      "description": "Ứng dụng KOC thông minh giúp bạn tự động hóa toàn bộ quy trình quay video bán lồng đèn và các sản phẩm mùa lễ hội bằng công nghệ Veo 3.\r\n\r\nTự động ghép người mẫu KOC vào khung cảnh ấm cúng, tương tác trực tiếp với sản phẩm, lên giọng nói thu hút người mua và tạo chuyển đổi bán hàng thần tốc.",
+      "is_premium": true,
+      "is_new": true,
+      "active": true,
+      "created_at": "2026-10-11T07:53:48.930825+00:00",
+      "updated_at": "2026-10-11T07:53:48.930825+00:00",
+      "posterTheme": {
+        "badge": "APP KOC",
+        "color": "#D97706",
+        "tagline": "Ứng dụng KOC thông minh - Tự động bán hàng bứt phá",
+        "highlight": "BÁN LỒNG ĐÈN",
+        "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
+      },
+      "isPremium": true,
+      "isNew": true
     },
     {
       "id": "app-koc-review-nha-hang",
@@ -92,25 +126,36 @@
       "version": "v1.0",
       "subtitle": "Review mọi nơi ăn uống từ nhà hàng, quán nhậu, quán ăn,...",
       "category": "flow",
-      "categoryName": "Google Flow AI",
+      "category_name": "Google Flow AI",
       "format": "9:16",
-      "isPremium": true,
-      "isNew": true,
-      "active": true,
       "price": 99000,
       "original_price": 180000,
       "gia_trial": 9000,
       "sold": 42,
-      "remainingSlots": 158,
+      "remaining_slots": 158,
       "demo_video_id": "7B_sC2P0r5k",
-      "posterTheme": {
+      "poster_theme": {
         "badge": "APP REVIEW",
-        "highlight": "QUÁN ĂN & CAFE",
-        "tagline": "Tạo kịch bản + Tạo ảnh 9:16 + Tạo video review tự động",
         "color": "#F59E0B",
+        "tagline": "Tạo kịch bản + Tạo ảnh 9:16 + Tạo video review tự động",
+        "highlight": "QUÁN ĂN & CAFE",
         "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
       },
-      "description": "Giải pháp hàng đầu cho các nhà sáng tạo nội dung ẩm thực, KOC review đồ ăn. Ứng dụng tự động dựng bối cảnh bàn tiệc thịnh soạn, biểu cảm nếm thử chân thực và lời bình luận kích thích vị giác người xem."
+      "description": "Giải pháp hàng đầu cho các nhà sáng tạo nội dung ẩm thực, KOC review đồ ăn. Ứng dụng tự động dựng bối cảnh bàn tiệc thịnh soạn, biểu cảm nếm thử chân thực và lời bình luận kích thích vị giác người xem.",
+      "is_premium": true,
+      "is_new": true,
+      "active": true,
+      "created_at": "2026-10-11T07:53:48.930825+00:00",
+      "updated_at": "2026-10-11T07:53:48.930825+00:00",
+      "posterTheme": {
+        "badge": "APP REVIEW",
+        "color": "#F59E0B",
+        "tagline": "Tạo kịch bản + Tạo ảnh 9:16 + Tạo video review tự động",
+        "highlight": "QUÁN ĂN & CAFE",
+        "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
+      },
+      "isPremium": true,
+      "isNew": true
     },
     {
       "id": "app-thoi-trang-tttm",
@@ -118,25 +163,36 @@
       "version": "v1.0",
       "subtitle": "Thời Trang Bối Cảnh Trung Tâm Thương Mại",
       "category": "flow",
-      "categoryName": "Google Flow AI",
+      "category_name": "Google Flow AI",
       "format": "9:16",
-      "isPremium": true,
-      "isNew": true,
-      "active": true,
       "price": 89000,
       "original_price": 140000,
       "gia_trial": 8951,
       "sold": 19,
-      "remainingSlots": 181,
+      "remaining_slots": 181,
       "demo_video_id": "dQw4w9WgXcQ",
-      "posterTheme": {
+      "poster_theme": {
         "badge": "APP THỜI TRANG",
-        "highlight": "TRUNG TÂM THƯƠNG MẠI",
-        "tagline": "Nhận diện bối cảnh - Khóa trang phục - Tự động dựng cảnh Veo3",
         "color": "#D97706",
+        "tagline": "Nhận diện bối cảnh - Khóa trang phục - Tự động dựng cảnh Veo3",
+        "highlight": "TRUNG TÂM THƯƠNG MẠI",
         "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
       },
-      "description": "Tạo video lookbook thời trang đẳng cấp trong không gian trung tâm thương mại sang trọng. Khóa chuẩn form dáng trang phục và cho người mẫu sải bước tự tin như sàn runway."
+      "description": "Tạo video lookbook thời trang đẳng cấp trong không gian trung tâm thương mại sang trọng. Khóa chuẩn form dáng trang phục và cho người mẫu sải bước tự tin như sàn runway.",
+      "is_premium": true,
+      "is_new": true,
+      "active": true,
+      "created_at": "2026-10-11T07:53:48.930825+00:00",
+      "updated_at": "2026-10-11T07:53:48.930825+00:00",
+      "posterTheme": {
+        "badge": "APP THỜI TRANG",
+        "color": "#D97706",
+        "tagline": "Nhận diện bối cảnh - Khóa trang phục - Tự động dựng cảnh Veo3",
+        "highlight": "TRUNG TÂM THƯƠNG MẠI",
+        "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
+      },
+      "isPremium": true,
+      "isNew": true
     },
     {
       "id": "chatbot-gpt-kich-ban-kinh-te",
@@ -144,25 +200,36 @@
       "version": "v2.0",
       "subtitle": "Kinh Tế · Chính Trị Bán Sách Tự Động",
       "category": "chatbot",
-      "categoryName": "Chatbot AI",
+      "category_name": "Chatbot AI",
       "format": "Chatbot",
-      "isPremium": true,
-      "isNew": false,
-      "active": true,
       "price": 99000,
       "original_price": 190000,
       "gia_trial": 19000,
       "sold": 85,
-      "remainingSlots": 115,
+      "remaining_slots": 115,
       "demo_video_id": "7B_sC2P0r5k",
-      "posterTheme": {
+      "poster_theme": {
         "badge": "CHATBOT GPT",
-        "highlight": "KINH TẾ & CHÍNH TRỊ",
-        "tagline": "Mẫu làm video Stickman bán sách viral triệu view",
         "color": "#EA580C",
+        "tagline": "Mẫu làm video Stickman bán sách viral triệu view",
+        "highlight": "KINH TẾ & CHÍNH TRỊ",
         "bgGradient": "linear-gradient(180deg, #241712 0%, #170E0A 60%, #0E0705 100%)"
       },
-      "description": "Bộ prompt và cấu hình Chatbot chuyên sâu để sinh kịch bản video hoạt hình người que (Stickman) giải thích các chủ đề kinh tế, tài chính, chính trị và tóm tắt sách cực kỳ lôi cuốn."
+      "description": "Bộ prompt và cấu hình Chatbot chuyên sâu để sinh kịch bản video hoạt hình người que (Stickman) giải thích các chủ đề kinh tế, tài chính, chính trị và tóm tắt sách cực kỳ lôi cuốn.",
+      "is_premium": true,
+      "is_new": false,
+      "active": true,
+      "created_at": "2026-10-11T07:53:48.930825+00:00",
+      "updated_at": "2026-10-11T07:53:48.930825+00:00",
+      "posterTheme": {
+        "badge": "CHATBOT GPT",
+        "color": "#EA580C",
+        "tagline": "Mẫu làm video Stickman bán sách viral triệu view",
+        "highlight": "KINH TẾ & CHÍNH TRỊ",
+        "bgGradient": "linear-gradient(180deg, #241712 0%, #170E0A 60%, #0E0705 100%)"
+      },
+      "isPremium": true,
+      "isNew": false
     },
     {
       "id": "app-nguoi-que-hai-huoc",
@@ -170,25 +237,36 @@
       "version": "v1.0",
       "subtitle": "Cà khịa hài hước bán hàng video AI cực bén",
       "category": "chatbot",
-      "categoryName": "Chatbot AI",
+      "category_name": "Chatbot AI",
       "format": "9:16",
-      "isPremium": true,
-      "isNew": true,
-      "active": true,
       "price": 79000,
       "original_price": 130000,
       "gia_trial": 9000,
       "sold": 34,
-      "remainingSlots": 166,
+      "remaining_slots": 166,
       "demo_video_id": "dQw4w9WgXcQ",
-      "posterTheme": {
+      "poster_theme": {
         "badge": "CHATBOT & APP",
-        "highlight": "NGƯỜI QUE HÀI HƯỚC",
-        "tagline": "Cà khịa hài hước - Bán hàng video AI - Tự động tạo ảnh & video",
         "color": "#EA580C",
+        "tagline": "Cà khịa hài hước - Bán hàng video AI - Tự động tạo ảnh & video",
+        "highlight": "NGƯỜI QUE HÀI HƯỚC",
         "bgGradient": "linear-gradient(180deg, #241712 0%, #170E0A 60%, #0E0705 100%)"
       },
-      "description": "Công cụ đắc lực để làm các video giải trí lồng ghép bán hàng tự nhiên, không gây phản cảm. Tự động đề xuất các miếng hài hước, tạo hình nhân vật que vui nhộn."
+      "description": "Công cụ đắc lực để làm các video giải trí lồng ghép bán hàng tự nhiên, không gây phản cảm. Tự động đề xuất các miếng hài hước, tạo hình nhân vật que vui nhộn.",
+      "is_premium": true,
+      "is_new": true,
+      "active": true,
+      "created_at": "2026-10-11T07:53:48.930825+00:00",
+      "updated_at": "2026-10-11T07:53:48.930825+00:00",
+      "posterTheme": {
+        "badge": "CHATBOT & APP",
+        "color": "#EA580C",
+        "tagline": "Cà khịa hài hước - Bán hàng video AI - Tự động tạo ảnh & video",
+        "highlight": "NGƯỜI QUE HÀI HƯỚC",
+        "bgGradient": "linear-gradient(180deg, #241712 0%, #170E0A 60%, #0E0705 100%)"
+      },
+      "isPremium": true,
+      "isNew": true
     },
     {
       "id": "app-ban-hang-nhieu-khung-canh",
@@ -196,25 +274,36 @@
       "version": "v1.0",
       "subtitle": "App bán hàng đa góc quay & phối cảnh điện ảnh",
       "category": "flow",
-      "categoryName": "Google Flow AI",
+      "category_name": "Google Flow AI",
       "format": "9:16",
-      "isPremium": true,
-      "isNew": false,
-      "active": true,
       "price": 99000,
       "original_price": 150000,
       "gia_trial": 9000,
       "sold": 61,
-      "remainingSlots": 139,
+      "remaining_slots": 139,
       "demo_video_id": "7B_sC2P0r5k",
-      "posterTheme": {
+      "poster_theme": {
         "badge": "SIÊU APP",
-        "highlight": "BÁN HÀNG NHIỀU KHUNG CẢNH",
-        "tagline": "Đa góc quay, chuyển cảnh mượt mà chuẩn phim điện ảnh",
         "color": "#D97706",
+        "tagline": "Đa góc quay, chuyển cảnh mượt mà chuẩn phim điện ảnh",
+        "highlight": "BÁN HÀNG NHIỀU KHUNG CẢNH",
         "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
       },
-      "description": "Tạo chuỗi video quảng cáo sản phẩm với 4-6 góc máy chuyển cảnh mượt mà trong cùng một bối cảnh nhất quán. Tối ưu trải nghiệm thị giác cho khách hàng tiềm năng."
+      "description": "Tạo chuỗi video quảng cáo sản phẩm với 4-6 góc máy chuyển cảnh mượt mà trong cùng một bối cảnh nhất quán. Tối ưu trải nghiệm thị giác cho khách hàng tiềm năng.",
+      "is_premium": true,
+      "is_new": false,
+      "active": true,
+      "created_at": "2026-10-11T07:53:48.930825+00:00",
+      "updated_at": "2026-10-11T07:53:48.930825+00:00",
+      "posterTheme": {
+        "badge": "SIÊU APP",
+        "color": "#D97706",
+        "tagline": "Đa góc quay, chuyển cảnh mượt mà chuẩn phim điện ảnh",
+        "highlight": "BÁN HÀNG NHIỀU KHUNG CẢNH",
+        "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
+      },
+      "isPremium": true,
+      "isNew": false
     },
     {
       "id": "chatbot-prompt-veo3",
@@ -222,92 +311,101 @@
       "version": "v1.2",
       "subtitle": "Trợ lý AI viết prompt điện ảnh theo từng phân cảnh",
       "category": "prompt",
-      "categoryName": "Mẫu Prompt",
+      "category_name": "Mẫu Prompt",
       "format": "Chatbot",
-      "isPremium": true,
-      "isNew": false,
-      "active": true,
       "price": 69000,
       "original_price": 120000,
       "gia_trial": 15000,
       "sold": 47,
-      "remainingSlots": 153,
+      "remaining_slots": 153,
       "demo_video_id": "dQw4w9WgXcQ",
-      "posterTheme": {
+      "poster_theme": {
         "badge": "PROMPT MASTER",
-        "highlight": "VEO 3 ĐIỆN ẢNH",
-        "tagline": "Tạo prompt phân cảnh chi tiết, chuyển động camera điện ảnh",
         "color": "#D97706",
+        "tagline": "Tạo prompt phân cảnh chi tiết, chuyển động camera điện ảnh",
+        "highlight": "VEO 3 ĐIỆN ẢNH",
         "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
       },
-      "description": "Được huấn luyện trên hơn 10.000 prompt video chất lượng cao của Hollywood. Tự động phân tích kịch bản và sinh câu lệnh prompt tiếng Anh chuẩn ngữ nghĩa cho Veo 3, Runway Gen 3, Luma Dream Machine."
+      "description": "Được huấn luyện trên hơn 10.000 prompt video chất lượng cao của Hollywood. Tự động phân tích kịch bản và sinh câu lệnh prompt tiếng Anh chuẩn ngữ nghĩa cho Veo 3, Runway Gen 3, Luma Dream Machine.",
+      "is_premium": true,
+      "is_new": false,
+      "active": true,
+      "created_at": "2026-10-11T07:53:48.930825+00:00",
+      "updated_at": "2026-10-11T07:53:48.930825+00:00",
+      "posterTheme": {
+        "badge": "PROMPT MASTER",
+        "color": "#D97706",
+        "tagline": "Tạo prompt phân cảnh chi tiết, chuyển động camera điện ảnh",
+        "highlight": "VEO 3 ĐIỆN ẢNH",
+        "bgGradient": "linear-gradient(180deg, #241D17 0%, #17130F 60%, #0E0B09 100%)"
+      },
+      "isPremium": true,
+      "isNew": false
     }
   ],
   "orders": [
     {
-      "id": "app-food-pro-ban-hang-nhu-that",
-      "title": "App Food Pro Bán Hàng Như Thật",
-      "slug": "app-food-pro-ban-hang-nhu-that",
+      "id": "app-2d-so-sanh-ca-the-gioi",
+      "productId": "app-2d-so-sanh-ca-the-gioi",
+      "title": "App 2D So Sánh Cả Thế Giới",
+      "code": "AIC-620802",
+      "amount": 99000,
+      "date": "11/10/2026",
+      "status": "paid",
+      "statusText": "Đã thanh toán",
+      "customerName": "Van Phu Nguyen",
+      "customerEmail": "ganhteam1v5@gmail.com",
+      "userId": "0b5bf074-8ebd-4c43-b19a-1d6e87e1d1d8",
+      "tier": "vinhvien",
+      "accessUrl": "#san-pham?id=app-2d-so-sanh-ca-the-gioi"
+    },
+    {
+      "id": "50207d9b-2e18-4af5-93a5-fecec59da9b6",
       "code": "AISRQJ7PXG",
-      "date": "8/9/2026",
+      "title": "App 2D So Sánh Cả Thế Giới",
+      "slug": "app-2d-so-sanh-ca-the-gioi",
       "amount": 9000,
       "status": "pending",
       "statusText": "Chờ thanh toán",
       "customerEmail": "ganhteam321@gmail.com",
-      "accessUrl": null
+      "accessUrl": null,
+      "date": "11/10/2026"
     },
     {
-      "id": "app-koc-ban-long-den",
+      "id": "3c106097-df3d-4078-a605-141860797426",
+      "code": "AISTC5LTF7",
       "title": "App KOC Bán Lồng Đèn",
       "slug": "app-koc-ban-long-den",
-      "code": "AISTC5LTF7",
-      "date": "5/9/2026",
       "amount": 9000,
       "status": "pending",
       "statusText": "Chờ thanh toán",
       "customerEmail": "ganhteam321@gmail.com",
-      "accessUrl": null
+      "accessUrl": null,
+      "date": "11/10/2026"
     },
     {
-      "id": "app-koc-review-nha-hang",
-      "title": "App KOC Review Nhà Hàng Quán Ăn Cafe",
-      "slug": "app-koc-review-nha-hang-quan-an-quan-cafe",
+      "id": "1e188d2c-807b-4fa0-8fb1-0ad132eece2b",
       "code": "AISGP38W74",
-      "date": "5/9/2026",
+      "title": "App KOC Review Nhà Hàng Quán Ăn Cafe",
+      "slug": "app-koc-review-nha-hang",
       "amount": 9000,
       "status": "paid",
       "statusText": "Đã thanh toán",
       "customerEmail": "ganhteam321@gmail.com",
-      "accessUrl": "index.html#san-pham?id=app-koc-review-nha-hang"
+      "accessUrl": "index.html#san-pham?id=app-koc-review-nha-hang",
+      "date": "11/10/2026"
     }
   ],
   "users": [
     {
-      "email": "ganhteam321@gmail.com",
-      "phone": "0996358358",
+      "email": "ganhteam1v5@gmail.com",
+      "phone": "",
       "role": "customer",
       "status": "active",
-      "createdAt": "8/9/2026",
-      "totalOrders": 3,
-      "totalSpent": 9000
-    },
-    {
-      "email": "admin@aicenter.store",
-      "phone": "0912345678",
-      "role": "admin",
-      "status": "active",
-      "createdAt": "1/8/2026",
-      "totalOrders": 0,
-      "totalSpent": 0
-    },
-    {
-      "email": "tranminh99@gmail.com",
-      "phone": "0987654321",
-      "role": "customer",
-      "status": "active",
-      "createdAt": "15/9/2026",
-      "totalOrders": 2,
-      "totalSpent": 188000
+      "createdAt": "11/10/2026",
+      "totalOrders": 1,
+      "totalSpent": 99000,
+      "lastTransaction": "11/10/2026"
     }
   ]
 }
