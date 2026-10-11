@@ -369,12 +369,6 @@
       }
     }
 
-    // Role check for admin button
-    const adminLink = document.querySelector('.user-header-card a[href="admin.html"]');
-    if (adminLink) {
-      adminLink.style.display = (user.role === 'admin' || user.email === 'ganhteam321@gmail.com') ? 'inline-flex' : 'none';
-    }
-
     // Statistics
     const allOrders = (window.DB && window.DB.getOrders) ? window.DB.getOrders() : (user.orders || []);
     const orders = (user.role === 'admin' || user.email === 'ganhteam321@gmail.com')
