@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Trang Quản Trị | AI Center Store</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- =========================================
+       SIDEBAR
+       ========================================= -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">🤖</div>
+      <div class="sidebar-brand">
+        <h2>AI Center Store</h2>
+        <span class="admin-badge">ADMIN PORTAL</span>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-tab="overview">
+        <span class="icon">📊</span>
+        <span>Tổng quan</span>
+      </div>
+      <div class="nav-item" data-tab="products">
+        <span class="icon">📦</span>
+        <span>Sản phẩm</span>
+        <span class="nav-count" id="badgeProductCount">8</span>
+      </div>
+      <div class="nav-item" data-tab="orders">
+        <span class="icon">🛒</span>
+        <span>Đơn hàng</span>
+        <span class="nav-count" id="badgeOrderCount">3</span>
+      </div>
+      <div class="nav-item" data-tab="users">
+        <span class="icon">👥</span>
+        <span>Khách hàng</span>
+        <span class="nav-count" id="badgeUserCount">3</span>
+      </div>
+      <div class="nav-item" data-tab="settings">
+        <span class="icon">⚙️</span>
+        <span>Cài đặt</span>
+      </div>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar">A</div>
+        <div class="user-info">
+          <p class="name">Admin Manager</p>
+          <p class="role">● Toàn quyền quản trị</p>
+        </div>
+      </div>
+      <a class="btn-view-store" href="index.html" target="_blank">
+        <span>👁️ Xem cửa hàng</span>
+        <span style="font-size:10px">↗</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- =========================================
+       MAIN ADMIN AREA
+       ========================================= -->
+  <main class="admin-main">
+    
+    <!-- Topbar -->
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <h1 class="page-title" id="pageTitle">Bảng Điều Khiển Tổng Quan</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-time" id="topbarClock">--:--</div>
+        <button class="btn-add-quick" id="btnQuickAdd" type="button">
+          <span>+</span>
+          <span>Thêm sản phẩm</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- File Mode Notice Banner -->
+    <div id="adminFileModeBar" style="background:rgba(245,158,11,0.1);border-bottom:1px solid rgba(245,158,11,0.25);padding:10px 24px;font-size:12.5px;color:#fde68a;display:none;align-items:center;justify-content:space-between;gap:12px;">
+      <div>
+        ⚡ <b>Đang mở file trực tiếp (file://):</b> Trình duyệt cách ly bộ nhớ giữa các file HTML. Để Trang Quản Trị và Cửa Hàng tự động đồng bộ 100% dữ liệu và xem video YouTube nhúng không lỗi, hãy nhấp đúp file <b>start_server.bat</b>!
+      </div>
+      <a class="btn-view-store" href="index.html" target="_blank" style="padding:4px 10px;border-radius:6px;background:rgba(245,158,11,0.2);color:#fbbf24;text-decoration:none;font-weight:700;white-space:nowrap;font-size:12px">Mở Cửa Hàng ↗</a>
+    </div>
+
+    <!-- Content Sections -->
+    <div class="admin-content">
+
+      <!-- =========================================
+           TAB 1: TỔNG QUAN (OVERVIEW)
+           ========================================= -->
+      <section class="tab-panel active" id="tab-overview">
+        
+        <!-- 4 KPI Metrics Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Tổng Doanh Thu</span>
+              <div class="kpi-icon">💰</div>
+            </div>
+            <div class="kpi-value" id="kpiRevenue">0đ</div>
+            <div class="kpi-sub">↑ Tăng trưởng tích cực</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Tổng Đơn Hàng</span>
+              <div class="kpi-icon">🧾</div>
+            </div>
+            <div class="kpi-value" id="kpiOrders">0</div>
+            <div class="kpi-sub">⚡ Thanh toán tự động</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Sản Phẩm Đang Bán</span>
+              <div class="kpi-icon">📦</div>
+            </div>
+            <div class="kpi-value" id="kpiProducts">0</div>
+            <div class="kpi-sub">● Đang hoạt động trên web</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Khách Hàng Đăng Ký</span>
+              <div class="kpi-icon">👥</div>
+            </div>
+            <div class="kpi-value" id="kpiUsers">0</div>
+            <div class="kpi-sub">✓ Tài khoản thành viên</div>
+          </div>
+        </div>
+
+        <!-- Split Grid: Recent Orders & Top Selling -->
+        <div class="split-grid">
+          
+          <!-- Recent Orders -->
+          <div class="panel-card">
+            <div class="panel-card-header">
+              <h3 class="panel-card-title">Đơn hàng mới nhất</h3>
+              <a href="#" onclick="window.AdminApp && window.AdminApp.switchTab ? window.AdminApp.switchTab('orders') : null; return false;" style="font-size:12.5px;color:var(--mint);font-weight:700">Xem tất cả →</a>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Mã đơn</th>
+                    <th>Sản phẩm</th>
+                    <th>Số tiền</th>
+                    <th>Ngày</th>
+                    <th>Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody id="recentOrdersBody">
+                  <!-- Rendered by admin.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Top Selling Products -->
+          <div class="panel-card">
+            <div class="panel-card-header">
+              <h3 class="panel-card-title">Sản phẩm nổi bật</h3>
+            </div>
+            <div id="topProductsBody">
+              <!-- Rendered by admin.js -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- =========================================
+           TAB 2: QUẢN LÝ SẢN PHẨM (PRODUCTS)
+           ========================================= -->
+      <section class="tab-panel" id="tab-products">
+        
+        <!-- Toolbar -->
+        <div class="table-toolbar">
+          <div class="search-filter-group">
+            <input class="admin-input" id="productSearch" type="search" placeholder="🔍 Tìm tên sản phẩm, danh mục…">
+            <select class="admin-select" id="productCategoryFilter">
+              <option value="all">Tất cả danh mục</option>
+              <option value="flow">Google Flow AI</option>
+              <option value="chatbot">Chatbot AI</option>
+              <option value="prompt">Mẫu Prompt</option>
+            </select>
+          </div>
+          <button class="btn-add-quick" id="btnAddProduct" type="button">
+            <span>+ Thêm sản phẩm mới</span>
+          </button>
+        </div>
+
+        <!-- Products Data Table -->
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="min-width:260px">Sản phẩm &amp; Ảnh 9:16</th>
+                <th>Danh mục</th>
+                <th>Giá bán</th>
+                <th>Đã bán</th>
+                <th>Trạng thái</th>
+                <th style="text-align:center">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="productsTableBody">
+              <!-- Rendered by admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- =========================================
+           TAB 3: QUẢN LÝ ĐƠN HÀNG (ORDERS)
+           ========================================= -->
+      <section class="tab-panel" id="tab-orders">
+        
+        <!-- Orders Toolbar -->
+        <div class="table-toolbar">
+          <div class="search-filter-group">
+            <select class="admin-select" id="orderStatusFilter">
+              <option value="all">Tất cả trạng thái</option>
+              <option value="paid">Đã thanh toán</option>
+              <option value="pending">Chờ thanh toán</option>
+              <option value="cancelled">Đã hủy</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Orders Data Table -->
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Mã đơn</th>
+                <th>Sản phẩm / Gói</th>
+                <th>Số tiền</th>
+                <th>Thời gian</th>
+                <th>Trạng thái</th>
+                <th>Đổi trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <!-- Rendered by admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- =========================================
+           TAB 4: QUẢN LÝ KHÁCH HÀNG (USERS)
+           ========================================= -->
+      <section class="tab-panel" id="tab-users">
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Khách hàng</th>
+                <th>Số điện thoại</th>
+                <th>Ngày tạo</th>
+                <th>Tổng đơn</th>
+                <th>Tổng chi tiêu</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <!-- Rendered by admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- =========================================
+           TAB 5: CÀI ĐẶT (SETTINGS)
+           ========================================= -->
+      <section class="tab-panel" id="tab-settings">
+        <div class="panel-card" style="max-width:680px">
+          <h3 class="panel-card-title" style="margin-bottom:16px">Cấu hình hệ thống cửa hàng</h3>
+          
+          <div class="field">
+            <label>Tên cửa hàng</label>
+            <input class="admin-input" type="text" value="AI Center Store — Kho App & Chatbot Tạo Video AI" readonly>
+          </div>
+
+          <div class="field">
+            <label>Hotline / Zalo hỗ trợ</label>
+            <input class="admin-input" type="text" value="0996 358 358">
+          </div>
+
+          <div class="field">
+            <label>Cơ chế lưu trữ</label>
+            <p class="caption">Hệ thống đang sử dụng <b>Local Database (localStorage)</b> hai chiều. Bất kỳ sản phẩm nào thêm/sửa/xóa tại trang quản trị này sẽ phản chiếu ngay lập tức trên trang chủ và trang chi tiết.</p>
+          </div>
+
+          <hr style="border:none;border-top:1px solid var(--admin-border);margin:24px 0">
+
+          <h3 style="color:var(--rose);font-size:15px;margin-bottom:8px">Vùng nguy hiểm</h3>
+          <p class="caption" style="margin-bottom:14px">Khôi phục lại toàn bộ sản phẩm và đơn hàng về cấu hình mẫu gốc ban đầu.</p>
+          <button class="btn btn-secondary btn-sm" id="btnResetData" style="border-color:var(--rose);color:var(--rose)" type="button">
+            🔄 Khôi phục dữ liệu mẫu ban đầu
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- =========================================
+       MODAL THÊM / CHỈNH SỬA SẢN PHẨM
+       ========================================= -->
+  <div class="admin-modal-overlay" id="productModal">
+    <div class="admin-modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="productModalTitle">Thêm sản phẩm mới</h3>
+        <button class="modal-close" id="modalCloseBtn" type="button">✕</button>
+      </div>
+
+      <form id="productForm">
+        <input type="hidden" id="p_id">
+
+        <div class="modal-body">
+          <div class="field">
+            <label for="p_title">Tên sản phẩm (*)</label>
+            <input class="admin-input" id="p_title" type="text" placeholder="Ví dụ: App 2D So Sánh Cả Thế Giới" required>
+          </div>
+
+          <div class="modal-grid-2">
+            <div class="field">
+              <label for="p_category">Danh mục (*)</label>
+              <select class="admin-select" id="p_category" style="width:100%" required>
+                <option value="flow">Google Flow AI (App Veo3)</option>
+                <option value="chatbot">Chatbot AI</option>
+                <option value="prompt">Mẫu Prompt</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="p_format">Định dạng hiển thị</label>
+              <select class="admin-select" id="p_format" style="width:100%">
+                <option value="9:16">Video dọc 9:16 (Shorts/TikTok)</option>
+                <option value="Chatbot">Chatbot Prompt</option>
+                <option value="16:9">Video ngang 16:9</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-grid-2">
+            <div class="field">
+              <label for="p_price">Giá vĩnh viễn (VNĐ) (*)</label>
+              <input class="admin-input" id="p_price" type="number" placeholder="99000" required>
+            </div>
+            <div class="field">
+              <label for="p_trial">Giá dùng thử 60p (VNĐ)</label>
+              <input class="admin-input" id="p_trial" type="number" placeholder="9000">
+            </div>
+          </div>
+
+          <div class="modal-grid-2">
+            <div class="field">
+              <label for="p_original">Giá gốc gạch ngang (VNĐ)</label>
+              <input class="admin-input" id="p_original" type="number" placeholder="150000">
+            </div>
+            <div class="field">
+              <label for="p_version">Phiên bản</label>
+              <input class="admin-input" id="p_version" type="text" placeholder="v1.0">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="p_video">YouTube Video Demo (Dán mã nhúng iframe, link hoặc ID)</label>
+            <input class="admin-input" id="p_video" type="text" placeholder="Dán mã nhúng <iframe>, link YouTube hoặc ID (Ví dụ: aoG_YF3C_bM)">
+          </div>
+
+          <div class="field">
+            <label for="p_subtitle">Mô tả ngắn (Subtitle)</label>
+            <input class="admin-input" id="p_subtitle" type="text" placeholder="App dùng để so sánh 2 sản phẩm nào đó bất kỳ">
+          </div>
+
+          <div class="field">
+            <label for="p_desc">Mô tả chi tiết tính năng</label>
+            <textarea class="admin-input" id="p_desc" rows="4" placeholder="Nhập chi tiết các bước sử dụng, cam kết bản quyền…"></textarea>
+          </div>
+
+          <!-- Options Checkboxes -->
+          <div style="display:flex;gap:20px;flex-wrap:wrap;padding:6px 0">
+            <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer">
+              <input type="checkbox" id="p_active" checked>
+              <span>Đang mở bán trên web</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer">
+              <input type="checkbox" id="p_premium" checked>
+              <span>Gắn nhãn ★ Premium</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer">
+              <input type="checkbox" id="p_new" checked>
+              <span>Gắn nhãn Mới</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-modal-cancel" id="btnCancelProduct" type="button">Hủy bỏ</button>
+          <button class="btn-modal-submit" id="btnSubmitProduct" type="submit">
+            <span>🚀</span>
+            <span>Đăng sản phẩm ngay</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="admin-alert-toast" id="adminToast"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
