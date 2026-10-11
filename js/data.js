@@ -801,9 +801,14 @@ const DB = {
   getProducts() {
     this.init();
     try {
-      return JSON.parse(localStorage.getItem(this.KEYS.PRODUCTS)) || [];
+      const stored = localStorage.getItem(this.KEYS.PRODUCTS);
+      const parsed = stored ? JSON.parse(stored) : null;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+      return STORE_DATA.products.map(p => ({ ...p, active: true }));
     } catch (e) {
-      return STORE_DATA.products;
+      return STORE_DATA.products.map(p => ({ ...p, active: true }));
     }
   },
 

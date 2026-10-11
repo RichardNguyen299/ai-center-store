@@ -25,6 +25,7 @@
 
   let currentCategory = 'all';
   let searchQuery = '';
+  let currentLang = 'vi';
 
   // Centralized I18N Helper Bridge
   function t(key, fallback = '') {
@@ -32,16 +33,18 @@
   }
 
   function getLang() {
-    return (window.I18N && window.I18N.getLang) ? window.I18N.getLang() : (localStorage.getItem('aic_lang') || 'vi');
+    return (window.I18N && window.I18N.getLang) ? window.I18N.getLang() : (localStorage.getItem('aic_lang') || currentLang || 'vi');
   }
 
   function setLanguage(lang) {
+    currentLang = lang;
     if (window.I18N && window.I18N.setLang) {
       window.I18N.setLang(lang);
     }
   }
 
   function onLanguageChanged(lang) {
+    currentLang = lang;
     // Update Topbar Nav
     const navSanPham = $('#navSanPham');
     if (navSanPham) navSanPham.textContent = t('nav_products');
@@ -136,6 +139,9 @@
     if (!container) return;
 
     let items = (typeof DB !== 'undefined') ? DB.getActiveProducts() : STORE_DATA.products;
+    if (!Array.isArray(items) || items.length === 0) {
+      items = (STORE_DATA && Array.isArray(STORE_DATA.products)) ? STORE_DATA.products : [];
+    }
 
     // Filter by Category
     if (currentCategory !== 'all') {
@@ -152,8 +158,9 @@
       );
     }
 
+    const isEn = (getLang() === 'en');
+
     if (items.length === 0) {
-      const isEn = (currentLang === 'en');
       container.innerHTML = `
         <div class="empty">
           <svg class="ic" style="width:48px;height:48px;color:var(--caption);margin:0 auto 14px"><use href="#i-search"/></svg>
@@ -171,7 +178,6 @@
       return;
     }
 
-    const isEn = (currentLang === 'en');
     const groups = [
       { id: 'flow', title: isEn ? 'Google Flow AI (Veo3 Apps)' : 'App Google Flow (Veo3)' },
       { id: 'chatbot', title: isEn ? 'AI Chatbots & Prompts' : 'Chatbot AI' },
@@ -256,7 +262,7 @@
   function renderEcosystem() {
     const grid = $('#hstGrid');
     if (!grid) return;
-    const isEn = (currentLang === 'en');
+    const isEn = (getLang() === 'en');
     grid.innerHTML = STORE_DATA.ecosystem.map((e, idx) => `
       <a class="hst-card" href="${e.url}" ${e.current ? '' : 'target="_blank" rel="noopener"'}>
         ${e.current ? `<span class="hst-here">${isEn ? 'You are here' : 'Bạn đang ở đây'}</span>` : ''}
@@ -888,7 +894,7 @@
 
     // Listen for storage changes across tabs
     window.addEventListener('storage', (e) => {
-      if (e.key === 'aic_products_v3' || e.key === 'aic_orders_v3' || e.key === 'aic_author_v3' || e.key === 'aic_db_timestamp') {
+      if (e.key === 'aic_products_v3' || e.key === 'aic_orders_v3' || e.key === 'aic_author_v3' || e.key === 'aic_db_timestamp' || e.key === 'aic_products_db') {
         if (typeof DB !== 'undefined') DB.load();
         initFooter();
         handleRoute();
@@ -1032,12 +1038,14 @@
 
   // Initialization
   async function init() {
+    currentLang = getLang();
     syncWithAdminOpener();
     renderCourses();
     renderEcosystem();
     setupEventListeners();
     initFooter();
-    setLanguage(getLang());
+    renderHomeCatalog();
+    handleRoute();
 
     // Khởi tạo trạng thái đăng nhập từ Supabase
     if (window.SupabaseAuth) {
