@@ -8,15 +8,15 @@
 
   // Cấu hình Supabase (Người dùng có thể dán URL và Anon Key tại đây hoặc qua localStorage)
   const DEFAULT_CONFIG = {
-    url: window.SUPABASE_URL || 'https://tnowmprowizdrbamhivx.supabase.co',
+    url: window.SUPABASE_URL || 'https://tmowmprowizdrbamhivx.supabase.co',
     anonKey: window.SUPABASE_ANON_KEY || 'sb_publishable_RZ6GSjK8d87kMGNXsrAmlA_n99Jx_J1',
     adminEmail: 'ganhteam321@gmail.com'
   };
 
-  // Dọn dẹp cache URL cũ nếu có ký tự nhầm lẫn (tmow / hjvx)
+  // Dọn dẹp cache URL cũ trên trình duyệt để luôn trỏ về URL chuẩn xác
   if (typeof localStorage !== 'undefined') {
     const cachedUrl = localStorage.getItem('aic_supabase_url');
-    if (cachedUrl && (cachedUrl.includes('tmow') || cachedUrl.includes('hjvx') || !cachedUrl.includes('tnowmprowizdrbamhivx'))) {
+    if (cachedUrl && cachedUrl !== 'https://tmowmprowizdrbamhivx.supabase.co') {
       localStorage.removeItem('aic_supabase_url');
     }
   }
