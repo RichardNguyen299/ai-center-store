@@ -25,230 +25,23 @@
 
   let currentCategory = 'all';
   let searchQuery = '';
-  let currentLang = localStorage.getItem('aic_lang') || 'vi';
 
-  // I18N Bilingual Dictionary (Tiếng Việt & English - Mặc định là Tiếng Việt)
-  const I18N_DICT = {
-    vi: {
-      site_title: 'AI Center Store — Kho App & Chatbot Tạo Video AI',
-      brand_sub: 'App & Chatbot tạo video AI',
-      nav_products: 'Sản phẩm',
-      nav_account: 'Tài khoản',
+  // Centralized I18N Helper Bridge
+  function t(key, fallback = '') {
+    return (window.I18N && window.I18N.t) ? window.I18N.t(key, fallback) : (fallback || key);
+  }
 
-      // Hero
-      hero_badge: 'AI Center Store · Hệ Thống Tự Động Hóa Video Veo 3',
-      hero_h1: 'Kho App & Chatbot <span class="mint gradient-text">tạo video AI</span>',
-      hero_lead: 'Sản xuất video thương mại triệu view trong vài phút với Google Flow & Chatbot tạo prompt — Mua 1 lần, sở hữu vĩnh viễn, nhận link tự động sau 30 giây.',
-      search_placeholder: 'Tìm kiếm app Flow, chatbot kịch bản, mẫu video TikTok...',
-      search_btn: 'Tìm kiếm',
-
-      // Bento categories
-      bento_flow_tag: '⚡ Veo3 Engine',
-      bento_flow_title: 'Google Flow & Apps',
-      bento_flow_desc: 'App tự động tạo video 9:16 bán hàng, KOC review, so sánh sản phẩm — nạp ảnh là xuất video hoàn chỉnh.',
-      bento_flow_cta: 'Xem các App Flow',
-      bento_bot_tag: '🤖 Trợ Lý Kịch Bản',
-      bento_bot_title: 'Chatbot AI & Prompts',
-      bento_bot_desc: 'Trợ lý AI viết kịch bản phân cảnh, tạo prompt ảnh và video theo từng nhịp — không cần biết viết câu lệnh.',
-      bento_bot_cta: 'Xem các Chatbot',
-
-      // Trust strip
-      trust_1: 'Mở link tải tự động <b>24/7</b>',
-      trust_2: 'Hơn <b>1.200+</b> Creator tin dùng',
-      trust_3: 'Cập nhật phiên bản mới <b>Trọn đời</b>',
-      trust_4: 'Hỗ trợ kỹ thuật 1:1 qua <b>Zalo</b>',
-
-      // Shelf groups
-      shelf_flow: 'App Google Flow (Veo3)',
-      shelf_chatbot: 'Chatbot AI & Prompts',
-      shelf_prompt: 'Mẫu Prompt Video',
-      shelf_other: 'Sản phẩm & Tiện ích khác',
-      shelf_products_count: 'sản phẩm',
-
-      // Cards
-      card_detail: 'Chi tiết ➔',
-      card_sold: 'đã bán',
-      card_premium: '★ Premium',
-      card_new: 'Mới',
-      card_from: 'Chỉ từ',
-      card_free: 'Miễn phí',
-
-      // Why Choose Us
-      why_eyebrow: 'GIÁ TRỊ VƯỢT TRỘI',
-      why_title: 'Vì sao 1.200+ Creator chọn AI Center Store?',
-      why_1_title: 'Nhận link ngay sau thanh toán',
-      why_1_desc: 'Hệ thống xác nhận chuyển khoản tự động và mở link sản phẩm cho bạn trong chưa đầy một phút, bất kể ngày đêm.',
-      why_2_title: 'Cập nhật miễn phí trọn đời',
-      why_2_desc: 'Sản phẩm được cập nhật tính năng và prompt mới liên tục. Bạn vào lại bằng mã đơn đã mua mà không phải trả thêm phí.',
-      why_3_title: 'Hỗ trợ trực tiếp 1:1 qua Zalo',
-      why_3_desc: 'Gặp vướng mắc khi cài đặt hoặc chạy app? Nhắn ngay Zalo hotline 0996 358 358 để được chuyên viên kỹ thuật hỗ trợ tận tình.',
-
-      // Ecosystem section
-      eco_eyebrow: 'HỆ SINH THÁI AI CENTER',
-      eco_title: 'Khám phá toàn bộ nền tảng của chúng tôi',
-      eco_here: 'Bạn đang ở đây',
-
-      // Detail view
-      detail_buy_now: 'Mua ngay — nhận link tự động',
-      detail_trial: 'Dùng thử 60 phút',
-      detail_trial_note: 'Gói dùng thử dùng được <b>60 phút</b>. Có thể nâng cấp lên vĩnh viễn sau, chỉ trả phần chênh lệch.',
-      detail_intro: 'Giới thiệu sản phẩm',
-      detail_back: 'Quay về danh sách sản phẩm',
-      detail_err_title: 'Không tìm thấy sản phẩm',
-      detail_err_desc: 'Sản phẩm có thể đã ngừng bán hoặc đường dẫn không đúng.',
-
-      // Floating Zalo
-      zalo_float: 'Tư vấn Zalo',
-
-      // Footer (Icons are rendered cleanly via SVG badges)
-      footer_search_title: 'Tìm kiếm',
-      footer_search_placeholder: 'Tìm nội dung',
-      footer_search_hint: 'Tìm nhanh app AI, kịch bản, chatbot video',
-      footer_cat_title: 'Danh mục',
-      cat_flow: 'Google Flow AI (App Veo3)',
-      cat_chatbot: 'Chatbot AI & Prompts',
-      cat_prompt: 'Mẫu Prompt Video',
-      cat_all: 'Tất cả sản phẩm',
-      footer_about_title: 'Giới thiệu',
-      footer_admin_role: 'Admin: ',
-      footer_fb: 'Facebook cá nhân',
-      footer_yt: 'Kênh Youtube',
-      footer_tiktok: 'Kênh TikTok',
-      footer_copyright: 'Copyright 2026 — AI Center Store. All rights reserved.',
-      btn_back_to_top: 'Lên đầu trang'
-    },
-    en: {
-      site_title: 'AI Center Store — AI Video Apps & Chatbots Hub',
-      brand_sub: 'AI Video Apps & Chatbots',
-      nav_products: 'Products',
-      nav_account: 'Account',
-
-      // Hero
-      hero_badge: 'AI Center Store · Veo 3 Video Automation System',
-      hero_h1: 'AI Video Apps & Chatbots <span class="mint gradient-text">Store</span>',
-      hero_lead: 'Produce million-view commercial videos in minutes with Google Flow & prompt chatbots — Pay once, lifetime ownership, instant download in 30 seconds.',
-      search_placeholder: 'Search Flow apps, script chatbots, TikTok video templates...',
-      search_btn: 'Search',
-
-      // Bento categories
-      bento_flow_tag: '⚡ Veo3 Engine',
-      bento_flow_title: 'Google Flow & Apps',
-      bento_flow_desc: 'Automated video apps for 9:16 sales, KOC reviews, product comparisons — feed images to get complete videos.',
-      bento_flow_cta: 'Explore Flow Apps',
-      bento_bot_tag: '🤖 Script Assistant',
-      bento_bot_title: 'AI Chatbots & Prompts',
-      bento_bot_desc: 'AI assistant for multi-scene scripts, scene-by-scene prompts — no prompt engineering skills required.',
-      bento_bot_cta: 'Explore Chatbots',
-
-      // Trust strip
-      trust_1: 'Instant automated link <b>24/7</b>',
-      trust_2: 'Over <b>1,200+</b> Creators onboard',
-      trust_3: 'Free new version updates <b>Lifetime</b>',
-      trust_4: '1-on-1 technical support via <b>Zalo</b>',
-
-      // Shelf groups
-      shelf_flow: 'Google Flow AI (Veo3 Apps)',
-      shelf_chatbot: 'AI Chatbots & Prompts',
-      shelf_prompt: 'Video Prompt Templates',
-      shelf_other: 'Other Tools & Products',
-      shelf_products_count: 'products',
-
-      // Cards
-      card_detail: 'Details ➔',
-      card_sold: 'sold',
-      card_premium: '★ Premium',
-      card_new: 'New',
-      card_from: 'From',
-      card_free: 'Free',
-
-      // Why Choose Us
-      why_eyebrow: 'WHY CHOOSE US',
-      why_title: 'Why 1,200+ Creators Trust AI Center Store?',
-      why_1_title: 'Instant Download After Payment',
-      why_1_desc: 'Automated transfer verification unlocks your product link in less than one minute, day or night.',
-      why_2_title: 'Free Lifetime Updates',
-      why_2_desc: 'Products are continuously updated with new features and prompts. Re-access anytime using your order code.',
-      why_3_title: '1-on-1 Direct Support via Zalo',
-      why_3_desc: 'Need help installing or running apps? Reach out to our hotline on Zalo 0996 358 358 for dedicated assistance.',
-
-      // Ecosystem section
-      eco_eyebrow: 'AI CENTER ECOSYSTEM',
-      eco_title: 'Explore All Platforms in Our Ecosystem',
-      eco_here: 'You are here',
-
-      // Detail view
-      detail_buy_now: 'Buy Now — Instant Link',
-      detail_trial: 'Try 60-min Trial',
-      detail_trial_note: 'Trial package valid for <b>60 minutes</b>. Upgrade to lifetime later by paying only the difference.',
-      detail_intro: 'Product Overview',
-      detail_back: 'Back to products list',
-      detail_err_title: 'Product Not Found',
-      detail_err_desc: 'This product might be discontinued or the link is invalid.',
-
-      // Floating Zalo
-      zalo_float: 'Zalo Support',
-
-      // Footer (Icons are rendered cleanly via SVG badges)
-      footer_search_title: 'Search',
-      footer_search_placeholder: 'Search store...',
-      footer_search_hint: 'Quickly find AI apps, scripts, video chatbots',
-      footer_cat_title: 'Categories',
-      cat_flow: 'Google Flow AI (Veo3 Apps)',
-      cat_chatbot: 'AI Chatbots & Prompts',
-      cat_prompt: 'Video Prompt Templates',
-      cat_all: 'All Products',
-      footer_about_title: 'About',
-      footer_admin_role: 'Admin: ',
-      footer_fb: 'Personal Facebook',
-      footer_yt: 'YouTube Channel',
-      footer_tiktok: 'TikTok Channel',
-      footer_copyright: 'Copyright 2026 — AI Center Store. All rights reserved.',
-      btn_back_to_top: 'Back to top'
-    }
-  };
-
-  function t(key) {
-    const dict = I18N_DICT[currentLang] || I18N_DICT.vi;
-    return dict[key] || (I18N_DICT.vi[key] || key);
+  function getLang() {
+    return (window.I18N && window.I18N.getLang) ? window.I18N.getLang() : (localStorage.getItem('aic_lang') || 'vi');
   }
 
   function setLanguage(lang) {
-    if (lang !== 'vi' && lang !== 'en') lang = 'vi';
-    currentLang = lang;
-    try {
-      localStorage.setItem('aic_lang', lang);
-    } catch (e) {}
+    if (window.I18N && window.I18N.setLang) {
+      window.I18N.setLang(lang);
+    }
+  }
 
-    // Update Flag & Code in Footer
-    const flagEl = $('#currentLangFlag');
-    const codeEl = $('#currentLangCode');
-    if (flagEl) flagEl.textContent = lang === 'en' ? '🇬🇧' : '🇻🇳';
-    if (codeEl) codeEl.textContent = lang.toUpperCase();
-
-    // Update active dropdown items
-    $$('.lang-option-item').forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
-    });
-
-    // Update document title
-    document.title = t('site_title');
-
-    // Update all elements with data-i18n
-    $$('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      if (key && I18N_DICT[lang] && I18N_DICT[lang][key]) {
-        el.textContent = I18N_DICT[lang][key];
-      }
-    });
-
-    // Update all elements with data-i18n-placeholder
-    $$('[data-i18n-placeholder]').forEach(el => {
-      const key = el.getAttribute('data-i18n-placeholder');
-      if (key && I18N_DICT[lang] && I18N_DICT[lang][key]) {
-        el.setAttribute('placeholder', I18N_DICT[lang][key]);
-      }
-    });
-
+  function onLanguageChanged(lang) {
     // Update Topbar Nav
     const navSanPham = $('#navSanPham');
     if (navSanPham) navSanPham.textContent = t('nav_products');
@@ -290,6 +83,13 @@
     if (window.location.hash.startsWith('#san-pham')) {
       handleRoute();
     }
+  }
+
+  // Subscribe to Centralized I18N Changes
+  if (window.I18N && window.I18N.onLangChange) {
+    window.I18N.onLangChange((lang) => {
+      onLanguageChanged(lang);
+    });
   }
 
   // Render Product Card
@@ -1206,36 +1006,9 @@
     }
 
     // 5. Language Switcher Dropdown & Options
-    const langBtn = $('#btnLangToggle');
-    const langBox = $('#langDropdownBox');
-
-    if (langBtn && !langBtn.dataset.bound) {
-      langBtn.dataset.bound = 'true';
-      langBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = langBox?.classList.toggle('show');
-        langBtn.classList.toggle('open', isOpen);
-      });
-
-      document.addEventListener('click', (e) => {
-        if (langBox && !e.target.closest('#langPickerWrapper')) {
-          langBox.classList.remove('show');
-          langBtn?.classList.remove('open');
-        }
-      });
+    if (window.I18N) {
+      window.I18N.bindLangPicker();
     }
-
-    $$('.lang-option-item').forEach(item => {
-      if (!item.dataset.bound) {
-        item.dataset.bound = 'true';
-        item.addEventListener('click', () => {
-          const lang = item.getAttribute('data-lang') || 'vi';
-          setLanguage(lang);
-          langBox?.classList.remove('show');
-          langBtn?.classList.remove('open');
-        });
-      }
-    });
   }
 
   function syncWithAdminOpener() {
@@ -1264,7 +1037,7 @@
     renderEcosystem();
     setupEventListeners();
     initFooter();
-    setLanguage(currentLang);
+    setLanguage(getLang());
 
     // Khởi tạo trạng thái đăng nhập từ Supabase
     if (window.SupabaseAuth) {

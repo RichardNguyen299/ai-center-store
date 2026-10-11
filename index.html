@@ -190,7 +190,7 @@
         
         <!-- Breadcrumb Navigation -->
         <p class="caption" style="margin-bottom:20px">
-          <a href="#" style="color:var(--caption)">Cửa hàng</a> 
+          <a href="#" style="color:var(--caption)" data-i18n="detail_breadcrumb_home">Cửa hàng</a> 
           <span aria-hidden="true" style="margin:0 6px">/</span> 
           <span id="vet" style="color:var(--mint-soft)"></span>
         </p>
@@ -198,11 +198,11 @@
         <!-- Product Error State -->
         <div id="loi" class="empty" hidden>
           <svg class="ic" style="width:48px;height:48px;color:var(--danger);margin:0 auto 12px"><use href="#i-search"/></svg>
-          <h2>Không tìm thấy sản phẩm</h2>
-          <p>Sản phẩm có thể đã ngừng bán hoặc đường dẫn không đúng.</p>
+          <h2 data-i18n="detail_err_title">Không tìm thấy sản phẩm</h2>
+          <p data-i18n="detail_err_desc">Sản phẩm có thể đã ngừng bán hoặc đường dẫn không đúng.</p>
 
           <div style="display:flex;gap:12px;justify-content:center;margin-top:20px">
-            <a class="btn btn-primary" href="#">Quay về danh sách sản phẩm</a>
+            <a class="btn btn-primary" href="#" data-i18n="detail_back">Quay về danh sách sản phẩm</a>
           </div>
         </div>
 
@@ -217,7 +217,7 @@
               </div>
 
               <div class="ct-media ct-mota" style="margin-top:22px">
-                <h2>Giới thiệu sản phẩm</h2>
+                <h2 data-i18n="detail_intro">Giới thiệu sản phẩm</h2>
                 <div class="noidung" id="moTaDai"></div>
               </div>
             </div>
@@ -238,30 +238,30 @@
               </div>
 
               <!-- Main CTA Buttons -->
-              <button class="btn btn-primary btn-block" id="nutMua" type="button">Mua ngay — nhận link tự động</button>
+              <button class="btn btn-primary btn-block" id="nutMua" type="button" data-i18n="detail_buy_now">Mua ngay — nhận link tự động</button>
               <button class="btn btn-secondary btn-block" id="nutTrial" type="button" hidden style="margin-top:10px"></button>
-              <p class="caption" id="trialNote" hidden style="margin-top:8px;text-align:center;font-size:12px">
+              <p class="caption" id="trialNote" hidden style="margin-top:8px;text-align:center;font-size:12px" data-i18n-html="detail_trial_note">
                 Gói dùng thử dùng được <b>60 phút</b>. Có thể nâng cấp lên vĩnh viễn sau, chỉ trả phần chênh lệch.
               </p>
 
               <!-- Member Benefit Box -->
-              <div class="uu-dai-info">
+              <div class="uu-dai-info" data-i18n-html="detail_member_title">
                 🎁 <b>Ưu đãi thành viên</b> — cộng dồn <b>theo tầng</b>:<br>
                 <b>Khách cũ −15%</b> từ sản phẩm thứ 2 · <b>Đánh giá −10%</b> cho đơn kế tiếp.
               </div>
 
               <div class="uu-dai-box">
                 <div class="tit">✅ Ưu đãi của bạn sẽ tự áp khi thanh toán</div>
-                <span class="chip">Khách cũ −15%</span>
-                <div class="note">Cộng dồn theo tầng ≈ giảm 15% trên giá sau voucher. Bạn không cần nhập mã.</div>
+                <span class="chip" data-i18n="detail_member_badge">Khách cũ −15%</span>
+                <div class="note" data-i18n="detail_member_tip">Cộng dồn theo tầng ≈ giảm 15% trên giá sau voucher. Bạn không cần nhập mã.</div>
               </div>
 
               <!-- Promises with Green Checkmarks -->
               <ul class="hua">
-                <li><svg class="ic"><use href="#i-check"/></svg>Thanh toán chuyển khoản, hệ thống mở link tự động</li>
-                <li><svg class="ic"><use href="#i-check"/></svg>Có mã voucher? Nhập ở bước thanh toán để được giảm ngay</li>
-                <li><svg class="ic"><use href="#i-check"/></svg>Cập nhật phiên bản mới miễn phí — vào lại bằng mã đơn</li>
-                <li><svg class="ic"><use href="#i-check"/></svg>Hỗ trợ cài đặt qua Zalo: 0996 358 358</li>
+                <li><svg class="ic"><use href="#i-check"/></svg><span data-i18n="detail_p1">Thanh toán chuyển khoản, hệ thống mở link tự động</span></li>
+                <li><svg class="ic"><use href="#i-check"/></svg><span data-i18n="detail_p2">Có mã voucher? Nhập ở bước thanh toán để được giảm ngay</span></li>
+                <li><svg class="ic"><use href="#i-check"/></svg><span data-i18n="detail_p3">Cập nhật phiên bản mới miễn phí — vào lại bằng mã đơn</span></li>
+                <li><svg class="ic"><use href="#i-check"/></svg><span data-i18n="detail_p4">Hỗ trợ cài đặt qua Zalo: 0996 358 358</span></li>
               </ul>
             </aside>
           </div>
@@ -636,6 +636,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
   <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
