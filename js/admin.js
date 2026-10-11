@@ -547,25 +547,73 @@
     });
   }
 
-  // Kiểm tra quyền Admin từ Supabase
+  // Kiểm tra quyền Admin từ Supabase (Tách biệt hoàn toàn cổng Admin)
   async function checkAdminAccess() {
+    const gate = document.getElementById('adminLoginGate');
+    const errBox = document.getElementById('adminLoginError');
+
+    // Nút đăng nhập Google trên cổng Admin
+    const btnLogin = document.getElementById('btnAdminGoogleLogin');
+    if (btnLogin && !btnLogin.dataset.bound) {
+      btnLogin.dataset.bound = 'true';
+      btnLogin.addEventListener('click', async () => {
+        if (window.SupabaseAuth) {
+          try {
+            await window.SupabaseAuth.loginWithGoogle();
+          } catch(e) {
+            console.error('[Admin Login]', e);
+          }
+        }
+      });
+    }
+
+    // Nút đăng xuất Quản trị
+    const btnLogout = document.getElementById('btnAdminLogout');
+    if (btnLogout && !btnLogout.dataset.bound) {
+      btnLogout.dataset.bound = 'true';
+      btnLogout.addEventListener('click', async () => {
+        if (window.SupabaseAuth) {
+          await window.SupabaseAuth.logout();
+        } else {
+          localStorage.removeItem('aic_demo_logged_in');
+          window.location.reload();
+        }
+      });
+    }
+
     if (window.SupabaseAuth && window.SupabaseAuth.isConfigured()) {
       const user = await window.SupabaseAuth.getCurrentUser();
       if (!user) {
-        alert('Vui lòng đăng nhập tài khoản Quản trị (ganhteam321@gmail.com) để truy cập!');
-        window.location.href = 'tai-khoan.html';
+        if (gate) gate.style.display = 'flex';
         return false;
       }
       const isAdmin = user.role === 'admin' || user.email === (window.SupabaseAuth.adminEmail || 'ganhteam321@gmail.com');
       if (!isAdmin) {
-        alert('Tài khoản ' + user.email + ' không có quyền truy cập Trang Quản Trị!');
-        window.location.href = 'tai-khoan.html';
+        if (gate) {
+          gate.style.display = 'flex';
+          if (errBox) {
+            errBox.style.display = 'block';
+            errBox.innerHTML = `⛔ <b>Từ chối truy cập:</b> Tài khoản <b>${user.email}</b> không có quyền Quản trị.<br><a href="#" id="linkSwitchAdmin" style="color:#60a5fa;text-decoration:underline;display:inline-block;margin-top:6px">Đăng xuất để đổi tài khoản khác</a>`;
+            const switchLink = document.getElementById('linkSwitchAdmin');
+            if (switchLink) {
+              switchLink.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await window.SupabaseAuth.logout();
+              });
+            }
+          }
+        }
         return false;
       }
-      const nameEl = document.querySelector('.user-info h4');
-      const emailEl = document.querySelector('.user-info p');
-      if (nameEl) nameEl.textContent = user.fullName || 'Admin';
-      if (emailEl) emailEl.textContent = user.email;
+
+      // Đã xác thực thành công là Admin
+      if (gate) gate.style.display = 'none';
+      const nameEl = document.querySelector('.user-info .name');
+      const roleEl = document.querySelector('.user-info .role');
+      if (nameEl) nameEl.textContent = user.fullName || 'Admin Manager';
+      if (roleEl) roleEl.textContent = user.email;
+    } else {
+      if (gate) gate.style.display = 'none';
     }
     return true;
   }

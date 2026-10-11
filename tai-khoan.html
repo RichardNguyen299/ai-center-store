@@ -89,7 +89,6 @@
             </div>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
-            <a class="btn btn-secondary btn-sm" href="admin.html" style="font-size:13px;border-color:rgba(148,163,184,0.3)">⚙️ Trang Quản Trị</a>
             <button class="btn btn-secondary btn-sm" id="nutThoat" type="button" style="color:var(--danger);border-color:rgba(255,138,128,0.3)">Đăng xuất</button>
           </div>
         </div>
@@ -164,7 +163,7 @@
   <footer class="site">
     <div class="container">
       <p>© 2026 AI Center Store</p>
-      <p><a href="admin.html" style="color:var(--mint);font-weight:700">⚙️ Trang Quản Trị</a> · <a href="tel:0996358358">Hotline: 0996 358 358</a></p>
+      <p><a href="index.html#san-pham" style="color:var(--mint);font-weight:700">Khám phá sản phẩm</a> · <a href="tel:0996358358">Hotline: 0996 358 358</a></p>
     </div>
   </footer>
 
@@ -262,13 +261,6 @@
             } else {
               avatarEl.textContent = (currentUser.fullName || currentUser.email).charAt(0).toUpperCase();
             }
-          }
-
-          // Hiển thị nút Trang Quản Trị nếu là Admin
-          var adminBtn = document.querySelector('.user-header-card a[href="admin.html"]');
-          if (adminBtn) {
-            var isAdmin = currentUser.role === 'admin' || currentUser.email === 'ganhteam321@gmail.com';
-            adminBtn.style.display = isAdmin ? 'inline-flex' : 'none';
           }
 
           // Số điện thoại

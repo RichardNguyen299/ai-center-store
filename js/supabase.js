@@ -87,12 +87,9 @@
         return { user: { email: DEFAULT_CONFIG.adminEmail } };
       }
 
-      // Xác định URL callback sau khi Google xác thực xong
-      const currentUrl = new URL(window.location.href);
-      let redirectUrl = window.location.origin + window.location.pathname;
-      if (!redirectUrl.endsWith('tai-khoan.html')) {
-        redirectUrl = window.location.origin + '/tai-khoan.html';
-      }
+      // Xác định URL callback sau khi Google xác thực xong (hỗ trợ tách riêng admin và user)
+      const isFromAdmin = window.location.pathname.includes('admin.html');
+      let redirectUrl = window.location.origin + (isFromAdmin ? '/admin.html' : '/tai-khoan.html');
 
       const { data, error } = await client.auth.signInWithOAuth({
         provider: 'google',
@@ -155,7 +152,8 @@
       if (client) {
         await client.auth.signOut();
       }
-      window.location.href = 'tai-khoan.html';
+      const isFromAdmin = window.location.pathname.includes('admin.html');
+      window.location.href = isFromAdmin ? 'admin.html' : 'tai-khoan.html';
     },
 
     // Lấy Session hiện tại
