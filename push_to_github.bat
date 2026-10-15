@@ -27,43 +27,40 @@ if %errorlevel% neq 0 (
 echo Thu muc du an: %CD%
 echo.
 
-echo [1/3] Dang kiem tra va them cac file thay doi...
+echo [1/2] Dang kiem tra file thay doi...
 "%GIT_CMD%" add -A
 
 "%GIT_CMD%" diff-index --quiet HEAD -- 2>nul
 if %errorlevel% neq 0 (
-    echo [1/3] Dang commit cac thay doi moi nhat...
+    echo [1/2] Dang commit cac thay doi moi...
     "%GIT_CMD%" commit -m "update: Dong bo tinh nang moi nhat len GitHub"
 ) else (
-    echo [1/3] Khong co tap tin moi can commit.
+    echo [1/2] Tat ca thay doi da duoc commit.
 )
 
 echo.
-echo [2/3] Dang kiem tra va dong bo code tu GitHub ve [git pull --rebase]...
-"%GIT_CMD%" pull --rebase origin main
+echo [2/2] Dang day code len GitHub [origin main]...
+"%GIT_CMD%" push origin main
 
 if %errorlevel% neq 0 (
     echo.
-    echo [CANH BAO] Khong the tu dong gop code do co xung dot voi GitHub.
-    echo Dang huy rebase de giu nguyen ven code tren may tinh cua ban...
-    "%GIT_CMD%" rebase --abort 2>nul
+    echo ===================================================
+    echo  [THONG BAO] GitHub tu choi day binh thuong do co commit khac tren web.
     echo.
-    echo Ban co muon DAY DE [FORCE PUSH] toan bo code tren may nay len GitHub khong?
-    echo [Khuyen dung: Chon Y neu code tren may tinh la phien ban moi va chuan nhat]
+    echo  BAN CO MUON DONG BO DE [FORCE PUSH] CODE MOI NHAT LEN GITHUB KHONG?
+    echo  [Dieu nay se lay toan bo code hien tai tren may tinh lam chuan va cap nhat len Vercel]
+    echo ===================================================
+    echo.
     set /p "CHOICE=Nhap Y de day de, hoac N de huy [Y/N]: "
     if /i "!CHOICE!"=="Y" (
         echo.
-        echo [3/3] Dang day de [Force Push] len GitHub...
+        echo Dang tien hanh Force Push len GitHub...
         "%GIT_CMD%" push -f origin main
     ) else (
         echo.
-        echo Da huy thao tac day code.
+        echo Da huy thao tac.
         goto :END
     )
-) else (
-    echo.
-    echo [3/3] Dang day code len GitHub [origin main]...
-    "%GIT_CMD%" push origin main
 )
 
 if %errorlevel% equ 0 (
@@ -76,11 +73,8 @@ if %errorlevel% equ 0 (
 ) else (
     echo.
     echo ===================================================
-    echo  [CHU Y] Khong the day code len GitHub.
-    echo  Cac nguyen nhan thuong gap:
-    echo   1. Chua dang nhap Git tren may tinh [Personal Access Token].
-    echo   2. Mat ket noi mang Internet.
-    echo   3. Xung dot code tren nhanh main can xu ly.
+    echo  [CHU Y] Khong the day code.
+    echo  Vui long kiem tra ket noi mang hoac dang nhap Git.
     echo ===================================================
 )
 
