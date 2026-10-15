@@ -217,10 +217,16 @@ module.exports = async (req, res) => {
       }
     }
 
-    // 9. CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG SANG 'paid'
+    // 9. CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG SANG 'paid' (Áp dụng cả khi chuyển đúng hoặc chuyển thừa tiền)
+    const isOverpaid = (transferAmount > requiredAmount && requiredAmount > 0);
+    const overpaidDiff = isOverpaid ? (transferAmount - requiredAmount) : 0;
+    const statusText = isOverpaid 
+      ? `Đã thanh toán (Chuyển thừa ${new Intl.NumberFormat('vi-VN').format(overpaidDiff)}đ)` 
+      : 'Đã thanh toán';
+
     const updatePayload = {
       status: 'paid',
-      status_text: 'Đã thanh toán',
+      status_text: statusText,
       access_url: accessUrl,
       unlocked_content: unlockedContent,
       payment_gateway: gateway,
@@ -246,7 +252,11 @@ module.exports = async (req, res) => {
       return res.status(500).json({ success: false, error: 'Failed to update order status' });
     }
 
-    console.info(`[SePay Webhook] 🎉 ĐÃ MỞ KHÓA THÀNH CÔNG ĐƠN HÀNG ${orderCode}!`);
+    if (isOverpaid) {
+      console.info(`[SePay Webhook] 💰 Đơn hàng ${orderCode} được chuyển thừa tiền (${transferAmount}đ > ${requiredAmount}đ) -> Đã mở khóa đơn hàng thành công.`);
+    } else {
+      console.info(`[SePay Webhook] 🎉 ĐÃ MỞ KHÓA THÀNH CÔNG ĐƠN HÀNG ${orderCode}!`);
+    }
 
     // 10. Cập nhật chi tiêu của khách hàng (nếu có customer_email)
     if (order.customer_email) {

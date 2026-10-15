@@ -267,11 +267,20 @@ try {
                                 }
 
                                 if ($foundOrder) {
-                                    $foundOrder.status = "paid"
-                                    $foundOrder.statusText = "Đã thanh toán"
-                                    $foundOrder | Add-Member -NotePropertyName "paid_at" -NotePropertyValue ((Get-Date).ToString("yyyy-MM-dd HH:mm:ss")) -Force
-                                    $foundOrder | Add-Member -NotePropertyName "payment_gateway" -NotePropertyValue $gateway -Force
-                                    $foundOrder | Add-Member -NotePropertyName "transaction_id" -NotePropertyValue $refCode -Force
+                                    $reqAmount = if ($foundOrder.amount) { [int]$foundOrder.amount } else { 0 }
+                                    if ($transferAmount -gt 0 -and $reqAmount -gt 0 -and $transferAmount -lt $reqAmount) {
+                                        $foundOrder.statusText = "Chuyển thiếu ($transferAmount/$reqAmount đ)"
+                                    } else {
+                                        $foundOrder.status = "paid"
+                                        if ($transferAmount -gt $reqAmount -and $reqAmount -gt 0) {
+                                            $extra = $transferAmount - $reqAmount
+                                            $foundOrder.statusText = "Đã thanh toán (Chuyển thừa $extra đ)"
+                                        } else {
+                                            $foundOrder.statusText = "Đã thanh toán"
+                                        }
+                                        $foundOrder | Add-Member -NotePropertyName "paid_at" -NotePropertyValue ((Get-Date).ToString("yyyy-MM-dd HH:mm:ss")) -Force
+                                        $foundOrder | Add-Member -NotePropertyName "payment_gateway" -NotePropertyValue $gateway -Force
+                                        $foundOrder | Add-Member -NotePropertyName "transaction_id" -NotePropertyValue $refCode -Force
 
                                     # Update product sold
                                     $targetProdId = if ($foundOrder.productId) { $foundOrder.productId } else { $foundOrder.id }

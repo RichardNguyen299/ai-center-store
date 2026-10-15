@@ -94,11 +94,14 @@ BEGIN
     END IF;
   END IF;
 
-  -- Cập nhật đơn hàng sang đã thanh toán (paid)
+  -- Cập nhật đơn hàng sang đã thanh toán (paid) - Cho phép cả chuyển đủ hoặc chuyển thừa
   UPDATE public.orders
   SET 
     status = 'paid',
-    status_text = 'Đã thanh toán',
+    status_text = CASE 
+      WHEN p_amount > v_order.amount AND v_order.amount > 0 THEN 'Đã thanh toán (Chuyển thừa ' || (p_amount - v_order.amount) || 'đ)'
+      ELSE 'Đã thanh toán'
+    END,
     payment_gateway = p_gateway,
     transaction_id = p_ref,
     transfer_content = p_ref,
