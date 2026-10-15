@@ -52,14 +52,20 @@ module.exports = async (req, res) => {
     }
 
     const order = orders[0];
+    const isPaid = (order.status === 'paid' || order.status === 'completed');
+    const isUnderpaid = Boolean(order.status_text && order.status_text.toLowerCase().includes('thiếu'));
+
     return res.status(200).json({
       code: order.code,
       status: order.status,
       statusText: order.status_text,
       amount: order.amount,
       title: order.title,
-      accessUrl: order.access_url,
-      unlockedContent: order.unlocked_content || '',
+      isPaid: isPaid,
+      isUnderpaid: isUnderpaid,
+      // CHỈ TRẢ VỀ LINK TẢI VÀ PROMPT KHI ĐÃ THANH TOÁN ĐỦ TIỀN 100%
+      accessUrl: isPaid ? order.access_url : null,
+      unlockedContent: isPaid ? (order.unlocked_content || '') : null,
       date: order.created_at
     });
   } catch (err) {

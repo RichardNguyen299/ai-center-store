@@ -577,6 +577,25 @@ BEGIN
     RETURN jsonb_build_object('success', true, 'message', 'Order already paid', 'code', v_order.code);
   END IF;
 
+  -- Kiểm tra số tiền chuyển: Nếu chuyển thiếu thì không cho phép paid!
+  IF p_amount > 0 AND v_order.amount > 0 AND p_amount < v_order.amount THEN
+    UPDATE public.orders
+    SET 
+      status_text = 'Chuyển thiếu (' || p_amount || '/' || v_order.amount || 'đ)',
+      payment_gateway = p_gateway,
+      transaction_id = p_ref
+    WHERE id = v_order.id;
+
+    RETURN jsonb_build_object(
+      'success', false,
+      'is_underpaid', true,
+      'message', 'Underpaid. Missing balance.',
+      'code', v_order.code,
+      'received', p_amount,
+      'required', v_order.amount
+    );
+  END IF;
+
   -- Lấy thông tin mở khóa sản phẩm
   IF v_order.product_id IS NOT NULL THEN
     SELECT * INTO v_prod FROM public.products WHERE id = v_order.product_id LIMIT 1;

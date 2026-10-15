@@ -630,3 +630,43 @@
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+/* Khối cảnh báo chuyển thiếu tiền */
+.pm-underpaid-box {
+  background: rgba(245, 158, 11, 0.16);
+  border: 1.5px solid #f59e0b;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-top: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  animation: pmShake 0.4s ease;
+  text-align: left;
+}
+.pm-underpaid-box.hidden {
+  display: none !important;
+}
+.pm-underpaid-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+.pm-underpaid-title {
+  color: #fbbf24;
+  font-weight: 700;
+  font-size: 13.5px;
+  margin-bottom: 3px;
+}
+.pm-underpaid-desc {
+  font-size: 12px;
+  color: #fde68a;
+  line-height: 1.45;
+  margin: 0;
+}
+@keyframes pmShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+

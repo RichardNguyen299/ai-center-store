@@ -222,6 +222,17 @@
             </p>
           </div>
 
+          <!-- Khối cảnh báo chuyển thiếu tiền (Ẩn mặc định, hiện khi phát hiện thiếu tiền) -->
+          <div class="pm-underpaid-box hidden" id="pmUnderpaidBox">
+            <span class="pm-underpaid-icon">⚠️</span>
+            <div>
+              <div class="pm-underpaid-title">Hệ thống phát hiện chuyển thiếu tiền!</div>
+              <p class="pm-underpaid-desc" id="pmUnderpaidText">
+                Bạn đã chuyển thiếu tiền. Vui lòng chuyển tiếp số tiền còn thiếu với cùng nội dung chuyển khoản để tự động mở khóa.
+              </p>
+            </div>
+          </div>
+
           <!-- Thanh trạng thái lắng nghe Realtime -->
           <div class="pm-status-indicator">
             <div class="pm-radar">
@@ -355,103 +366,192 @@
     });
   }
 
-  // Bắt đầu quy trình thanh toán
+  const SESSION_STORAGE_KEY = 'aic_active_payment_session';
+
+  // Lấy email và ID người dùng hiện tại (hỗ trợ Supabase Auth & LocalStorage)
+  async function getCurrentUserEmailAndId() {
+    if (window.SupabaseAuth && typeof window.SupabaseAuth.getCurrentUser === 'function') {
+      try {
+        const u = await window.SupabaseAuth.getCurrentUser();
+        if (u && u.email) {
+          return { email: u.email, id: u.id || null };
+        }
+      } catch (e) {}
+    }
+    const localUser = (typeof STORE_DATA !== 'undefined' && STORE_DATA.currentUser) ? STORE_DATA.currentUser : {};
+    return {
+      email: localUser.email || 'khach-hang@aicenter.store',
+      id: localUser.id || null
+    };
+  }
+
+  // Áp dụng phiên thanh toán vào giao diện Modal
+  function applyPaymentSession(sessionData, product, remainingSeconds) {
+    const isTrial = (sessionData.tier === 'trial');
+    const defaultTierName = isTrial ? 'Gói dùng thử 60 phút' : 'Bản quyền vĩnh viễn trọn đời';
+
+    // Ẩn trạng thái loading nếu có
+    if ($('pmQrLoading')) $('pmQrLoading').style.display = 'none';
+
+    // Cập nhật phiên hiện tại
+    currentSession = {
+      product: product,
+      tier: sessionData.tier || 'vinhvien',
+      amount: sessionData.amount,
+      orderCode: sessionData.orderCode,
+      transferContent: sessionData.transferContent,
+      realtimeChannel: null,
+      pollingTimer: null,
+      countdownTimer: null,
+      remainingSeconds: remainingSeconds,
+      isCompleted: false,
+      downloadUrl: null, // Bảo mật: Không lưu link tải trước khi xác thực paid!
+      secretContent: null
+    };
+
+    // Điền dữ liệu lên Modal
+    $('pmProductTitle').textContent = sessionData.productTitle || product.title;
+    $('pmProductTier').textContent = sessionData.tierName || defaultTierName;
+    $('pmBankName').textContent = sessionData.bankName;
+    $('pmBankAccount').textContent = sessionData.bankAccount;
+    $('pmAccountName').textContent = sessionData.accountName;
+    $('pmAmount').textContent = vnd(sessionData.amount);
+    $('pmTransferContent').textContent = sessionData.transferContent;
+
+    // Gắn link ảnh QR
+    const qrImg = $('pmQrImg');
+    if (qrImg) {
+      qrImg.src = sessionData.qrUrl;
+      qrImg.onerror = function () {
+        this.src = getVietQRFallbackUrl(sessionData.bankName, sessionData.bankAccount, sessionData.amount, sessionData.transferContent, sessionData.accountName);
+      };
+    }
+
+    // Hiển thị modal ở chế độ Pending
+    $('pmStatePending').style.display = 'block';
+    $('pmStateSuccess').style.display = 'none';
+    $('paymentModal').classList.add('open');
+    try {
+      sessionStorage.setItem('aic_payment_modal_open', '1');
+    } catch (e) {}
+
+    // Khởi chạy đếm ngược và lắng nghe biến động
+    startCountdown();
+    startRealtimeListening(sessionData.orderCode);
+  }
+
+  // Bắt đầu quy trình thanh toán (Server-Side + 15-Minute Lock)
   async function startPayment(product, tier = 'vinhvien') {
     injectModalHtml();
 
     const cfg = getConfig();
-    const isTrial = tier === 'trial';
-    const amount = isTrial ? (product.gia_trial || 9000) : (product.price || 99000);
+    const isTrial = (tier === 'trial');
     const tierName = isTrial ? 'Gói dùng thử 60 phút' : 'Bản quyền vĩnh viễn trọn đời';
 
-    // 1. Sinh mã đơn hàng chuẩn format SEVQR <MÃ_ĐƠN>
-    const orderCode = generateOrderCode();
-    const transferContent = `${cfg.qrPrefix} ${orderCode}`;
+    // Ẩn cảnh báo chuyển thiếu tiền cũ (nếu có)
+    const underpaidBox = $('pmUnderpaidBox');
+    if (underpaidBox) underpaidBox.classList.add('hidden');
 
-    // Lấy thông tin user hiện tại nếu có
-    const currentUser = (typeof STORE_DATA !== 'undefined' && STORE_DATA.currentUser) ? STORE_DATA.currentUser : {};
-    const userEmail = currentUser.email || 'khach-hang@aicenter.store';
-    const userId = currentUser.id || null;
-
-    // Xác định link nhận sản phẩm / tải file
-    const downloadUrl = product.download_url || product.downloadUrl || `#san-pham?id=${encodeURIComponent(product.id)}`;
-    const secretContent = product.secret_content || product.secretContent || product.description || '';
-
-    // Cập nhật phiên làm việc
-    currentSession = {
-      product: product,
-      tier: tier,
-      amount: amount,
-      orderCode: orderCode,
-      transferContent: transferContent,
-      realtimeChannel: null,
-      pollingTimer: null,
-      countdownTimer: null,
-      remainingSeconds: (cfg.orderTimeoutMinutes || 15) * 60,
-      isCompleted: false,
-      downloadUrl: downloadUrl,
-      secretContent: secretContent
-    };
-
-    // 2. Tạo đơn hàng trong DB với status = 'pending'
-    const newOrder = {
-      code: orderCode,
-      id: product.id,
-      productId: product.id,
-      title: product.title,
-      slug: product.id,
-      amount: amount,
-      status: 'pending',
-      statusText: 'Chờ thanh toán',
-      customerEmail: userEmail,
-      userId: userId,
-      tier: tier,
-      accessUrl: downloadUrl,
-      unlockedContent: secretContent,
-      date: new Date().toLocaleDateString('vi-VN')
-    };
-
-    if (typeof DB !== 'undefined' && DB.addOrder) {
-      DB.addOrder(newOrder);
+    // 1. KIỂM TRA PHIÊN THANH TOÁN 15 PHÚT TRONG LOCALSTORAGE
+    const cachedRaw = localStorage.getItem(SESSION_STORAGE_KEY);
+    if (cachedRaw) {
+      try {
+        const cached = JSON.parse(cachedRaw);
+        const now = Date.now();
+        if (
+          cached &&
+          cached.productId === product.id &&
+          cached.tier === tier &&
+          cached.expiresAt > now + 10000 // còn ít nhất 10 giây
+        ) {
+          console.info('[Payment] Khôi phục phiên thanh toán 15 phút đang hoạt động:', cached.orderCode);
+          const remainingSec = Math.floor((cached.expiresAt - now) / 1000);
+          applyPaymentSession(cached, product, remainingSec);
+          return;
+        }
+      } catch (e) {
+        localStorage.removeItem(SESSION_STORAGE_KEY);
+      }
     }
 
-    // Đồng bộ ngay lên Supabase nếu có
-    if (window.SupabaseDB && window.SupabaseDB.createOrder) {
-      window.SupabaseDB.createOrder(newOrder).catch((err) => {
-        console.warn('[PaymentModule] Supabase createOrder:', err);
-      });
-    }
+    // 2. CHƯA CÓ HOẶC HẾT HẠN -> GỌI SERVERLESS API POST /api/create-order
+    const userInfo = await getCurrentUserEmailAndId();
+    const userEmail = userInfo.email;
+    const userId = userInfo.id;
 
-    // 3. Hiển thị thông tin lên Modal
+    // Hiển thị modal với trạng thái đang tải
     $('pmProductTitle').textContent = product.title;
     $('pmProductTier').textContent = tierName;
-    $('pmBankName').textContent = cfg.bankName;
-    $('pmBankAccount').textContent = cfg.bankAccount;
-    $('pmAccountName').textContent = cfg.accountName;
-    $('pmAmount').textContent = vnd(amount);
-    $('pmTransferContent').textContent = transferContent;
-
-    // Tạo mã VietQR
-    const qrUrl = getVietQRUrl(cfg.bankName, cfg.bankAccount, amount, transferContent, cfg.accountName);
-    const qrImg = $('pmQrImg');
-    if (qrImg) {
-      qrImg.src = qrUrl;
-      qrImg.onerror = function () {
-        // Fallback sang vietqr.io nếu sepay qr gateway chập chờn
-        this.src = getVietQRFallbackUrl(cfg.bankName, cfg.bankAccount, amount, transferContent, cfg.accountName);
-      };
-    }
-
-    // Reset về view Pending
     $('pmStatePending').style.display = 'block';
     $('pmStateSuccess').style.display = 'none';
     $('paymentModal').classList.add('open');
+    if ($('pmQrLoading')) $('pmQrLoading').style.display = 'flex';
 
-    // 4. Bật đồng hồ đếm ngược
-    startCountdown();
+    let orderData = null;
+    try {
+      const resp = await fetch('/api/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: product.id,
+          tier: tier,
+          customerEmail: userEmail,
+          userId: userId
+        })
+      });
 
-    // 5. Kích hoạt Lắng nghe Realtime (Supabase WebSocket + Polling fallback)
-    startRealtimeListening(orderCode);
+      if (resp.ok) {
+        const resJson = await resp.json();
+        if (resJson && resJson.success) {
+          orderData = resJson;
+        }
+      }
+    } catch (err) {
+      console.warn('[Payment] Không thể kết nối /api/create-order, dùng fallback:', err.message);
+    }
+
+    // Fallback nếu chạy môi trường không có serverless
+    if (!orderData) {
+      const fallbackAmount = isTrial ? (product.gia_trial || 9000) : (product.price || 99000);
+      const fallbackCode = generateOrderCode();
+      const fallbackContent = `${cfg.qrPrefix} ${fallbackCode}`;
+      const timeoutSec = (cfg.orderTimeoutMinutes || 15) * 60;
+      orderData = {
+        orderCode: fallbackCode,
+        amount: fallbackAmount,
+        productTitle: product.title,
+        tier: tier,
+        transferContent: fallbackContent,
+        bankName: cfg.bankName,
+        bankAccount: cfg.bankAccount,
+        accountName: cfg.accountName,
+        qrUrl: getVietQRUrl(cfg.bankName, cfg.bankAccount, fallbackAmount, fallbackContent, cfg.accountName),
+        expiresAt: Date.now() + timeoutSec * 1000,
+        remainingSeconds: timeoutSec
+      };
+    }
+
+    // Lưu phiên vào localStorage để F5 / đóng trình duyệt vẫn nhớ
+    const sessionToSave = {
+      productId: product.id,
+      tier: tier,
+      orderCode: orderData.orderCode,
+      amount: orderData.amount,
+      productTitle: orderData.productTitle,
+      tierName: tierName,
+      transferContent: orderData.transferContent,
+      bankName: orderData.bankName,
+      bankAccount: orderData.bankAccount,
+      accountName: orderData.accountName,
+      qrUrl: orderData.qrUrl,
+      expiresAt: orderData.expiresAt,
+      createdAt: Date.now()
+    };
+    try {
+      localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionToSave));
+    } catch (e) {}
+
+    applyPaymentSession(sessionToSave, product, orderData.remainingSeconds || 900);
   }
 
   // Đếm ngược 15 phút
@@ -480,9 +580,13 @@
 
   function handleOrderExpired() {
     if (currentSession.isCompleted) return;
+    try {
+      localStorage.removeItem(SESSION_STORAGE_KEY);
+      sessionStorage.removeItem('aic_payment_modal_open');
+    } catch (e) {}
     const el = $('pmTimerText');
     if (el) el.textContent = '00:00 (Hết hạn)';
-    $('pmStatusText').textContent = '⚠️ Đơn hàng đã hết thời gian chờ. Vui lòng thử lại.';
+    $('pmStatusText').textContent = '⚠️ Đơn hàng đã hết thời gian chờ. Vui lòng đóng và thử lại.';
     $('pmStatusText').style.color = '#ef4444';
   }
 
@@ -511,8 +615,19 @@
               },
               (payload) => {
                 const updated = payload.new;
-                if (updated && (updated.status === 'paid' || updated.status === 'completed')) {
-                  onPaymentCompleted(updated);
+                if (updated) {
+                  if (updated.status === 'paid' || updated.status === 'completed') {
+                    const underpaidBox = $('pmUnderpaidBox');
+                    if (underpaidBox) underpaidBox.classList.add('hidden');
+                    onPaymentCompleted(updated);
+                  } else if (updated.status_text && (updated.status_text.toLowerCase().includes('thiếu') || updated.status_text.toLowerCase().includes('underpaid'))) {
+                    const underpaidBox = $('pmUnderpaidBox');
+                    const underpaidText = $('pmUnderpaidText');
+                    if (underpaidBox && underpaidText) {
+                      underpaidText.textContent = updated.status_text;
+                      underpaidBox.classList.remove('hidden');
+                    }
+                  }
                 }
               }
             )
@@ -561,9 +676,20 @@
       });
       if (resp.ok) {
         const data = await resp.json();
-        if (data && (data.status === 'paid' || data.status === 'completed')) {
-          onPaymentCompleted(data.order || data);
-          return;
+        if (data) {
+          if (data.isUnderpaid) {
+            const underpaidBox = $('pmUnderpaidBox');
+            const underpaidText = $('pmUnderpaidText');
+            if (underpaidBox && underpaidText) {
+              underpaidText.textContent = data.statusText || 'Hệ thống phát hiện bạn đã chuyển thiếu tiền. Vui lòng chuyển tiếp số tiền còn thiếu với cùng nội dung chuyển khoản để tự động mở khóa.';
+              underpaidBox.classList.remove('hidden');
+            }
+          } else if (data.status === 'paid' || data.status === 'completed') {
+            const underpaidBox = $('pmUnderpaidBox');
+            if (underpaidBox) underpaidBox.classList.add('hidden');
+            onPaymentCompleted(data.order || data);
+            return;
+          }
         }
       }
     } catch (apiErr) {
@@ -576,9 +702,20 @@
         const orders = await window.SupabaseDB.getOrders();
         if (orders) {
           const target = orders.find(o => o.code === code);
-          if (target && (target.status === 'paid' || target.status === 'completed')) {
-            onPaymentCompleted(target);
-            return;
+          if (target) {
+            if (target.status === 'paid' || target.status === 'completed') {
+              const underpaidBox = $('pmUnderpaidBox');
+              if (underpaidBox) underpaidBox.classList.add('hidden');
+              onPaymentCompleted(target);
+              return;
+            } else if (target.status_text && (target.status_text.toLowerCase().includes('thiếu') || target.status_text.toLowerCase().includes('underpaid'))) {
+              const underpaidBox = $('pmUnderpaidBox');
+              const underpaidText = $('pmUnderpaidText');
+              if (underpaidBox && underpaidText) {
+                underpaidText.textContent = target.status_text;
+                underpaidBox.classList.remove('hidden');
+              }
+            }
           }
         }
       } catch (e) {}
@@ -599,6 +736,10 @@
   function onPaymentCompleted(orderData) {
     if (currentSession.isCompleted) return;
     currentSession.isCompleted = true;
+    try {
+      localStorage.removeItem(SESSION_STORAGE_KEY);
+      sessionStorage.removeItem('aic_payment_modal_open');
+    } catch (e) {}
     cleanupListeners();
 
     // 1. Cập nhật local DB
@@ -669,6 +810,9 @@
   function closePaymentModal() {
     cleanupListeners();
     $('paymentModal')?.classList.remove('open');
+    try {
+      sessionStorage.removeItem('aic_payment_modal_open');
+    } catch (e) {}
   }
 
   // Giả lập webhook xác nhận thanh toán (Dành cho Dev / Test)
@@ -756,12 +900,47 @@
     osc.stop(now + 0.6);
   }
 
+  // Tự động khôi phục phiên thanh toán khi tải lại trang (F5) nếu trước đó đang mở modal
+  function initAutoResume() {
+    try {
+      if (sessionStorage.getItem('aic_payment_modal_open') === '1') {
+        const cachedRaw = localStorage.getItem(SESSION_STORAGE_KEY);
+        if (cachedRaw) {
+          const cached = JSON.parse(cachedRaw);
+          const now = Date.now();
+          if (cached && cached.expiresAt > now + 10000) {
+            const remainingSec = Math.floor((cached.expiresAt - now) / 1000);
+            injectModalHtml();
+            let product = null;
+            if (typeof STORE_DATA !== 'undefined' && STORE_DATA.products) {
+              product = STORE_DATA.products.find(p => p.id === cached.productId);
+            }
+            if (!product) {
+              product = { id: cached.productId, title: cached.productTitle, price: cached.amount };
+            }
+            console.info('[Payment] Tự động khôi phục phiên thanh toán sau F5:', cached.orderCode);
+            applyPaymentSession(cached, product, remainingSec);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('[Payment] Lỗi khôi phục phiên thanh toán:', e);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAutoResume);
+  } else {
+    initAutoResume();
+  }
+
   // Xuất ra phạm vi toàn cục
   window.PaymentModule = {
     startPayment,
     closePaymentModal,
     getConfig,
-    simulatePaymentSuccess
+    simulatePaymentSuccess,
+    initAutoResume
   };
 
 })();

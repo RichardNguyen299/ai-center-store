@@ -101,6 +101,10 @@ module.exports = async (req, res) => {
             console.info(`[SePay Webhook] RPC confirm_sepay_order xử lý thành công:`, rpcData);
             return res.status(200).json(rpcData);
           }
+          if (rpcData && rpcData.is_underpaid) {
+            console.warn(`[SePay Webhook] RPC phát hiện chuyển thiếu tiền:`, rpcData);
+            return res.status(200).json(rpcData);
+          }
         }
       } catch (rpcErr) {
         console.warn('[SePay Webhook] Thử RPC không thành công, dùng REST fallback:', rpcErr.message);
