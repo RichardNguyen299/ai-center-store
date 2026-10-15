@@ -11,8 +11,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/admin.css">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <link rel="stylesheet" href="css/style.css?v=2.6">
+  <link rel="stylesheet" href="css/admin.css?v=2.6">
 </head>
 <body>
 
@@ -383,6 +389,69 @@
           </form>
         </div>
 
+        <!-- CẤU HÌNH NGÂN HÀNG & SEPAY WEBHOOK -->
+        <div class="panel-card" style="max-width:680px">
+          <div class="panel-card-header">
+            <h3 class="panel-card-title" style="margin-bottom:0">💳 Cấu Hình Ngân Hàng & VietQR (SePay Webhook)</h3>
+            <span class="badge" style="background:rgba(16,185,129,0.15);color:#34d399">Tự động 24/7</span>
+          </div>
+          <p class="caption" style="margin-bottom:20px">Cấu hình tài khoản ngân hàng nhận tiền chuyển khoản VietQR và tích hợp Webhook SePay để mở khóa đơn hàng tự động 100%.</p>
+
+          <form id="paymentConfigForm">
+            <div class="modal-grid-2">
+              <div class="field">
+                <label for="cfg_bank_name">Ngân hàng thụ hưởng (*)</label>
+                <select class="admin-select" id="cfg_bank_name" style="width:100%" required>
+                  <option value="MBBank">MBBank (Quân Đội)</option>
+                  <option value="VCB">Vietcombank</option>
+                  <option value="TCB">Techcombank</option>
+                  <option value="TPB">TPBank</option>
+                  <option value="ACB">ACB</option>
+                  <option value="VPB">VPBank</option>
+                  <option value="ICB">VietinBank</option>
+                  <option value="BIDV">BIDV</option>
+                  <option value="VIB">VIB</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="cfg_bank_acc">Số tài khoản (*)</label>
+                <input class="admin-input" id="cfg_bank_acc" type="text" placeholder="Ví dụ: 0996358358" required>
+              </div>
+            </div>
+
+            <div class="modal-grid-2">
+              <div class="field">
+                <label for="cfg_acc_name">Tên chủ tài khoản (In hoa không dấu) (*)</label>
+                <input class="admin-input" id="cfg_acc_name" type="text" placeholder="Ví dụ: NGUYEN XUAN LINH" required>
+              </div>
+              <div class="field">
+                <label for="cfg_qr_prefix">Tiền tố cú pháp chuyển khoản (*)</label>
+                <input class="admin-input" id="cfg_qr_prefix" type="text" value="SEVQR" placeholder="SEVQR" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="cfg_sepay_key">SePay API Token / Secret (Tùy chọn)</label>
+              <input class="admin-input" id="cfg_sepay_key" type="password" placeholder="Dán API Key từ trang SePay (nếu muốn bảo mật header)">
+            </div>
+
+            <!-- Webhook URL Box để admin copy -->
+            <div style="background:rgba(30,41,59,0.8);border:1px solid rgba(148,163,184,0.2);border-radius:12px;padding:12px;margin:14px 0">
+              <span style="font-size:12px;color:#94a3b8;display:block;margin-bottom:4px">🔗 URL Nhận Webhook SePay (Dán vào mục Webhook trên My SePay):</span>
+              <div style="display:flex;align-items:center;gap:8px">
+                <code id="cfg_webhook_url" style="color:#38bdf8;font-size:12.5px;word-break:break-all;flex:1">https://ai-center-store-omega.vercel.app/api/sepay-webhook</code>
+                <button type="button" class="btn btn-secondary btn-sm" id="btnCopyWebhookUrl" style="white-space:nowrap;font-size:11.5px">📋 Sao chép</button>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;display:flex;justify-content:flex-end">
+              <button class="btn btn-primary" id="btnSavePaymentConfig" type="submit" style="padding:10px 22px;font-weight:700">
+                💾 Lưu Cấu hình Ngân hàng & SePay
+              </button>
+            </div>
+          </form>
+        </div>
+
         <div class="panel-card" style="max-width:680px">
           <h3 class="panel-card-title" style="margin-bottom:16px">Cấu hình hệ thống cửa hàng</h3>
           
@@ -420,89 +489,215 @@
   <div class="admin-modal-overlay" id="productModal">
     <div class="admin-modal">
       <div class="modal-header">
-        <h3 class="modal-title" id="productModalTitle">Thêm sản phẩm mới</h3>
-        <button class="modal-close" id="modalCloseBtn" type="button">✕</button>
+        <h3 class="modal-title" id="productModalTitle">🚀 Thêm sản phẩm mới</h3>
+        <button class="modal-close" id="modalCloseBtn" type="button" title="Đóng cửa sổ">✕</button>
       </div>
 
       <form id="productForm">
         <input type="hidden" id="p_id">
 
         <div class="modal-body">
-          <div class="field">
-            <label for="p_title">Tên sản phẩm (*)</label>
-            <input class="admin-input" id="p_title" type="text" placeholder="Ví dụ: App 2D So Sánh Cả Thế Giới" required>
-          </div>
+          <!-- NHÓM 1: THÔNG TIN CƠ BẢN -->
+          <div class="form-section-group">
+            <div class="form-section-title">
+              <span class="sec-icon">📌</span>
+              <span>1. Thông tin cơ bản & Phân loại</span>
+            </div>
 
-          <div class="modal-grid-2">
             <div class="field">
-              <label for="p_category">Danh mục (*)</label>
-              <select class="admin-select" id="p_category" style="width:100%" required>
-                <option value="flow">Google Flow AI (App Veo3)</option>
-                <option value="chatbot">Chatbot AI</option>
-                <option value="prompt">Mẫu Prompt</option>
-              </select>
+              <label for="p_title">
+                Tên sản phẩm <span class="field-required">(*)</span>
+              </label>
+              <input class="admin-input" id="p_title" type="text" placeholder="Ví dụ: App 2D So Sánh Cả Thế Giới" required>
             </div>
-            <div class="field">
-              <label for="p_format">Định dạng hiển thị</label>
-              <select class="admin-select" id="p_format" style="width:100%">
-                <option value="9:16">Video dọc 9:16 (Shorts/TikTok)</option>
-                <option value="Chatbot">Chatbot Prompt</option>
-                <option value="16:9">Video ngang 16:9</option>
-              </select>
-            </div>
-          </div>
 
-          <div class="modal-grid-2">
-            <div class="field">
-              <label for="p_price">Giá vĩnh viễn (VNĐ) (*)</label>
-              <input class="admin-input" id="p_price" type="number" placeholder="99000" required>
-            </div>
-            <div class="field">
-              <label for="p_trial">Giá dùng thử 60p (VNĐ)</label>
-              <input class="admin-input" id="p_trial" type="number" placeholder="9000">
-            </div>
-          </div>
-
-          <div class="modal-grid-2">
-            <div class="field">
-              <label for="p_original">Giá gốc gạch ngang (VNĐ)</label>
-              <input class="admin-input" id="p_original" type="number" placeholder="150000">
-            </div>
-            <div class="field">
-              <label for="p_version">Phiên bản</label>
-              <input class="admin-input" id="p_version" type="text" placeholder="v1.0">
+            <div class="modal-grid-2">
+              <div class="field">
+                <label for="p_category">
+                  Danh mục ứng dụng <span class="field-required">(*)</span>
+                </label>
+                <select class="admin-select" id="p_category" style="width:100%" required>
+                  <option value="flow">Google Flow AI (App Veo3)</option>
+                  <option value="chatbot">Chatbot AI</option>
+                  <option value="prompt">Mẫu Prompt</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="p_format">Định dạng hiển thị</label>
+                <select class="admin-select" id="p_format" style="width:100%">
+                  <option value="9:16">Video dọc 9:16 (Shorts/TikTok)</option>
+                  <option value="Chatbot">Chatbot Prompt</option>
+                  <option value="16:9">Video ngang 16:9</option>
+                </select>
+              </div>
             </div>
           </div>
 
-          <div class="field">
-            <label for="p_video">YouTube Video Demo (Dán mã nhúng iframe, link hoặc ID)</label>
-            <input class="admin-input" id="p_video" type="text" placeholder="Dán mã nhúng <iframe>, link YouTube hoặc ID (Ví dụ: aoG_YF3C_bM)">
+          <!-- NHÓM 2: ẢNH THUMBNAIL & MEDIA -->
+          <div class="form-section-group">
+            <div class="form-section-title">
+              <span class="sec-icon">🖼️</span>
+              <span>2. Ảnh Thumbnail & Video Demo (Đồng bộ với Cửa hàng)</span>
+            </div>
+
+            <div class="thumb-upload-wrapper">
+              <!-- Live Preview Box -->
+              <div class="thumb-preview-box">
+                <img id="p_thumb_preview" src="" alt="Thumbnail preview" style="display:none">
+                <div id="p_thumb_placeholder" class="thumb-preview-placeholder">
+                  <span class="icon">🎨</span>
+                  <small>Dùng Poster SVG tự động</small>
+                </div>
+              </div>
+
+              <!-- Controls -->
+              <div class="thumb-controls">
+                <div class="field">
+                  <label for="p_image">
+                    Đường dẫn ảnh Thumbnail (URL)
+                  </label>
+                  <input class="admin-input" id="p_image" type="url" placeholder="https://domain.com/anh.jpg hoặc tải ảnh từ máy">
+                </div>
+
+                <div class="thumb-actions-row">
+                  <button type="button" class="btn-upload-file" id="btnUploadThumb">
+                    📁 Tải ảnh từ máy tính
+                  </button>
+                  <input type="file" id="p_image_file" accept="image/*" style="display:none">
+                  <button type="button" class="btn-clear-thumb" id="btnClearThumb" title="Xóa ảnh để dùng Poster SVG mặc định">
+                    🔄 Dùng Poster tự động
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="field" style="margin-top:6px">
+              <label for="p_video">
+                YouTube Video Demo (Mã nhúng iframe, link xem hoặc ID video)
+              </label>
+              <input class="admin-input" id="p_video" type="text" placeholder="Dán mã nhúng <iframe>, link YouTube hoặc ID (Ví dụ: aoG_YF3C_bM)">
+            </div>
           </div>
 
-          <div class="field">
-            <label for="p_subtitle">Mô tả ngắn (Subtitle)</label>
-            <input class="admin-input" id="p_subtitle" type="text" placeholder="App dùng để so sánh 2 sản phẩm nào đó bất kỳ">
+          <!-- NHÓM 3: GIÁ BÁN, PHIÊN BẢN & LƯỢT BÁN -->
+          <div class="form-section-group">
+            <div class="form-section-title">
+              <span class="sec-icon">💰</span>
+              <span>3. Giá bán, Phiên bản & Lượt bán</span>
+            </div>
+
+            <div class="modal-grid-2">
+              <div class="field">
+                <label for="p_price">
+                  Giá vĩnh viễn (VNĐ) <span class="field-required">(*)</span>
+                </label>
+                <input class="admin-input" id="p_price" type="number" placeholder="99000" required>
+              </div>
+              <div class="field">
+                <label for="p_trial">
+                  Giá dùng thử 60p (VNĐ)
+                </label>
+                <input class="admin-input" id="p_trial" type="number" placeholder="9000">
+              </div>
+            </div>
+
+            <div class="modal-grid-2">
+              <div class="field">
+                <label for="p_original">
+                  Giá gốc niêm yết (VNĐ)
+                </label>
+                <input class="admin-input" id="p_original" type="number" placeholder="150000">
+              </div>
+              <div class="field">
+                <label for="p_version">
+                  Phiên bản
+                </label>
+                <input class="admin-input" id="p_version" type="text" placeholder="v1.0">
+              </div>
+            </div>
+
+            <div class="modal-grid-2" style="margin-top:12px">
+              <div class="field">
+                <label for="p_sold_fake">
+                  Đã bán ảo (Hiển thị ra ngoài trang User)
+                </label>
+                <input class="admin-input" id="p_sold_fake" type="number" min="0" placeholder="Nhập số lượt bán ảo để kích cầu (VD: 50)">
+              </div>
+              <div class="field">
+                <label for="p_sold_real" style="color:var(--cyan) !important">
+                  🔒 Đã bán thật (Khách mua thực tế — Cố định)
+                </label>
+                <input class="admin-input" id="p_sold_real" type="number" readonly disabled value="0" style="background:rgba(255,255,255,0.04);cursor:not-allowed;color:var(--cyan);opacity:0.9">
+              </div>
+            </div>
           </div>
 
-          <div class="field">
-            <label for="p_desc">Mô tả chi tiết tính năng</label>
-            <textarea class="admin-input" id="p_desc" rows="4" placeholder="Nhập chi tiết các bước sử dụng, cam kết bản quyền…"></textarea>
+          <!-- NHÓM 4: MÔ TẢ & TÍNH NĂNG CHI TIẾT -->
+          <div class="form-section-group">
+            <div class="form-section-title">
+              <span class="sec-icon">📝</span>
+              <span>4. Mô tả sản phẩm & Hướng dẫn</span>
+            </div>
+
+            <div class="field">
+              <label for="p_subtitle">
+                Mô tả ngắn (Subtitle / Tagline)
+              </label>
+              <input class="admin-input" id="p_subtitle" type="text" placeholder="Ví dụ: App dùng để so sánh 2 sản phẩm bất kỳ bằng AI">
+            </div>
+
+            <div class="field">
+              <label for="p_desc">
+                Mô tả chi tiết tính năng & Cam kết bản quyền
+              </label>
+              <textarea class="admin-input admin-textarea-large" id="p_desc" rows="8" placeholder="Nhập chi tiết các bước sử dụng, lợi ích mang lại, cam kết bản quyền, cách nhận file sau khi thanh toán…"></textarea>
+            </div>
           </div>
 
-          <!-- Options Checkboxes -->
-          <div style="display:flex;gap:20px;flex-wrap:wrap;padding:6px 0">
-            <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer">
-              <input type="checkbox" id="p_active" checked>
-              <span>Đang mở bán trên web</span>
-            </label>
-            <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer">
-              <input type="checkbox" id="p_premium" checked>
-              <span>Gắn nhãn ★ Premium</span>
-            </label>
-            <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer">
-              <input type="checkbox" id="p_new" checked>
-              <span>Gắn nhãn Mới</span>
-            </label>
+          <!-- NHÓM 4B: NỘI DUNG MỞ KHÓA TỰ ĐỘNG (FILE & PROMPT BÍ MẬT) -->
+          <div class="form-section-group" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.25);border-radius:16px;padding:16px">
+            <div class="form-section-title" style="color:#34d399">
+              <span class="sec-icon">🔓</span>
+              <span>4B. Nội dung mở khóa tự động sau thanh toán (VietQR/SePay)</span>
+            </div>
+
+            <div class="field">
+              <label for="p_download_url" style="color:#34d399">
+                Link tải Tool / File cài đặt / Google Drive
+              </label>
+              <input class="admin-input" id="p_download_url" type="url" placeholder="https://drive.google.com/... hoặc link tải tool">
+              <p class="caption" style="margin-top:4px;font-size:11.5px">Khách hàng thanh toán thành công sẽ thấy nút bấm tải trực tiếp link này.</p>
+            </div>
+
+            <div class="field" style="margin-top:10px">
+              <label for="p_secret_content" style="color:#fbbf24">
+                Câu lệnh Prompt bí mật / Hướng dẫn sử dụng VIP / Mã kích hoạt
+              </label>
+              <textarea class="admin-input" id="p_secret_content" rows="4" placeholder="Nhập câu lệnh prompt đầy đủ hoặc hướng dẫn bí mật sẽ tự động hiển thị cho khách kèm nút 1-click copy sau khi chuyển khoản..."></textarea>
+            </div>
+          </div>
+
+          <!-- NHÓM 5: CẤU HÌNH HIỂN THỊ & NHÃN NỔI BẬT -->
+          <div class="form-section-group">
+            <div class="form-section-title">
+              <span class="sec-icon">⚙️</span>
+              <span>5. Cấu hình mở bán & Nhãn nổi bật</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px">
+              <label class="option-checkbox-card">
+                <input type="checkbox" id="p_active" checked>
+                <span>● Đang mở bán trên web</span>
+              </label>
+              <label class="option-checkbox-card">
+                <input type="checkbox" id="p_premium" checked>
+                <span>★ Gắn nhãn Premium</span>
+              </label>
+              <label class="option-checkbox-card">
+                <input type="checkbox" id="p_new" checked>
+                <span>🔥 Gắn nhãn Mới</span>
+              </label>
+            </div>
           </div>
         </div>
 

@@ -402,8 +402,13 @@ Tự động ghép người mẫu KOC vào khung cảnh ấm cúng, tương tác
 // Function to generate dynamic SVG poster if no image file exists
 function generatePosterSVG(p) {
   if (!p) return '';
-  if (p.image && !p.image.startsWith('data:')) {
-    return p.image;
+  const imgUrl = (p.image && typeof p.image === 'string' && p.image.trim()) 
+    ? p.image.trim() 
+    : (p.posterTheme && p.posterTheme.image && typeof p.posterTheme.image === 'string' 
+      ? p.posterTheme.image.trim() 
+      : (p.poster_theme && p.poster_theme.image && typeof p.poster_theme.image === 'string' ? p.poster_theme.image.trim() : ''));
+  if (imgUrl) {
+    return imgUrl;
   }
   const t = p.posterTheme || {
     badge: (p.categoryName || "AI APP").toUpperCase(),
@@ -427,6 +432,26 @@ function generatePosterSVG(p) {
 
   const pid = (p.id || 'p' + Math.random().toString(36).slice(2, 7)).replace(/[^a-zA-Z0-9_-]/g, '');
 
+  const catVal = String(p.category || '').toLowerCase();
+  const fmtVal = String(p.format || '').toLowerCase();
+  let topTagText = '⚡ VEO3 AI';
+  let centerActionText = 'SẴN SÀNG TẠO VIDEO 9:16';
+  let tag2Text = '✓ Veo3 Flow';
+
+  if (catVal === 'chatbot') {
+    topTagText = '⚡ CHATBOT';
+    centerActionText = (fmtVal.includes('9:16') || fmtVal.includes('9:19')) ? 'SẴN SÀNG TẠO VIDEO 9:16' : 'SẴN SÀNG TẠO PROMPT AI';
+    tag2Text = '✓ Chatbot AI';
+  } else if (catVal === 'prompt') {
+    topTagText = '⚡ MẪU PROMPT';
+    centerActionText = (fmtVal.includes('9:16') || fmtVal.includes('9:19')) ? 'SẴN SÀNG TẠO VIDEO 9:16' : 'SẴN SÀNG TẠO PROMPT AI';
+    tag2Text = '✓ Prompt Chuẩn';
+  } else {
+    if (fmtVal.includes('16:9')) {
+      centerActionText = 'SẴN SÀNG TẠO VIDEO 16:9';
+    }
+  }
+
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="450" height="800" viewBox="0 0 450 800">
     <defs>
       <linearGradient id="bg_${pid}" x1="0" y1="0" x2="0" y2="1">
@@ -449,7 +474,7 @@ function generatePosterSVG(p) {
     
     <!-- Top badge -->
     <rect x="30" y="40" width="130" height="32" rx="16" fill="rgba(245,158,11,0.2)" stroke="${color}" stroke-width="1.5"/>
-    <text x="95" y="61" fill="${color}" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="800" font-size="12" text-anchor="middle" letter-spacing="1">⚡ VEO3 AI</text>
+    <text x="95" y="61" fill="${color}" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="800" font-size="12" text-anchor="middle" letter-spacing="1">${topTagText}</text>
     
     <!-- Center visual card -->
     <rect x="30" y="100" width="390" height="520" rx="20" fill="rgba(26,22,18,0.92)" stroke="rgba(245,158,11,0.25)" stroke-width="1.5"/>
@@ -463,14 +488,14 @@ function generatePosterSVG(p) {
     <rect x="60" y="280" width="330" height="210" rx="16" fill="rgba(15,12,10,0.95)" stroke="${color}" stroke-width="1.5" stroke-dasharray="6 4"/>
     <circle cx="225" cy="370" r="44" fill="${color}" fill-opacity="0.22" stroke="${color}" stroke-width="2"/>
     <polygon points="216,352 244,370 216,388" fill="${color}"/>
-    <text x="225" y="445" fill="${color}" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="700" font-size="13" text-anchor="middle" letter-spacing="1">SẴN SÀNG TẠO VIDEO 9:16</text>
+    <text x="225" y="445" fill="${color}" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="700" font-size="13" text-anchor="middle" letter-spacing="1">${centerActionText}</text>
     
     <!-- Feature tags -->
     <rect x="50" y="525" width="105" height="32" rx="8" fill="rgba(255,255,255,0.08)" stroke="rgba(245,158,11,0.2)" stroke-width="1"/>
     <text x="102" y="546" fill="#F7F2EB" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="600" font-size="11.5" text-anchor="middle">✓ Tự Động</text>
     
     <rect x="170" y="525" width="110" height="32" rx="8" fill="rgba(255,255,255,0.08)" stroke="rgba(245,158,11,0.2)" stroke-width="1"/>
-    <text x="225" y="546" fill="#F7F2EB" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="600" font-size="11.5" text-anchor="middle">✓ Veo3 Flow</text>
+    <text x="225" y="546" fill="#F7F2EB" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="600" font-size="11.5" text-anchor="middle">${tag2Text}</text>
 
     <rect x="295" y="525" width="105" height="32" rx="8" fill="rgba(255,255,255,0.08)" stroke="rgba(245,158,11,0.2)" stroke-width="1"/>
     <text x="347" y="546" fill="#F7F2EB" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="600" font-size="11.5" text-anchor="middle">✓ HD 1080p</text>
@@ -669,7 +694,30 @@ const DB = {
         if (window.SupabaseDB) {
           const cloudProducts = await window.SupabaseDB.getProducts();
           if (Array.isArray(cloudProducts) && cloudProducts.length > 0) {
-            localStorage.setItem(this.KEYS.PRODUCTS, JSON.stringify(cloudProducts));
+            let localProducts = [];
+            try {
+              localProducts = JSON.parse(localStorage.getItem(this.KEYS.PRODUCTS) || '[]');
+            } catch (e) {}
+
+            const mergedProducts = cloudProducts.map(cp => {
+              const lp = localProducts.find(p => p.id === cp.id);
+              if (lp) {
+                const img = cp.image || (cp.posterTheme && cp.posterTheme.image) || (cp.poster_theme && cp.poster_theme.image) || lp.image || (lp.posterTheme && lp.posterTheme.image) || '';
+                return {
+                  ...cp,
+                  ...lp,
+                  image: img,
+                  posterTheme: {
+                    ...(cp.posterTheme || {}),
+                    ...(lp.posterTheme || {}),
+                    image: img
+                  }
+                };
+              }
+              return cp;
+            });
+
+            localStorage.setItem(this.KEYS.PRODUCTS, JSON.stringify(mergedProducts));
 
             const cloudOrders = await window.SupabaseDB.getOrders();
             if (Array.isArray(cloudOrders) && cloudOrders.length > 0) {
@@ -692,7 +740,7 @@ const DB = {
             }
 
             window.dispatchEvent(new CustomEvent('aic_db_synced', {
-              detail: { products: cloudProducts, orders: cloudOrders, users: cloudUsers, settings: cloudSettings, author: cloudAuthor }
+              detail: { products: mergedProducts, orders: cloudOrders, users: cloudUsers, settings: cloudSettings, author: cloudAuthor }
             }));
             return true;
           }
@@ -704,7 +752,30 @@ const DB = {
           if (res.ok) {
             const data = await res.json();
             if (data && data.products && Array.isArray(data.products) && data.products.length > 0) {
-              localStorage.setItem(this.KEYS.PRODUCTS, JSON.stringify(data.products));
+              let localProducts = [];
+              try {
+                localProducts = JSON.parse(localStorage.getItem(this.KEYS.PRODUCTS) || '[]');
+              } catch (e) {}
+
+              const mergedProducts = data.products.map(dp => {
+                const lp = localProducts.find(p => p.id === dp.id);
+                if (lp) {
+                  const img = dp.image || (dp.posterTheme && dp.posterTheme.image) || lp.image || (lp.posterTheme && lp.posterTheme.image) || '';
+                  return {
+                    ...dp,
+                    ...lp,
+                    image: img,
+                    posterTheme: {
+                      ...(dp.posterTheme || {}),
+                      ...(lp.posterTheme || {}),
+                      image: img
+                    }
+                  };
+                }
+                return dp;
+              });
+
+              localStorage.setItem(this.KEYS.PRODUCTS, JSON.stringify(mergedProducts));
               if (data.orders && Array.isArray(data.orders)) {
                 localStorage.setItem(this.KEYS.ORDERS, JSON.stringify(data.orders));
               }
@@ -717,7 +788,7 @@ const DB = {
               if (data.author) {
                 localStorage.setItem(this.KEYS.AUTHOR, JSON.stringify(data.author));
               }
-              window.dispatchEvent(new CustomEvent('aic_db_synced', { detail: data }));
+              window.dispatchEvent(new CustomEvent('aic_db_synced', { detail: { ...data, products: mergedProducts } }));
               return true;
             }
           }
@@ -798,17 +869,43 @@ const DB = {
   },
 
   // Products CRUD
+  getProductRealSold(productId, ordersList) {
+    if (!productId) return 0;
+    const orders = ordersList || this.getOrders();
+    return orders.filter(o =>
+      (o.productId === productId || o.id === productId) &&
+      (o.status === 'paid' || o.statusText === 'Đã thanh toán')
+    ).length;
+  },
+
   getProducts() {
     this.init();
     try {
       const stored = localStorage.getItem(this.KEYS.PRODUCTS);
-      const parsed = stored ? JSON.parse(stored) : null;
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+      let items = stored ? JSON.parse(stored) : null;
+      if (!Array.isArray(items) || items.length === 0) {
+        items = STORE_DATA.products.map(p => ({ ...p, active: true }));
       }
-      return STORE_DATA.products.map(p => ({ ...p, active: true }));
+      const orders = this.getOrders();
+      return items.map(p => {
+        const realCount = this.getProductRealSold(p.id, orders);
+        const soldReal = (p.sold_real !== undefined) ? Math.max(Number(p.sold_real), realCount) : realCount;
+        const soldFake = (p.sold_fake !== undefined) ? Number(p.sold_fake) : (Number(p.sold) || 0);
+        return {
+          ...p,
+          sold_fake: soldFake,
+          sold_real: soldReal,
+          sold: soldFake + soldReal
+        };
+      });
     } catch (e) {
-      return STORE_DATA.products.map(p => ({ ...p, active: true }));
+      return STORE_DATA.products.map(p => ({
+        ...p,
+        active: true,
+        sold_fake: Number(p.sold) || 0,
+        sold_real: 0,
+        sold: Number(p.sold) || 0
+      }));
     }
   },
 
@@ -860,7 +957,14 @@ const DB = {
       newProduct.id = 'app-' + Date.now();
     }
     newProduct.active = newProduct.active !== false;
-    newProduct.sold = Number(newProduct.sold) || 0;
+    
+    // Normalize sold_fake, sold_real and total sold
+    const soldFake = Math.max(0, Number(newProduct.sold_fake !== undefined ? newProduct.sold_fake : newProduct.sold) || 0);
+    const soldReal = Math.max(0, Number(newProduct.sold_real) || 0);
+    newProduct.sold_fake = soldFake;
+    newProduct.sold_real = soldReal;
+    newProduct.sold = soldFake + soldReal;
+
     newProduct.remainingSlots = Number(newProduct.remainingSlots) || 150;
     newProduct.price = Number(newProduct.price) || 99000;
     newProduct.gia_trial = Number(newProduct.gia_trial) || 9000;
@@ -895,7 +999,22 @@ const DB = {
     const products = this.getProducts();
     const index = products.findIndex(p => p.id === id);
     if (index !== -1) {
-      products[index] = { ...products[index], ...updatedData };
+      const existing = products[index];
+      const soldFake = (updatedData.sold_fake !== undefined) 
+        ? Math.max(0, Number(updatedData.sold_fake) || 0) 
+        : ((existing.sold_fake !== undefined) ? existing.sold_fake : (existing.sold || 0));
+      const realCount = this.getProductRealSold(id);
+      const soldReal = (updatedData.sold_real !== undefined) 
+        ? Math.max(Number(updatedData.sold_real) || 0, realCount) 
+        : Math.max(Number(existing.sold_real) || 0, realCount);
+
+      products[index] = { 
+        ...existing, 
+        ...updatedData,
+        sold_fake: soldFake,
+        sold_real: soldReal,
+        sold: soldFake + soldReal
+      };
       this.saveProducts(products);
       if (window.SupabaseDB) {
         window.SupabaseDB.upsertProduct(products[index]).catch(() => {});
@@ -932,7 +1051,10 @@ const DB = {
     const products = this.getProducts();
     const p = products.find(item => item.id === id);
     if (p) {
-      p.sold = (Number(p.sold) || 0) + 1;
+      p.sold_real = (Number(p.sold_real) || 0) + 1;
+      const fake = (p.sold_fake !== undefined) ? (Number(p.sold_fake) || 0) : (Number(p.sold) || 0);
+      p.sold_fake = fake;
+      p.sold = p.sold_fake + p.sold_real;
       p.remainingSlots = Math.max(0, (Number(p.remainingSlots) || 150) - 1);
       this.saveProducts(products);
       if (window.SupabaseDB) {
@@ -978,8 +1100,9 @@ const DB = {
     }
 
     // Increment product sold count if valid product ID
-    if (newOrder.id) {
-      this.incrementProductSold(newOrder.id);
+    const targetPid = newOrder.productId || newOrder.id;
+    if (targetPid) {
+      this.incrementProductSold(targetPid);
     }
 
     // Update customer spending in users table

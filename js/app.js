@@ -27,6 +27,38 @@
   let searchQuery = '';
   let currentLang = 'vi';
 
+  // Scroll Position Preservation State
+  let homeScrollY = 0;
+  let isViewingDetail = false;
+
+  // Let SPA manually manage scroll restoration on browser back/forward
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
+  // Continuously track home scroll coordinates
+  window.addEventListener('scroll', () => {
+    const homeView = $('#view-home');
+    if (homeView && !homeView.hidden) {
+      homeScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    }
+  }, { passive: true });
+
+  // Capture exact coordinates on click of any product card
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest('a.sp, a[href*="#san-pham?id="]');
+    if (card) {
+      const curY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || homeScrollY || 0;
+      homeScrollY = curY;
+      sessionStorage.setItem('aic_home_scroll', String(curY));
+
+      const pid = card.dataset.productId || (new URL(card.href, window.location.href).searchParams.get('id'));
+      if (pid) {
+        sessionStorage.setItem('aic_last_clicked_id', pid);
+      }
+    }
+  }, true);
+
   // Centralized I18N Helper Bridge
   function t(key, fallback = '') {
     return (window.I18N && window.I18N.t) ? window.I18N.t(key, fallback) : (fallback || key);
@@ -95,6 +127,42 @@
     });
   }
 
+  // Helper: Chuẩn hóa từ khóa Danh mục ứng dụng ("Veo3", "Chatbot", "Prompt")
+  function getProductCategoryKeyword(p) {
+    if (!p) return '';
+    const cat = String(p.category || '').toLowerCase().trim();
+    if (cat === 'flow' || cat.includes('flow') || cat.includes('veo')) return 'Veo3';
+    if (cat === 'chatbot') return 'Chatbot';
+    if (cat === 'prompt') return 'Prompt';
+
+    const catName = String(p.categoryName || '').toLowerCase().trim();
+    if (catName.includes('flow') || catName.includes('veo')) return 'Veo3';
+    if (catName.includes('chatbot')) return 'Chatbot';
+    if (catName.includes('prompt')) return 'Prompt';
+    return p.categoryName || p.category || '';
+  }
+
+  // Helper: Chuẩn hóa từ khóa Định dạng hiển thị ("9:16", "16:9", "Chatbot")
+  function getProductFormatKeyword(p) {
+    if (!p) return '';
+    const fmt = String(p.format || '').trim();
+    if (!fmt) return '';
+    if (/9\s*:\s*(16|19)/i.test(fmt)) return '9:16';
+    if (/16\s*:\s*9/i.test(fmt)) return '16:9';
+    if (/chatbot/i.test(fmt)) return 'Chatbot';
+    return fmt;
+  }
+
+  // Helper: Ghép thẻ góc trên ảnh poster (ví dụ: "Veo3 · 9:16", "Chatbot · 9:16", "Chatbot", "Prompt")
+  function getProductPosterTag(p) {
+    const catKey = getProductCategoryKeyword(p);
+    const fmtKey = getProductFormatKeyword(p);
+    if (catKey && fmtKey && catKey.toLowerCase() !== fmtKey.toLowerCase()) {
+      return `${catKey} · ${fmtKey}`;
+    }
+    return catKey || fmtKey || 'Veo3 · 9:16';
+  }
+
   // Render Product Card
   function renderCard(p) {
     const hasDiscount = p.original_price && p.original_price > p.price;
@@ -106,17 +174,21 @@
       : `${hasDiscount ? `<span class="giam">-${discountPct}%</span><span class="gia-cu">${vnd(p.original_price)}</span>` : ''}
          <span class="gia-moi">${p.price > 0 ? vnd(p.price) : t('card_free')}</span>`;
 
+    const catKey = getProductCategoryKeyword(p);
+    const posterTag = getProductPosterTag(p);
+    const showCatBadge = Boolean(catKey);
+
     return `
-      <a class="sp" href="#san-pham?id=${encodeURIComponent(p.id)}">
+      <a class="sp" href="#san-pham?id=${encodeURIComponent(p.id)}" data-product-id="${esc(p.id)}">
         <div class="sp-anh">
           <img src="${posterSrc}" alt="${esc(p.title)}" loading="lazy">
-          <span class="sp-anh-tag">Veo3 AI · 9:16</span>
+          <span class="sp-anh-tag">${esc(posterTag)}</span>
         </div>
         <div class="sp-than">
           <div class="nhan-hang">
             ${p.isPremium ? `<span class="nhan nhan-premium">${t('card_premium')}</span>` : `<span class="nhan nhan-free">${t('card_free')}</span>`}
             ${p.isNew ? `<span class="nhan nhan-moi">${t('card_new')}</span>` : ''}
-            ${p.format ? `<span class="nhan nhan-loai">${esc(p.format)}</span>` : ''}
+            ${showCatBadge ? `<span class="nhan nhan-cat nhan-${catKey.toLowerCase()}">${esc(catKey)}</span>` : ''}
           </div>
           <p class="sp-ten">
             ${esc(p.title)}
@@ -562,6 +634,42 @@
     }
   }
 
+  // Phục hồi toạ độ cuộn của trang chủ khi quay lại từ trang chi tiết
+  function restoreHomeScrollPosition() {
+    const savedYStr = sessionStorage.getItem('aic_home_scroll');
+    const targetPid = sessionStorage.getItem('aic_last_clicked_id');
+    const savedY = (savedYStr !== null && !isNaN(Number(savedYStr))) ? Number(savedYStr) : homeScrollY;
+
+    const html = document.documentElement;
+    const prevBehavior = html.style.scrollBehavior;
+    // Tạm thời tắt smooth scroll để khôi phục toạ độ tức thì không bị gián đoạn hay trôi lướt
+    html.style.scrollBehavior = 'auto';
+
+    const executeScroll = () => {
+      if (savedY > 0) {
+        window.scrollTo(0, savedY);
+      } else if (targetPid) {
+        const targetCard = document.querySelector(`#cacKe [data-product-id="${targetPid}"]`) || document.querySelector(`[data-product-id="${targetPid}"]`);
+        if (targetCard) {
+          targetCard.scrollIntoView({ block: 'center' });
+        }
+      }
+    };
+
+    executeScroll();
+
+    requestAnimationFrame(() => {
+      executeScroll();
+      setTimeout(() => {
+        executeScroll();
+        setTimeout(() => {
+          executeScroll();
+          html.style.scrollBehavior = prevBehavior;
+        }, 80);
+      }, 30);
+    });
+  }
+
   // Router handler
   function handleRoute() {
     const hash = window.location.hash || '';
@@ -574,6 +682,16 @@
       const params = new URLSearchParams(rawQuery);
 
       if (params.has('id')) {
+        // Nếu chuyển từ trang chủ sang chi tiết, lưu toạ độ hiện tại nếu chưa lưu
+        if (!isViewingDetail) {
+          const curY = homeScrollY || window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+          if (curY > 0) {
+            sessionStorage.setItem('aic_home_scroll', String(curY));
+          }
+        }
+        isViewingDetail = true;
+        sessionStorage.setItem('aic_viewing_detail', 'true');
+
         homeView.hidden = true;
         detailView.hidden = false;
         accountView.hidden = true;
@@ -593,8 +711,12 @@
 
         const productId = params.get('id');
         renderDetailPage(productId);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'instant' });
       } else {
+        const wasViewingDetail = isViewingDetail || sessionStorage.getItem('aic_viewing_detail') === 'true';
+        isViewingDetail = false;
+        sessionStorage.removeItem('aic_viewing_detail');
+
         homeView.hidden = false;
         detailView.hidden = true;
         accountView.hidden = true;
@@ -607,10 +729,18 @@
           currentCategory = params.get('cat');
         }
         renderHomeCatalog();
-        const shelves = $('#san-pham');
-        if (shelves) shelves.scrollIntoView({ behavior: 'smooth' });
+
+        if (wasViewingDetail) {
+          restoreHomeScrollPosition();
+        } else {
+          const shelves = $('#san-pham');
+          if (shelves) shelves.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     } else if (hash.startsWith('#tai-khoan') || hash.startsWith('#dang-nhap')) {
+      isViewingDetail = false;
+      sessionStorage.removeItem('aic_viewing_detail');
+
       homeView.hidden = true;
       detailView.hidden = true;
       accountView.hidden = false;
@@ -621,13 +751,22 @@
       renderAccountView();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
+      const wasViewingDetail = isViewingDetail || sessionStorage.getItem('aic_viewing_detail') === 'true';
+      isViewingDetail = false;
+      sessionStorage.removeItem('aic_viewing_detail');
+
       homeView.hidden = false;
       detailView.hidden = true;
       accountView.hidden = true;
 
       document.title = 'AI Center Store — Kho App & Chatbot Tạo Video AI';
       renderHomeCatalog();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (wasViewingDetail) {
+        restoreHomeScrollPosition();
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
   }
 
@@ -638,7 +777,13 @@
   let currentCheckoutAmount = 0;
 
   function openCheckoutModal(product, tier) {
+    if (window.PaymentModule && typeof window.PaymentModule.startPayment === 'function') {
+      window.PaymentModule.startPayment(product, tier);
+      return;
+    }
+
     const modal = $('#checkoutModal');
+    if (!modal) return;
     const isTrial = tier === 'trial';
     const amount = isTrial ? product.gia_trial : product.price;
     const tierName = isTrial ? 'Gói dùng thử 60 phút' : 'Bản quyền vĩnh viễn';
@@ -657,7 +802,11 @@
   }
 
   function closeCheckoutModal() {
-    $('#checkoutModal').classList.remove('mo');
+    if (window.PaymentModule && typeof window.PaymentModule.closePaymentModal === 'function') {
+      window.PaymentModule.closePaymentModal();
+    }
+    const modal = $('#checkoutModal');
+    if (modal) modal.classList.remove('mo');
   }
 
   // Live Buyer Toast Simulation
@@ -782,6 +931,16 @@
       }, 1200);
     });
 
+    // Automated Payment Module Success Event Listener
+    window.addEventListener('aic_payment_success', (e) => {
+      console.info('[App] Nhận sự kiện aic_payment_success:', e.detail);
+      if (typeof DB !== 'undefined') DB.load();
+      if (window.location.hash.startsWith('#tai-khoan')) {
+        renderAccountView();
+      }
+      renderHomeCatalog();
+    });
+
     // Auth Form Interactions
     document.addEventListener('click', (e) => {
       if (e.target.id === 'linkDangKy') {
@@ -888,6 +1047,18 @@
 
     // Hash change routing
     window.addEventListener('hashchange', handleRoute);
+
+    // Xử lý nút back / breadcrumb từ trang chi tiết sản phẩm để giữ toạ độ cuộn
+    const handleBackFromDetail = (e) => {
+      e.preventDefault();
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.hash = '';
+      }
+    };
+    $('#breadcrumbHome')?.addEventListener('click', handleBackFromDetail);
+    $('#detailBackHome')?.addEventListener('click', handleBackFromDetail);
 
     // Live sync with Admin window if opened from Admin (critical for file:// mode)
     syncWithAdminOpener();
@@ -1064,7 +1235,9 @@
           };
           const navBtn = document.querySelector('.nav-btn');
           if (navBtn) {
-            navBtn.textContent = '👤 ' + (user.fullName || user.email.split('@')[0]);
+            const displayName = user.fullName || user.email.split('@')[0];
+            navBtn.textContent = '👤 ' + displayName;
+            navBtn.title = displayName;
           }
         }
       } catch (e) {

@@ -255,8 +255,11 @@
       }
       return data.map(p => ({
         ...p,
+        image: p.image || (p.poster_theme && p.poster_theme.image) || '',
         original_price: p.original_price,
         gia_trial: p.gia_trial,
+        sold_fake: p.sold_fake !== undefined ? p.sold_fake : (p.poster_theme && p.poster_theme.sold_fake !== undefined ? p.poster_theme.sold_fake : (p.sold || 0)),
+        sold_real: p.sold_real !== undefined ? p.sold_real : (p.poster_theme && p.poster_theme.sold_real !== undefined ? p.poster_theme.sold_real : 0),
         posterTheme: p.poster_theme || {},
         isPremium: p.is_premium,
         isNew: p.is_new
@@ -266,6 +269,12 @@
     async upsertProduct(product) {
       const client = getClient();
       if (!client) return false;
+      const posterThemeObj = {
+        ...(product.posterTheme || {}),
+        image: product.image || '',
+        sold_fake: product.sold_fake !== undefined ? product.sold_fake : (product.sold || 0),
+        sold_real: product.sold_real || 0
+      };
       const dbRow = {
         id: product.id,
         title: product.title,
@@ -280,17 +289,28 @@
         sold: product.sold || 0,
         remaining_slots: product.remainingSlots || 100,
         demo_video_id: product.demo_video_id || '',
-        poster_theme: product.posterTheme || {},
+        poster_theme: posterThemeObj,
         description: product.description || '',
         is_premium: product.isPremium !== false,
         is_new: Boolean(product.isNew),
         active: product.active !== false,
         updated_at: new Date().toISOString()
       };
-      const { error } = await client.from('products').upsert(dbRow);
-      if (error) {
-        console.error('[SupabaseDB] Lỗi lưu product:', error);
-        return false;
+
+      // 1. Thử lưu kèm cột image vào Supabase
+      const resWithImage = await client.from('products').upsert({
+        ...dbRow,
+        image: product.image || ''
+      });
+
+      if (resWithImage.error) {
+        // 2. Nếu bảng Supabase chưa có cột image, tự động lưu qua JSONB poster_theme.image (không bao giờ lỗi schema!)
+        console.warn('[SupabaseDB] Upsert kèm cột image không khả dụng, lưu an toàn qua poster_theme.image:', resWithImage.error.message);
+        const resFallback = await client.from('products').upsert(dbRow);
+        if (resFallback.error) {
+          console.error('[SupabaseDB] Lỗi lưu product:', resFallback.error);
+          return false;
+        }
       }
       return true;
     },
@@ -400,6 +420,15 @@
       const { error } = await client
         .from('settings')
         .upsert({ key: 'general', value: settings, updated_at: new Date().toISOString() });
+
+      // Đồng thời cập nhật luôn dòng 'payment' độc lập để hiển thị trực tiếp trong Supabase
+      if (settings && settings.payment) {
+        await client.from('settings').upsert({
+          key: 'payment',
+          value: settings.payment,
+          updated_at: new Date().toISOString()
+        }).catch(() => {});
+      }
       return !error;
     },
 
@@ -407,42 +436,67 @@
     async getAuthor() {
       const client = getClient();
       if (!client) return null;
-      const { data, error } = await client.from('authors').select('*').eq('id', 'default').single();
-      if (error || !data) return null;
-      return {
-        id: data.id,
-        name: data.name,
-        title: data.title,
-        phone: data.phone,
-        zalo: data.zalo,
-        email: data.email,
-        youtube_url: data.youtube_url,
-        facebook_url: data.facebook_url,
-        tiktok_url: data.tiktok_url,
-        avatar_url: data.avatar_url,
-        bio: data.bio
-      };
+
+      // 1. Thử đọc từ settings key='author' trước
+      try {
+        const { data: sData } = await client.from('settings').select('*').eq('key', 'author').single();
+        if (sData && sData.value) return sData.value;
+      } catch (e) {}
+
+      // 2. Thử đọc từ bảng authors nếu có
+      try {
+        const { data, error } = await client.from('authors').select('*').eq('id', 'default').single();
+        if (!error && data) {
+          return {
+            id: data.id,
+            name: data.name,
+            title: data.title,
+            phone: data.phone,
+            zalo: data.zalo,
+            email: data.email,
+            youtube_url: data.youtube_url,
+            facebook_url: data.facebook_url,
+            tiktok_url: data.tiktok_url,
+            avatar_url: data.avatar_url,
+            bio: data.bio
+          };
+        }
+      } catch (e) {}
+      return null;
     },
 
     async saveAuthor(author) {
       const client = getClient();
       if (!client) return false;
-      const row = {
-        id: 'default',
-        name: author.name || 'Xuân Linh',
-        title: author.title || 'Admin & Sáng lập viên',
-        phone: author.phone || '0996 358 358',
-        zalo: author.zalo || '0996358358',
-        email: author.email || 'ganhteam321@gmail.com',
-        youtube_url: author.youtube_url || 'https://www.youtube.com',
-        facebook_url: author.facebook_url || 'https://www.facebook.com',
-        tiktok_url: author.tiktok_url || 'https://www.tiktok.com',
-        avatar_url: author.avatar_url || '',
-        bio: author.bio || '',
-        updated_at: new Date().toISOString()
-      };
-      const { error } = await client.from('authors').upsert(row);
-      return !error;
+
+      // 1. Lưu vào settings với key='author' (luôn chắc chắn thành công trên Supabase)
+      try {
+        await client.from('settings').upsert({
+          key: 'author',
+          value: author,
+          updated_at: new Date().toISOString()
+        });
+      } catch (e) {}
+
+      // 2. Thử lưu vào bảng authors nếu bảng này đã tồn tại
+      try {
+        const row = {
+          id: 'default',
+          name: author.name || 'Xuân Linh',
+          title: author.title || 'Admin & Sáng lập viên',
+          phone: author.phone || '0996 358 358',
+          zalo: author.zalo || '0996358358',
+          email: author.email || 'ganhteam321@gmail.com',
+          youtube_url: author.youtube_url || 'https://www.youtube.com',
+          facebook_url: author.facebook_url || 'https://www.facebook.com',
+          tiktok_url: author.tiktok_url || 'https://www.tiktok.com',
+          avatar_url: author.avatar_url || '',
+          bio: author.bio || '',
+          updated_at: new Date().toISOString()
+        };
+        await client.from('authors').upsert(row);
+      } catch (e) {}
+      return true;
     }
   };
 

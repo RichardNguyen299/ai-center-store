@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <!-- Gold Border Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde68a" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+
+    <!-- Robot Head Surface Gradient -->
+    <linearGradient id="robotHeadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="70%" stop-color="#e2e8f0" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </linearGradient>
+
+    <!-- Visor Gradient -->
+    <linearGradient id="visorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+
+    <!-- Cyan Glowing Eyes -->
+    <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+    
+    <filter id="eyeGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Squircle Badge Container -->
+  <rect x="6" y="6" width="116" height="116" rx="28" fill="url(#bgGrad)" stroke="url(#goldGrad)" stroke-width="5" />
+
+  <!-- Robot Side Ears / Antennas (Pink) -->
+  <!-- Left Ear -->
+  <rect x="18" y="52" width="10" height="22" rx="5" fill="#f43f5e" />
+  <line x1="23" y1="52" x2="23" y2="38" stroke="#f43f5e" stroke-width="4" stroke-linecap="round" />
+  <circle cx="23" cy="38" r="5" fill="#fb7185" />
+
+  <!-- Right Ear -->
+  <rect x="100" y="52" width="10" height="22" rx="5" fill="#f43f5e" />
+  <line x1="105" y1="52" x2="105" y2="38" stroke="#f43f5e" stroke-width="4" stroke-linecap="round" />
+  <circle cx="105" cy="38" r="5" fill="#fb7185" />
+
+  <!-- Yellow / Gold Crest on Top -->
+  <path d="M48 38 C48 30, 54 26, 64 26 C74 26, 80 30, 80 38 Z" fill="url(#goldGrad)" />
+  <path d="M54 27 C58 23, 70 23, 74 27 Z" fill="#fef08a" />
+
+  <!-- Robot Face Base (White Rounded Squircle) -->
+  <rect x="25" y="34" width="78" height="66" rx="26" fill="url(#robotHeadGrad)" />
+
+  <!-- Dark Visor Screen -->
+  <rect x="34" y="44" width="60" height="38" rx="16" fill="url(#visorGrad)" stroke="#334155" stroke-width="1.5" />
+
+  <!-- Glowing Cyan Eyes -->
+  <rect x="45" y="52" width="9" height="18" rx="4.5" fill="url(#eyeGrad)" filter="url(#eyeGlow)" />
+  <rect x="74" y="52" width="9" height="18" rx="4.5" fill="url(#eyeGrad)" filter="url(#eyeGlow)" />
+
+  <!-- Cute Mouth Slot -->
+  <rect x="58" y="87" width="12" height="5" rx="2.5" fill="#334155" />
+</svg>

@@ -210,7 +210,12 @@
             <b style="color:var(--mint)">${vnd(p.price)}</b>
             ${p.gia_trial > 0 ? `<p style="font-size:11px;color:var(--text-caption)">Thử: ${vnd(p.gia_trial)}</p>` : ''}
           </td>
-          <td><b>${p.sold || 0}</b></td>
+          <td>
+            <b style="color:var(--mint);font-size:14px">${p.sold || 0}</b>
+            <span style="font-size:11px;color:var(--text-caption);display:block;margin-top:2px">
+              Ảo: ${p.sold_fake !== undefined ? p.sold_fake : (p.sold || 0)} · Thật: ${p.sold_real || 0}
+            </span>
+          </td>
           <td>
             <span class="status-pill ${isActive ? 'status-active' : 'status-hidden'}">
               ${isActive ? '● Đang bán' : '○ Tạm ẩn'}
@@ -306,26 +311,108 @@
     `).join('');
   }
 
-  // MODAL HANDLERS
+  // MODAL HANDLERS & THUMBNAIL MANAGEMENT
+  // Nén ảnh tải từ máy tính để giảm dung lượng LocalStorage & tải siêu nhanh
+  function compressImageFile(file, maxWidth = 640, quality = 0.85) {
+    return new Promise((resolve, reject) => {
+      if (!file) return reject(new Error('Chưa chọn tập tin'));
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const rawResult = e.target.result;
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            let w = img.width;
+            let h = img.height;
+            if (w > maxWidth) {
+              h = Math.round((h * maxWidth) / w);
+              w = maxWidth;
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            const mimeType = (file.type && file.type.includes('png')) ? 'image/png' : 'image/jpeg';
+            const dataUrl = canvas.toDataURL(mimeType, quality);
+            resolve(dataUrl);
+          } catch (canvasErr) {
+            resolve(rawResult);
+          }
+        };
+        img.onerror = () => resolve(rawResult);
+        img.src = rawResult;
+      };
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Cập nhật khung xem trước Thumbnail tức thời
+  function updateThumbnailPreview(imgUrl, fallbackProduct = null) {
+    const previewImg = $('#p_thumb_preview');
+    const placeholder = $('#p_thumb_placeholder');
+    if (!previewImg || !placeholder) return;
+
+    const url = (imgUrl && typeof imgUrl === 'string') ? imgUrl.trim() : '';
+    if (url) {
+      previewImg.src = url;
+      previewImg.style.display = 'block';
+      placeholder.style.display = 'none';
+      previewImg.onerror = () => {
+        previewImg.style.display = 'none';
+        placeholder.style.display = 'flex';
+      };
+    } else {
+      if (typeof generatePosterSVG === 'function') {
+        const title = $('#p_title') ? $('#p_title').value.trim() : '';
+        const cat = $('#p_category') ? $('#p_category').value : 'flow';
+        const dummy = fallbackProduct || {
+          title: title || 'Sản phẩm mới',
+          subtitle: $('#p_subtitle') ? $('#p_subtitle').value.trim() : '',
+          category: cat,
+          categoryName: cat === 'chatbot' ? 'Chatbot AI' : (cat === 'prompt' ? 'Mẫu Prompt' : 'Google Flow AI')
+        };
+        const svgSrc = generatePosterSVG(dummy);
+        if (svgSrc) {
+          previewImg.src = svgSrc;
+          previewImg.style.display = 'block';
+          placeholder.style.display = 'none';
+          return;
+        }
+      }
+      previewImg.style.display = 'none';
+      placeholder.style.display = 'flex';
+    }
+  }
+
   function openAddProductModal() {
     editingProductId = null;
-    $('#productModalTitle').textContent = 'Thêm sản phẩm mới';
+    $('#productModalTitle').innerHTML = '<span>🚀</span> <span>Thêm sản phẩm mới</span>';
     const submitBtn = $('#btnSubmitProduct');
     if (submitBtn) {
       submitBtn.innerHTML = '<span>🚀</span> <span>Đăng sản phẩm ngay</span>';
     }
     $('#productForm').reset();
     $('#p_id').value = '';
+    $('#p_image').value = '';
+    if ($('#p_image_file')) $('#p_image_file').value = '';
     $('#p_version').value = 'v1.0';
     $('#p_format').value = '9:16';
     $('#p_category').value = 'flow';
     $('#p_price').value = '99000';
     $('#p_trial').value = '9000';
     $('#p_original').value = '150000';
+    if ($('#p_sold_fake')) $('#p_sold_fake').value = '0';
+    if ($('#p_sold_real')) $('#p_sold_real').value = '0';
     $('#p_active').checked = true;
     $('#p_premium').checked = true;
     $('#p_new').checked = true;
 
+    if ($('#p_download_url')) $('#p_download_url').value = '';
+    if ($('#p_secret_content')) $('#p_secret_content').value = '';
+
+    updateThumbnailPreview('');
     $('#productModal').classList.add('open');
   }
 
@@ -334,7 +421,7 @@
     if (!product) return;
 
     editingProductId = id;
-    $('#productModalTitle').textContent = 'Chỉnh sửa sản phẩm';
+    $('#productModalTitle').innerHTML = '<span>✏️</span> <span>Chỉnh sửa sản phẩm</span>';
     const submitBtn = $('#btnSubmitProduct');
     if (submitBtn) {
       submitBtn.innerHTML = '<span>✓</span> <span>Cập nhật sản phẩm</span>';
@@ -347,12 +434,25 @@
     $('#p_price').value = product.price || 99000;
     $('#p_trial').value = product.gia_trial || 0;
     $('#p_original').value = product.original_price || 0;
+
+    const realSold = DB.getProductRealSold(id);
+    const fakeSold = (product.sold_fake !== undefined) ? product.sold_fake : (product.sold || 0);
+    if ($('#p_sold_fake')) $('#p_sold_fake').value = fakeSold;
+    if ($('#p_sold_real')) $('#p_sold_real').value = realSold;
+
     $('#p_video').value = product.demo_video_id || '';
     $('#p_subtitle').value = product.subtitle || '';
     $('#p_desc').value = product.description || '';
+    if ($('#p_download_url')) $('#p_download_url').value = product.download_url || product.downloadUrl || '';
+    if ($('#p_secret_content')) $('#p_secret_content').value = product.secret_content || product.secretContent || '';
     $('#p_active').checked = product.active !== false;
     $('#p_premium').checked = product.isPremium !== false;
     $('#p_new').checked = product.isNew === true;
+
+    const imgVal = product.image || (product.posterTheme && product.posterTheme.image) || '';
+    $('#p_image').value = imgVal;
+    if ($('#p_image_file')) $('#p_image_file').value = '';
+    updateThumbnailPreview(imgVal, product);
 
     $('#productModal').classList.add('open');
   }
@@ -367,6 +467,10 @@
 
     const categoryNames = { flow: 'Google Flow AI', chatbot: 'Chatbot AI', prompt: 'Mẫu Prompt' };
     const cat = $('#p_category').value;
+    const imgUrl = $('#p_image') ? $('#p_image').value.trim() : '';
+
+    const soldFake = Math.max(0, parseInt($('#p_sold_fake')?.value, 10) || 0);
+    const soldReal = editingProductId ? DB.getProductRealSold(editingProductId) : 0;
 
     const productData = {
       title: $('#p_title').value.trim(),
@@ -374,12 +478,18 @@
       category: cat,
       categoryName: categoryNames[cat] || 'Google Flow AI',
       format: $('#p_format').value,
+      image: imgUrl,
       price: Number($('#p_price').value) || 0,
       original_price: Number($('#p_original').value) || 0,
       gia_trial: Number($('#p_trial').value) || 0,
+      sold_fake: soldFake,
+      sold_real: soldReal,
+      sold: soldFake + soldReal,
       demo_video_id: (typeof extractYouTubeId === 'function' ? extractYouTubeId($('#p_video').value) : $('#p_video').value.trim()) || 'aoG_YF3C_bM',
       subtitle: $('#p_subtitle').value.trim(),
       description: $('#p_desc').value.trim(),
+      download_url: $('#p_download_url') ? $('#p_download_url').value.trim() : '',
+      secret_content: $('#p_secret_content') ? $('#p_secret_content').value.trim() : '',
       active: $('#p_active').checked,
       isPremium: $('#p_premium').checked,
       isNew: $('#p_new').checked
@@ -387,9 +497,10 @@
 
     if (editingProductId) {
       const existing = DB.getProductById(editingProductId);
-      if (existing && existing.posterTheme) {
-        productData.posterTheme = existing.posterTheme;
-      }
+      productData.posterTheme = {
+        ...(existing && existing.posterTheme ? existing.posterTheme : {}),
+        image: imgUrl
+      };
       DB.updateProduct(editingProductId, productData);
       showToast('✓ Đã cập nhật sản phẩm thành công!');
     } else {
@@ -402,7 +513,8 @@
       productData.posterTheme = {
         bgGradient: cat === 'chatbot' ? 'from-orange-950-to-amber-950' : (cat === 'prompt' ? 'from-amber-950-to-yellow-950' : 'from-amber-950-to-stone-950'),
         color: cat === 'chatbot' ? '#EA580C' : '#D97706',
-        badge: cat === 'chatbot' ? 'Chatbot AI' : (cat === 'prompt' ? 'Prompt AI' : 'Veo3 AI')
+        badge: cat === 'chatbot' ? 'Chatbot AI' : (cat === 'prompt' ? 'Prompt AI' : 'Veo3 AI'),
+        image: imgUrl
       };
       DB.addProduct(productData);
       showToast('🚀 Đã đăng sản phẩm mới! Bấm 🔗 để xem trên cửa hàng →');
@@ -413,18 +525,43 @@
     renderOverview();
   }
 
-  // Settings & Author Management
+  // Settings & Author & Payment Management
   function renderSettings() {
     const author = DB.getAuthor();
-    if (!author) return;
-    if ($('#author_name')) $('#author_name').value = author.name || '';
-    if ($('#author_title')) $('#author_title').value = author.title || '';
-    if ($('#author_phone')) $('#author_phone').value = author.phone || '';
-    if ($('#author_zalo')) $('#author_zalo').value = author.zalo || '';
-    if ($('#author_facebook')) $('#author_facebook').value = author.facebook_url || '';
-    if ($('#author_youtube')) $('#author_youtube').value = author.youtube_url || '';
-    if ($('#author_tiktok')) $('#author_tiktok').value = author.tiktok_url || '';
-    if ($('#author_bio')) $('#author_bio').value = author.bio || '';
+    if (author) {
+      if ($('#author_name')) $('#author_name').value = author.name || '';
+      if ($('#author_title')) $('#author_title').value = author.title || '';
+      if ($('#author_phone')) $('#author_phone').value = author.phone || '';
+      if ($('#author_zalo')) $('#author_zalo').value = author.zalo || '';
+      if ($('#author_facebook')) $('#author_facebook').value = author.facebook_url || '';
+      if ($('#author_youtube')) $('#author_youtube').value = author.youtube_url || '';
+      if ($('#author_tiktok')) $('#author_tiktok').value = author.tiktok_url || '';
+      if ($('#author_bio')) $('#author_bio').value = author.bio || '';
+    }
+
+    // Payment & SePay configuration
+    const settings = (typeof DB !== 'undefined' && DB.getSettings) ? DB.getSettings() : {};
+    const payment = settings.payment || {
+      bankName: 'MBBank',
+      bankAccount: '0996358358',
+      accountName: 'NGUYEN XUAN LINH',
+      qrPrefix: 'SEVQR',
+      sepayApiKey: ''
+    };
+
+    if ($('#cfg_bank_name')) $('#cfg_bank_name').value = payment.bankName || 'MBBank';
+    if ($('#cfg_bank_acc')) $('#cfg_bank_acc').value = payment.bankAccount || '0996358358';
+    if ($('#cfg_acc_name')) $('#cfg_acc_name').value = payment.accountName || 'NGUYEN XUAN LINH';
+    if ($('#cfg_qr_prefix')) $('#cfg_qr_prefix').value = payment.qrPrefix || 'SEVQR';
+    if ($('#cfg_sepay_key')) $('#cfg_sepay_key').value = payment.sepayApiKey || '';
+
+    // Webhook URL display
+    const webhookEl = $('#cfg_webhook_url');
+    if (webhookEl) {
+      const origin = window.location.origin;
+      const cleanOrigin = origin.startsWith('file:') ? 'https://ai-center-store-omega.vercel.app' : origin;
+      webhookEl.textContent = cleanOrigin + '/api/sepay-webhook';
+    }
   }
 
   function saveAuthorForm(e) {
@@ -443,6 +580,24 @@
     };
     DB.saveAuthor(updated);
     showToast('💾 Đã lưu thông tin Tác giả và đồng bộ Cloud!');
+  }
+
+  function savePaymentConfigForm(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const settings = (typeof DB !== 'undefined' && DB.getSettings) ? DB.getSettings() : {};
+    const payment = {
+      bankName: $('#cfg_bank_name')?.value || 'MBBank',
+      bankAccount: $('#cfg_bank_acc')?.value.trim() || '0996358358',
+      accountName: $('#cfg_acc_name')?.value.trim().toUpperCase() || 'NGUYEN XUAN LINH',
+      qrPrefix: $('#cfg_qr_prefix')?.value.trim().toUpperCase() || 'SEVQR',
+      sepayApiKey: $('#cfg_sepay_key')?.value.trim() || ''
+    };
+    settings.payment = payment;
+    DB.saveSettings(settings);
+    if (window.SupabaseDB && window.SupabaseDB.saveSettings) {
+      window.SupabaseDB.saveSettings(settings).catch(() => {});
+    }
+    showToast('💾 Đã lưu cấu hình Ngân hàng & SePay Webhook!');
   }
 
   // Global methods bound to window.AdminApp for inline event handlers
@@ -502,8 +657,89 @@
     // Product form submit
     $('#productForm')?.addEventListener('submit', saveProductForm);
 
+    // Thumbnail input URL change / paste
+    $('#p_image')?.addEventListener('input', (e) => {
+      updateThumbnailPreview(e.target.value);
+    });
+
+    // Click button "Tải ảnh từ máy tính" -> kích hoạt file input
+    $('#btnUploadThumb')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      const fileInput = $('#p_image_file');
+      if (fileInput) {
+        fileInput.value = '';
+        fileInput.click();
+      }
+    });
+
+    // Upload thumbnail file from local machine with auto canvas compression
+    $('#p_image_file')?.addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        showToast('⏳ Đang xử lý & nén ảnh...');
+        const compressedBase64 = await compressImageFile(file, 640, 0.85);
+        if ($('#p_image')) {
+          $('#p_image').value = compressedBase64;
+        }
+        updateThumbnailPreview(compressedBase64);
+        showToast('✓ Đã nạp ảnh thành công! Bấm "Cập nhật sản phẩm" để lưu lại.');
+      } catch (err) {
+        console.error('Lỗi tải ảnh:', err);
+        try {
+          const reader = new FileReader();
+          reader.onload = (re) => {
+            const raw = re.target.result;
+            if ($('#p_image')) $('#p_image').value = raw;
+            updateThumbnailPreview(raw);
+            showToast('✓ Đã nạp ảnh thành công! Bấm "Cập nhật sản phẩm" để lưu lại.');
+          };
+          reader.readAsDataURL(file);
+        } catch (readErr) {
+          showToast('⚠️ Không thể tải ảnh: ' + (err.message || 'Lỗi không xác định'));
+        }
+      }
+    });
+
+    // Clear custom thumbnail to revert to SVG poster
+    $('#btnClearThumb')?.addEventListener('click', () => {
+      if ($('#p_image')) $('#p_image').value = '';
+      if ($('#p_image_file')) $('#p_image_file').value = '';
+      updateThumbnailPreview('');
+      showToast('🔄 Đã chuyển về chế độ Poster SVG tự động');
+    });
+
+    // Dynamic poster preview update when title or category changes if no custom image
+    $('#p_title')?.addEventListener('input', () => {
+      if (!$('#p_image')?.value.trim()) {
+        updateThumbnailPreview('');
+      }
+    });
+    $('#p_category')?.addEventListener('change', () => {
+      if (!$('#p_image')?.value.trim()) {
+        updateThumbnailPreview('');
+      }
+    });
+
     // Author form submit
     $('#authorForm')?.addEventListener('submit', saveAuthorForm);
+
+    // Payment & SePay config submit
+    $('#paymentConfigForm')?.addEventListener('submit', savePaymentConfigForm);
+
+    // Copy Webhook URL button
+    $('#btnCopyWebhookUrl')?.addEventListener('click', () => {
+      const url = $('#cfg_webhook_url')?.textContent || '';
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('✓ Đã sao chép Webhook URL!');
+        }).catch(() => {
+          showToast('URL: ' + url);
+        });
+      } else {
+        showToast('URL: ' + url);
+      }
+    });
 
     // Auto extract clean YouTube ID from paste or input
     $('#p_video')?.addEventListener('input', () => {

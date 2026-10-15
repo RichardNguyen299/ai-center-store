@@ -241,6 +241,127 @@ try {
                         }
                     }
 
+                    if ($reqPath -eq "/api/sepay-webhook") {
+                        if ($method -eq "POST") {
+                            $spData = $body | ConvertFrom-Json
+                            $content = if ($spData.content) { $spData.content } else { $spData.description }
+                            $transferAmount = if ($spData.transferAmount) { [int]$spData.transferAmount } else { [int]$spData.amount }
+                            $gateway = if ($spData.gateway) { $spData.gateway } else { "MBBank" }
+                            $refCode = if ($spData.referenceCode) { $spData.referenceCode } else { "SIM" + (Get-Date).Ticks }
+
+                            $orderCode = $null
+                            if ($content -match "(?i)(?:SEVQR|AIC)\s*([A-Za-z0-9_-]+)") {
+                                $orderCode = $matches[1].ToUpper()
+                            } elseif ($content -match "(?i)\b(DH[0-9]{4}[A-Za-z0-9]{0,3})\b") {
+                                $orderCode = $matches[1].ToUpper()
+                            }
+
+                            if ($orderCode) {
+                                $dbData = if (Test-Path $dbFile) { Get-Content $dbFile -Raw -Encoding UTF8 | ConvertFrom-Json } else { @{ orders = @(); products = @(); users = @() } }
+                                $foundOrder = $null
+                                foreach ($o in $dbData.orders) {
+                                    if ($o.code -eq $orderCode) {
+                                        $foundOrder = $o
+                                        break
+                                    }
+                                }
+
+                                if ($foundOrder) {
+                                    $foundOrder.status = "paid"
+                                    $foundOrder.statusText = "Đã thanh toán"
+                                    $foundOrder | Add-Member -NotePropertyName "paid_at" -NotePropertyValue ((Get-Date).ToString("yyyy-MM-dd HH:mm:ss")) -Force
+                                    $foundOrder | Add-Member -NotePropertyName "payment_gateway" -NotePropertyValue $gateway -Force
+                                    $foundOrder | Add-Member -NotePropertyName "transaction_id" -NotePropertyValue $refCode -Force
+
+                                    # Update product sold
+                                    $targetProdId = if ($foundOrder.productId) { $foundOrder.productId } else { $foundOrder.id }
+                                    foreach ($prod in $dbData.products) {
+                                        if ($prod.id -eq $targetProdId) {
+                                            $prod.sold = ([int]$prod.sold) + 1
+                                            $prod.remainingSlots = [Math]::Max(0, ([int]$prod.remainingSlots) - 1)
+                                            if (-not $foundOrder.accessUrl -or $foundOrder.accessUrl -like "#*") {
+                                                if ($prod.download_url) {
+                                                    $foundOrder | Add-Member -NotePropertyName "accessUrl" -NotePropertyValue $prod.download_url -Force
+                                                }
+                                            }
+                                            if ($prod.secret_content) {
+                                                $foundOrder | Add-Member -NotePropertyName "unlockedContent" -NotePropertyValue $prod.secret_content -Force
+                                            }
+                                        }
+                                    }
+
+                                    # Update user spent
+                                    if ($foundOrder.customerEmail -and $dbData.users) {
+                                        foreach ($u in $dbData.users) {
+                                            if ($u.email -eq $foundOrder.customerEmail) {
+                                                $u.totalSpent = ([int]$u.totalSpent) + [int]$foundOrder.amount
+                                                break
+                                            }
+                                        }
+                                    }
+
+                                    $updatedJson = ($dbData | ConvertTo-Json -Depth 10)
+                                    [System.IO.File]::WriteAllText($dbFile, $updatedJson, [System.Text.Encoding]::UTF8)
+
+                                    $respJson = @{
+                                        success = $true
+                                        message = "Order paid and unlocked successfully (Local Dev)"
+                                        orderCode = $orderCode
+                                        amount = $foundOrder.amount
+                                    } | ConvertTo-Json
+                                    $respBytes = [System.Text.Encoding]::UTF8.GetBytes($respJson)
+                                    Send-Response $stream 200 "OK" "application/json; charset=utf-8" $respBytes
+                                    continue
+                                } else {
+                                    $respJson = '{"success":false,"message":"Order not found in db.json"}'
+                                    $respBytes = [System.Text.Encoding]::UTF8.GetBytes($respJson)
+                                    Send-Response $stream 200 "OK" "application/json; charset=utf-8" $respBytes
+                                    continue
+                                }
+                            } else {
+                                $respJson = '{"success":false,"message":"No order code in transfer content"}'
+                                $respBytes = [System.Text.Encoding]::UTF8.GetBytes($respJson)
+                                Send-Response $stream 200 "OK" "application/json; charset=utf-8" $respBytes
+                                continue
+                            }
+                        }
+                    }
+
+                    if ($reqPath -eq "/api/check-order") {
+                        $codeParam = $null
+                        if ($rawPath -match "[?&]code=([^&]+)") {
+                            $codeParam = [System.Uri]::UnescapeDataString($matches[1])
+                        }
+
+                        if ($codeParam) {
+                            $dbData = if (Test-Path $dbFile) { Get-Content $dbFile -Raw -Encoding UTF8 | ConvertFrom-Json } else { @{ orders = @() } }
+                            $foundOrder = $null
+                            foreach ($o in $dbData.orders) {
+                                if ($o.code -eq $codeParam) {
+                                    $foundOrder = $o
+                                    break
+                                }
+                            }
+
+                            if ($foundOrder) {
+                                $respJson = ($foundOrder | ConvertTo-Json -Depth 5)
+                                $respBytes = [System.Text.Encoding]::UTF8.GetBytes($respJson)
+                                Send-Response $stream 200 "OK" "application/json; charset=utf-8" $respBytes
+                                continue
+                            } else {
+                                $respJson = '{"error":"Order not found"}'
+                                $respBytes = [System.Text.Encoding]::UTF8.GetBytes($respJson)
+                                Send-Response $stream 404 "Not Found" "application/json; charset=utf-8" $respBytes
+                                continue
+                            }
+                        } else {
+                            $respJson = '{"error":"Missing code param"}'
+                            $respBytes = [System.Text.Encoding]::UTF8.GetBytes($respJson)
+                            Send-Response $stream 400 "Bad Request" "application/json; charset=utf-8" $respBytes
+                            continue
+                        }
+                    }
+
                     # 3. Handle Static Files
                     if ($reqPath -eq "/" -or $reqPath -eq "") { $reqPath = "/index.html" }
                     $safeRelPath = $reqPath.TrimStart("/").Replace("/", "\")

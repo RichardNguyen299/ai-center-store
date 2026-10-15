@@ -11,7 +11,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="css/style.css">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <link rel="stylesheet" href="css/style.css?v=2.6">
+  <link rel="stylesheet" href="css/payment.css?v=2.6">
 </head>
 <body>
 
@@ -190,7 +197,7 @@
         
         <!-- Breadcrumb Navigation -->
         <p class="caption" style="margin-bottom:20px">
-          <a href="#" style="color:var(--caption)" data-i18n="detail_breadcrumb_home">Cửa hàng</a> 
+          <a href="#" id="breadcrumbHome" style="color:var(--caption)" data-i18n="detail_breadcrumb_home">Cửa hàng</a> 
           <span aria-hidden="true" style="margin:0 6px">/</span> 
           <span id="vet" style="color:var(--mint-soft)"></span>
         </p>
@@ -202,7 +209,7 @@
           <p data-i18n="detail_err_desc">Sản phẩm có thể đã ngừng bán hoặc đường dẫn không đúng.</p>
 
           <div style="display:flex;gap:12px;justify-content:center;margin-top:20px">
-            <a class="btn btn-primary" href="#" data-i18n="detail_back">Quay về danh sách sản phẩm</a>
+            <a class="btn btn-primary" id="detailBackHome" href="#" data-i18n="detail_back">Quay về danh sách sản phẩm</a>
           </div>
         </div>
 
@@ -636,6 +643,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
   <script src="js/data.js"></script>
+  <script src="js/payment.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
 </body>

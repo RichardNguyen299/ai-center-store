@@ -38,12 +38,15 @@ CREATE TABLE IF NOT EXISTS public.products (
   gia_trial BIGINT DEFAULT 0,
   sold INT DEFAULT 0,
   remaining_slots INT DEFAULT 100,
+  image TEXT DEFAULT '',
   demo_video_id TEXT DEFAULT '',
   poster_theme JSONB DEFAULT '{}'::jsonb,
   description TEXT DEFAULT '',
   is_premium BOOLEAN DEFAULT true,
   is_new BOOLEAN DEFAULT false,
   active BOOLEAN DEFAULT true,
+  download_url TEXT DEFAULT '',
+  secret_content TEXT DEFAULT '',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -53,7 +56,7 @@ CREATE TABLE IF NOT EXISTS public.products (
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS public.orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  code TEXT NOT NULL UNIQUE,          -- Mã đơn: e.g. AISRQJ7PXG
+  code TEXT NOT NULL UNIQUE,          -- Mã đơn: e.g. DH8899 hoặc AISRQJ7PXG
   product_id TEXT REFERENCES public.products(id) ON DELETE SET NULL,
   title TEXT NOT NULL,
   slug TEXT,
@@ -63,8 +66,16 @@ CREATE TABLE IF NOT EXISTS public.orders (
   customer_email TEXT NOT NULL,
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   access_url TEXT,
+  unlocked_content TEXT DEFAULT '',
+  payment_gateway TEXT DEFAULT 'MBBank',
+  transaction_id TEXT DEFAULT '',
+  transfer_content TEXT DEFAULT '',
+  paid_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Bật Realtime cho bảng orders (Để khách nhận thông báo tự động ngay khi chuyển tiền)
+ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
 
 -- =============================================================================
 -- 5. BẢNG SETTINGS (CẤU HÌNH CỬA HÀNG)
@@ -202,22 +213,18 @@ CREATE POLICY "Admin có quyền thêm/sửa/xoá sản phẩm"
   WITH CHECK (public.is_admin());
 
 -- Chính sách cho ORDERS
-CREATE POLICY "Khách hàng xem đơn hàng của mình, Admin xem tất cả"
+CREATE POLICY "Mọi người đều được tra cứu đơn hàng"
   ON public.orders FOR SELECT
-  USING (
-    customer_email = auth.jwt() ->> 'email' OR
-    user_id = auth.uid() OR
-    public.is_admin()
-  );
+  USING (true);
 
 CREATE POLICY "Mọi người đều được tạo đơn hàng mới"
   ON public.orders FOR INSERT
   WITH CHECK (true);
 
-CREATE POLICY "Chỉ Admin được cập nhật trạng thái đơn hàng"
+CREATE POLICY "Cho phép cập nhật trạng thái đơn hàng"
   ON public.orders FOR UPDATE
-  USING (public.is_admin())
-  WITH CHECK (public.is_admin());
+  USING (true)
+  WITH CHECK (true);
 
 -- Chính sách cho SETTINGS
 CREATE POLICY "Mọi người được đọc cấu hình cửa hàng"
@@ -254,6 +261,20 @@ VALUES (
     "hotline": "0996 358 358",
     "supportZalo": "0996358358",
     "storageMode": "supabase_cloud"
+  }'::jsonb
+)
+ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
+
+-- Cài đặt cấu hình thanh toán VietQR & SePay mặc định
+INSERT INTO public.settings (key, value)
+VALUES (
+  'payment',
+  '{
+    "bankName": "MBBank",
+    "bankAccount": "0996358358",
+    "accountName": "NGUYEN XUAN LINH",
+    "qrPrefix": "SEVQR",
+    "sepayApiKey": ""
   }'::jsonb
 )
 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
@@ -520,3 +541,74 @@ VALUES
   'index.html#san-pham?id=app-koc-review-nha-hang'
 )
 ON CONFLICT (code) DO NOTHING;
+ 
+-- =============================================================================
+-- 10. HÀM XÁC NHẬN THANH TOÁN TỰ ĐỘNG CHO SEPAY WEBHOOK (SECURITY DEFINER)
+-- =============================================================================
+CREATE OR REPLACE FUNCTION public.confirm_sepay_order(
+  p_code TEXT,
+  p_amount BIGINT DEFAULT 0,
+  p_gateway TEXT DEFAULT 'Bank',
+  p_ref TEXT DEFAULT ''
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_order RECORD;
+  v_prod RECORD;
+BEGIN
+  -- Tìm đơn hàng theo mã code hoặc tiền tố
+  SELECT * INTO v_order
+  FROM public.orders
+  WHERE UPPER(code) = UPPER(p_code)
+     OR UPPER(code) LIKE UPPER(p_code) || '%'
+     OR UPPER(p_code) LIKE UPPER(code) || '%'
+  ORDER BY created_at DESC
+  LIMIT 1;
+
+  IF NOT FOUND THEN
+    RETURN jsonb_build_object('success', false, 'message', 'Order not found', 'code', p_code);
+  END IF;
+
+  -- Nếu đơn đã hoàn thành
+  IF v_order.status = 'paid' OR v_order.status = 'completed' THEN
+    RETURN jsonb_build_object('success', true, 'message', 'Order already paid', 'code', v_order.code);
+  END IF;
+
+  -- Lấy thông tin mở khóa sản phẩm
+  IF v_order.product_id IS NOT NULL THEN
+    SELECT * INTO v_prod FROM public.products WHERE id = v_order.product_id LIMIT 1;
+    IF FOUND THEN
+      UPDATE public.products
+      SET sold = COALESCE(sold, 0) + 1,
+          remaining_slots = GREATEST(0, COALESCE(remaining_slots, 100) - 1),
+          updated_at = NOW()
+      WHERE id = v_order.product_id;
+    END IF;
+  END IF;
+
+  -- Cập nhật đơn hàng thành paid
+  UPDATE public.orders
+  SET 
+    status = 'paid',
+    status_text = 'Đã thanh toán',
+    payment_gateway = p_gateway,
+    transaction_id = p_ref,
+    transfer_content = p_ref,
+    paid_at = NOW(),
+    access_url = COALESCE(NULLIF(access_url, ''), v_prod.download_url, '#san-pham?id=' || COALESCE(v_order.product_id, '')),
+    unlocked_content = COALESCE(NULLIF(unlocked_content, ''), v_prod.secret_content, '')
+  WHERE id = v_order.id;
+
+  RETURN jsonb_build_object(
+    'success', true,
+    'message', 'Order paid and unlocked successfully',
+    'code', v_order.code,
+    'amount', p_amount
+  );
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.confirm_sepay_order TO anon, authenticated, service_role;
