@@ -6,27 +6,49 @@
  * POST https://<domain>/api/sepay-webhook
  */
 
+const crypto = require('crypto');
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://tmowmprowizdrbamhivx.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || 'sb_publishable_RZ6GSjK8d87kMGNXsrAmlA_n99Jx_J1';
-const SEPAY_API_KEY = process.env.SEPAY_API_KEY || ''; // Đặt trong Vercel Environment Variables nếu cần bảo mật nghiêm ngặt
+const SEPAY_API_KEY = process.env.SEPAY_API_KEY || ''; // Đặt trong Vercel Environment Variables nếu cấu hình API Key
+const SEPAY_WEBHOOK_SECRET = process.env.SEPAY_WEBHOOK_SECRET || process.env.SEPAY_SECRET_KEY || ''; // Đặt nếu cấu hình HMAC-SHA256
 
 module.exports = async (req, res) => {
   // 1. Cấu hình CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-SePay-Signature, X-SePay-Timestamp');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed. Use POST for SePay Webhook.' });
+    return res.status(405).json({ success: false, error: 'Method Not Allowed. Use POST for SePay Webhook.' });
   }
 
   try {
-    // 2. Xác thực Token nếu có cấu hình SEPAY_API_KEY
-    if (SEPAY_API_KEY) {
+    // 2. Xác thực Webhook (Hỗ trợ cả HMAC-SHA256, API Key hoặc Không xác thực theo chuẩn SePay)
+    if (SEPAY_WEBHOOK_SECRET) {
+      const signatureHeader = req.headers['x-sepay-signature'] || '';
+      const timestampHeader = req.headers['x-sepay-timestamp'] || '';
+      
+      if (!signatureHeader || !timestampHeader) {
+        console.warn('[SePay Webhook] Thiếu header chữ ký X-SePay-Signature hoặc X-SePay-Timestamp.');
+        return res.status(401).json({ success: false, message: 'Missing signature headers' });
+      }
+
+      const rawBody = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+      const expectedData = `${timestampHeader}.${rawBody}`;
+      const expectedSig = 'sha256=' + crypto.createHmac('sha256', SEPAY_WEBHOOK_SECRET).update(expectedData).digest('hex');
+
+      const isValid = (signatureHeader.length === expectedSig.length) && 
+        crypto.timingSafeEqual(Buffer.from(signatureHeader), Buffer.from(expectedSig));
+
+      if (!isValid) {
+        console.warn('[SePay Webhook] Chữ ký HMAC-SHA256 không hợp lệ.');
+        return res.status(401).json({ success: false, message: 'Invalid HMAC signature' });
+      }
+    } else if (SEPAY_API_KEY) {
       const authHeader = req.headers['authorization'] || '';
       const token = authHeader.replace(/^Apikey\s+/i, '').replace(/^Bearer\s+/i, '').trim();
       if (token !== SEPAY_API_KEY) {
@@ -35,14 +57,21 @@ module.exports = async (req, res) => {
       }
     }
 
-    // 3. Đọc dữ liệu biến động từ SePay
+    // 3. Đọc dữ liệu biến động từ SePay (Theo chuẩn cấu trúc Payload SePay)
     const body = req.body || {};
+    const transferType = String(body.transferType || 'in').toLowerCase();
     const content = String(body.content || body.description || '');
     const transferAmount = Number(body.transferAmount || body.amount || 0);
     const referenceCode = String(body.referenceCode || body.id || '');
     const gateway = String(body.gateway || 'Bank');
 
     console.info(`[SePay Webhook] Nhận biến động: ${transferAmount}đ - Nội dung: "${content}" - Ref: ${referenceCode}`);
+
+    // Bỏ qua giao dịch tiền ra (out) và trả về HTTP 200 + success: true để SePay dừng gửi lại
+    if (transferType === 'out') {
+      console.info('[SePay Webhook] Bỏ qua giao dịch tiền ra (transferType: out):', referenceCode);
+      return res.status(200).json({ success: true, message: 'Outgoing transaction ignored.' });
+    }
 
     // 4. Bóc tách danh sách mã đơn hàng tiềm năng (hỗ trợ DH8244, DH8244JN, SEVQR...)
     const candidateCodes = new Set();
@@ -68,10 +97,11 @@ module.exports = async (req, res) => {
 
     const candidateList = Array.from(candidateCodes);
     if (candidateList.length === 0) {
-      console.info('[SePay Webhook] Không tìm thấy mã đơn hàng trong nội dung CK:', content);
+      console.info('[SePay Webhook] Không tìm thấy mã đơn hàng trong nội dung CK (hoặc test ping từ SePay):', content);
+      // BẮT BUỘC trả HTTP 200 + {"success": true} để SePay ghi nhận thành công và hiển thị nút "Gửi thử" XANH
       return res.status(200).json({
-        success: false,
-        message: 'No order code found in transfer content. Ignored gracefully.'
+        success: true,
+        message: 'Webhook received. No matching order code found in transfer content.'
       });
     }
 
@@ -131,7 +161,7 @@ module.exports = async (req, res) => {
     const orders = await getRes.json();
     if (!orders || orders.length === 0) {
       console.warn(`[SePay Webhook] Không tìm thấy đơn hàng mã ${candidateList.join(', ')} trong Database.`);
-      return res.status(200).json({ success: false, message: `Orders not found: ${candidateList.join(', ')}` });
+      return res.status(200).json({ success: true, message: `Orders not found: ${candidateList.join(', ')}. Acknowledged.` });
     }
 
     const order = orders[0];
@@ -162,7 +192,8 @@ module.exports = async (req, res) => {
       });
 
       return res.status(200).json({
-        success: false,
+        success: true,
+        is_underpaid: true,
         message: 'Partial payment received. Waiting for remaining balance.',
         received: transferAmount,
         required: requiredAmount

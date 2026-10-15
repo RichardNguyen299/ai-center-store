@@ -587,7 +587,7 @@ BEGIN
     WHERE id = v_order.id;
 
     RETURN jsonb_build_object(
-      'success', false,
+      'success', true,
       'is_underpaid', true,
       'message', 'Underpaid. Missing balance.',
       'code', v_order.code,
