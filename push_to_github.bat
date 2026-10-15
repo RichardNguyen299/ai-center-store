@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-cd /d "%~dp0"
+cd /d "%~dp0" 2>nul
 
 echo ===================================================
 echo   AI CENTER STORE - DONG BO CODE LEN GITHUB VA VERCEL
@@ -41,6 +41,12 @@ echo.
 echo [2/2] Dang day code len GitHub (origin main)...
 "%GIT_CMD%" push origin main
 
+if %errorlevel% neq 0 (
+    echo.
+    echo [THU LAI] Dang thu day lai bang OpenSSL SSL backend...
+    "%GIT_CMD%" -c http.sslBackend=openssl push origin main
+)
+
 if %errorlevel% equ 0 (
     echo.
     echo ===================================================
@@ -53,7 +59,7 @@ if %errorlevel% equ 0 (
     echo ===================================================
     echo  [CHU Y] Khong the day code len GitHub.
     echo  Cac nguyen nhan thuong gap:
-    echo   1. Chua dang nhap Git tren may tinh.
+    echo   1. Chua dang nhap Git tren may tinh (Personal Access Token).
     echo   2. Mat ket noi mang Internet.
     echo   3. Xung dot code tren nhanh main can pull truoc.
     echo ===================================================
