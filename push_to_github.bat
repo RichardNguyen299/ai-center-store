@@ -39,7 +39,7 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo [2/3] Dang kiem tra va dong bo code tu GitHub ve (git pull --rebase)...
+echo [2/3] Dang kiem tra va dong bo code tu GitHub ve [git pull --rebase]...
 "%GIT_CMD%" pull --rebase origin main
 
 if %errorlevel% neq 0 (
@@ -48,12 +48,12 @@ if %errorlevel% neq 0 (
     echo Dang huy rebase de giu nguyen ven code tren may tinh cua ban...
     "%GIT_CMD%" rebase --abort 2>nul
     echo.
-    echo Ban co muon DAY DE (FORCE PUSH) toan bo code tren may nay len GitHub khong?
-    echo (Khuyen dung: Chon Y neu code tren may tinh la phien ban moi va chuan nhat)
+    echo Ban co muon DAY DE [FORCE PUSH] toan bo code tren may nay len GitHub khong?
+    echo [Khuyen dung: Chon Y neu code tren may tinh la phien ban moi va chuan nhat]
     set /p "CHOICE=Nhap Y de day de, hoac N de huy [Y/N]: "
     if /i "!CHOICE!"=="Y" (
         echo.
-        echo [3/3] Dang day de (Force Push) len GitHub...
+        echo [3/3] Dang day de [Force Push] len GitHub...
         "%GIT_CMD%" push -f origin main
     ) else (
         echo.
@@ -62,7 +62,7 @@ if %errorlevel% neq 0 (
     )
 ) else (
     echo.
-    echo [3/3] Dang day code len GitHub (origin main)...
+    echo [3/3] Dang day code len GitHub [origin main]...
     "%GIT_CMD%" push origin main
 )
 
@@ -78,9 +78,9 @@ if %errorlevel% equ 0 (
     echo ===================================================
     echo  [CHU Y] Khong the day code len GitHub.
     echo  Cac nguyen nhan thuong gap:
-    echo   1. Chua dang nhap Git tren may tinh (Personal Access Token).
+    echo   1. Chua dang nhap Git tren may tinh [Personal Access Token].
     echo   2. Mat ket noi mang Internet.
-    echo   3. Xung dot code tren nhanh main.
+    echo   3. Xung dot code tren nhanh main can xu ly.
     echo ===================================================
 )
 
