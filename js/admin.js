@@ -542,16 +542,19 @@
     // Payment & SePay configuration
     const settings = (typeof DB !== 'undefined' && DB.getSettings) ? DB.getSettings() : {};
     const payment = settings.payment || {
-      bankName: 'MBBank',
-      bankAccount: '0996358358',
-      accountName: 'NGUYEN XUAN LINH',
+      bankName: 'VietinBank',
+      bankAccount: '105870396069',
+      accountName: 'NGUYEN VAN PHU',
       qrPrefix: 'SEVQR',
       sepayApiKey: ''
     };
 
-    if ($('#cfg_bank_name')) $('#cfg_bank_name').value = payment.bankName || 'MBBank';
-    if ($('#cfg_bank_acc')) $('#cfg_bank_acc').value = payment.bankAccount || '0996358358';
-    if ($('#cfg_acc_name')) $('#cfg_acc_name').value = payment.accountName || 'NGUYEN XUAN LINH';
+    let curBank = payment.bankName || 'VietinBank';
+    if (curBank === 'ICB' || curBank === 'CTG') curBank = 'VietinBank';
+
+    if ($('#cfg_bank_name')) $('#cfg_bank_name').value = curBank;
+    if ($('#cfg_bank_acc')) $('#cfg_bank_acc').value = payment.bankAccount || '105870396069';
+    if ($('#cfg_acc_name')) $('#cfg_acc_name').value = payment.accountName || 'NGUYEN VAN PHU';
     if ($('#cfg_qr_prefix')) $('#cfg_qr_prefix').value = payment.qrPrefix || 'SEVQR';
     if ($('#cfg_sepay_key')) $('#cfg_sepay_key').value = payment.sepayApiKey || '';
 
@@ -585,10 +588,13 @@
   function savePaymentConfigForm(e) {
     if (e && e.preventDefault) e.preventDefault();
     const settings = (typeof DB !== 'undefined' && DB.getSettings) ? DB.getSettings() : {};
+    let chosenBank = $('#cfg_bank_name')?.value || 'VietinBank';
+    if (chosenBank === 'ICB' || chosenBank === 'CTG') chosenBank = 'VietinBank';
+
     const payment = {
-      bankName: $('#cfg_bank_name')?.value || 'MBBank',
-      bankAccount: $('#cfg_bank_acc')?.value.trim() || '0996358358',
-      accountName: $('#cfg_acc_name')?.value.trim().toUpperCase() || 'NGUYEN XUAN LINH',
+      bankName: chosenBank,
+      bankAccount: $('#cfg_bank_acc')?.value.trim() || '105870396069',
+      accountName: $('#cfg_acc_name')?.value.trim().toUpperCase() || 'NGUYEN VAN PHU',
       qrPrefix: $('#cfg_qr_prefix')?.value.trim().toUpperCase() || 'SEVQR',
       sepayApiKey: $('#cfg_sepay_key')?.value.trim() || ''
     };

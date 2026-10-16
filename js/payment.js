@@ -12,16 +12,42 @@
 (function () {
   'use strict';
 
-  // Cấu hình thanh toán mặc định (có thể đồng bộ từ DB / Settings)
+  // Cấu hình thanh toán mặc định (đồng bộ từ tài khoản SePay chính xác)
   const DEFAULT_PAYMENT_CONFIG = {
-    bankName: 'MBBank', // MBBank, VCB, TCB, TPB, ICB, ACB, v.v.
-    bankAccount: '0996358358',
-    accountName: 'NGUYEN XUAN LINH',
+    bankName: 'VietinBank', // VietinBank (không hiển thị mã ICB)
+    bankAccount: '105870396069',
+    accountName: 'NGUYEN VAN PHU',
     qrPrefix: 'SEVQR', // Bắt buộc cho SePay
     sepayApiKey: '', // Khóa bảo mật Webhook SePay (nếu cấu hình)
-    qrTemplate: 'compact2',
+    qrTemplate: 'compact',
     orderTimeoutMinutes: 15
   };
+
+  // Chuẩn hóa tên ngân hàng hiển thị thân thiện (loại bỏ hoàn toàn mã ICB, CTG...)
+  const BANK_DISPLAY_NAMES = {
+    'ICB': 'VietinBank',
+    'CTG': 'VietinBank',
+    'VIETINBANK': 'VietinBank',
+    'MB': 'MBBank',
+    'MBBANK': 'MBBank',
+    'VCB': 'Vietcombank',
+    'VIETCOMBANK': 'Vietcombank',
+    'TCB': 'Techcombank',
+    'TECHCOMBANK': 'Techcombank',
+    'TPB': 'TPBank',
+    'TPBANK': 'TPBank',
+    'VPB': 'VPBank',
+    'VPBANK': 'VPBank',
+    'ACB': 'ACB',
+    'BIDV': 'BIDV',
+    'VIB': 'VIB'
+  };
+
+  function formatBankName(bank) {
+    if (!bank) return 'VietinBank';
+    const key = String(bank).trim().toUpperCase();
+    return BANK_DISPLAY_NAMES[key] || bank;
+  }
 
   // Trạng thái phiên thanh toán hiện tại
   let currentSession = {
@@ -64,10 +90,16 @@
       }
     } catch (e) {}
 
-    return {
+    const cfg = {
       ...DEFAULT_PAYMENT_CONFIG,
       ...custom
     };
+
+    // Chuẩn hóa nếu cấu hình lưu mã cũ ICB / CTG
+    if (!cfg.bankName || cfg.bankName === 'ICB' || cfg.bankName === 'CTG') {
+      cfg.bankName = 'VietinBank';
+    }
+    return cfg;
   }
 
   // Sinh mã đơn hàng chuẩn format: DH + 6 chữ số (ví dụ: DH824491) - Chuẩn 100% cho hệ thống SePay nhận diện
@@ -76,19 +108,23 @@
     return 'DH' + num;
   }
 
-  // Tạo URL ảnh VietQR
+  // Tạo URL ảnh VietQR chuẩn theo mã nhúng SePay tài khoản VietinBank
   function getVietQRUrl(bank, account, amount, content, accountName) {
-    // 1. Ưu tiên SePay VietQR Gateway chuyên dụng
-    const encodedContent = encodeURIComponent(content);
-    const sepayUrl = `https://qr.sepay.vn/img?bank=${encodeURIComponent(bank)}&acc=${encodeURIComponent(account)}&template=compact&amount=${amount}&des=${encodedContent}`;
-    return sepayUrl;
+    const rawBank = bank || 'VietinBank';
+    const cleanBank = (rawBank.toUpperCase() === 'ICB' || rawBank.toUpperCase() === 'CTG') ? 'VietinBank' : rawBank;
+    const cleanAcc = account || '105870396069';
+    const holder = encodeURIComponent(accountName || 'NGUYEN VAN PHU');
+    const encodedContent = encodeURIComponent(content || '');
+    return `https://vietqr.app/img?bank=${encodeURIComponent(cleanBank)}&acc=${encodeURIComponent(cleanAcc)}&template=compact&amount=${amount}&des=${encodedContent}&showinfo=true&holder=${holder}`;
   }
 
-  // Fallback sang VietQR.io nếu cần
+  // Fallback sang SePay Gateway nếu cần
   function getVietQRFallbackUrl(bank, account, amount, content, accountName) {
-    const encodedContent = encodeURIComponent(content);
-    const encodedName = encodeURIComponent(accountName || '');
-    return `https://img.vietqr.io/image/${bank}-${account}-compact2.png?amount=${amount}&addInfo=${encodedContent}&accountName=${encodedName}`;
+    const rawBank = bank || 'VietinBank';
+    const cleanBank = (rawBank.toUpperCase() === 'ICB' || rawBank.toUpperCase() === 'CTG') ? 'VietinBank' : rawBank;
+    const cleanAcc = account || '105870396069';
+    const encodedContent = encodeURIComponent(content || '');
+    return `https://qr.sepay.vn/img?bank=${encodeURIComponent(cleanBank)}&acc=${encodeURIComponent(cleanAcc)}&template=compact&amount=${amount}&des=${encodedContent}`;
   }
 
   // Hiệu ứng Toast thông báo nhanh
@@ -168,7 +204,7 @@
               </div>
             </div>
             <p class="pm-qr-tip">
-              <span>📱</span> Mở App Ngân hàng bất kỳ để quét mã VietQR tự động
+              <span>📱</span> Mở app ngân hàng bất kỳ để quét
             </p>
           </div>
 
@@ -176,12 +212,12 @@
           <div class="pm-info-table">
             <div class="pm-info-row">
               <span class="pm-info-label">Ngân hàng:</span>
-              <span class="pm-info-value" id="pmBankName">MBBank</span>
+              <span class="pm-info-value" id="pmBankName">VietinBank</span>
             </div>
             <div class="pm-info-row">
               <span class="pm-info-label">Số tài khoản:</span>
               <div class="pm-info-copy-group">
-                <b class="pm-info-highlight" id="pmBankAccount">0996358358</b>
+                <b class="pm-info-highlight" id="pmBankAccount">105870396069</b>
                 <button type="button" class="pm-btn-copy" id="pmCopyAccBtn" title="Sao chép số tài khoản">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                   <span>Chép</span>
@@ -190,7 +226,7 @@
             </div>
             <div class="pm-info-row">
               <span class="pm-info-label">Chủ tài khoản:</span>
-              <span class="pm-info-value" id="pmAccountName">NGUYEN XUAN LINH</span>
+              <span class="pm-info-value" id="pmAccountName">NGUYEN VAN PHU</span>
             </div>
             <div class="pm-info-row">
               <span class="pm-info-label">Số tiền:</span>
@@ -233,23 +269,10 @@
             </div>
           </div>
 
-          <!-- Thanh trạng thái lắng nghe Realtime -->
-          <div class="pm-status-indicator">
-            <div class="pm-radar">
-              <span class="pm-radar-circle"></span>
-              <span class="pm-radar-circle"></span>
-              <span class="pm-radar-circle"></span>
-            </div>
-            <span id="pmStatusText">Đang lắng nghe biến động từ ngân hàng...</span>
-          </div>
-
-          <!-- Nút kiểm tra thủ công & Test nhanh -->
+          <!-- Nút kiểm tra thủ công -->
           <div class="pm-actions">
             <button class="pm-btn-check" id="pmBtnManualCheck" type="button">
               🔄 Tôi đã chuyển khoản (Kiểm tra ngay)
-            </button>
-            <button class="pm-btn-dev-sim" id="pmBtnDevSimulate" type="button" title="Chế độ mô phỏng dành cho dev">
-              ⚡ Test nhanh (Mô phỏng Bank báo có)
             </button>
           </div>
         </div>
@@ -352,13 +375,6 @@
       }, 1500);
     });
 
-    // Nút dev simulate (tiện lợi cho việc test ngay)
-    $('pmBtnDevSimulate')?.addEventListener('click', async () => {
-      if (confirm(`Giả lập SePay bắn webhook xác nhận đã nhận ${vnd(currentSession.amount)} cho đơn ${currentSession.orderCode}?`)) {
-        await simulatePaymentSuccess();
-      }
-    });
-
     $('pmGoAccountBtn')?.addEventListener('click', () => {
       closePaymentModal();
       window.location.hash = '#tai-khoan';
@@ -412,16 +428,17 @@
     // Điền dữ liệu lên Modal
     $('pmProductTitle').textContent = sessionData.productTitle || product.title;
     $('pmProductTier').textContent = sessionData.tierName || defaultTierName;
-    $('pmBankName').textContent = sessionData.bankName;
-    $('pmBankAccount').textContent = sessionData.bankAccount;
-    $('pmAccountName').textContent = sessionData.accountName;
+    $('pmBankName').textContent = formatBankName(sessionData.bankName);
+    $('pmBankAccount').textContent = sessionData.bankAccount || '105870396069';
+    $('pmAccountName').textContent = sessionData.accountName || 'NGUYEN VAN PHU';
     $('pmAmount').textContent = vnd(sessionData.amount);
     $('pmTransferContent').textContent = sessionData.transferContent;
 
     // Gắn link ảnh QR
     const qrImg = $('pmQrImg');
     if (qrImg) {
-      qrImg.src = sessionData.qrUrl;
+      const qrUrl = getVietQRUrl(sessionData.bankName, sessionData.bankAccount, sessionData.amount, sessionData.transferContent, sessionData.accountName);
+      qrImg.src = qrUrl;
       qrImg.onerror = function () {
         this.src = getVietQRFallbackUrl(sessionData.bankName, sessionData.bankAccount, sessionData.amount, sessionData.transferContent, sessionData.accountName);
       };
@@ -586,8 +603,11 @@
     } catch (e) {}
     const el = $('pmTimerText');
     if (el) el.textContent = '00:00 (Hết hạn)';
-    $('pmStatusText').textContent = '⚠️ Đơn hàng đã hết thời gian chờ. Vui lòng đóng và thử lại.';
-    $('pmStatusText').style.color = '#ef4444';
+    if ($('pmStatusText')) {
+      $('pmStatusText').textContent = '⚠️ Đơn hàng đã hết thời gian chờ. Vui lòng đóng và thử lại.';
+      $('pmStatusText').style.color = '#ef4444';
+    }
+    showPaymentToast('⚠️ Đơn hàng đã hết thời gian chờ. Vui lòng thử lại.', false);
   }
 
   // Lắng nghe Realtime kép (Supabase WebSocket + Polling)

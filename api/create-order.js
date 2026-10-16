@@ -16,9 +16,9 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABA
 
 // Cấu hình ngân hàng mặc định
 const DEFAULT_PAYMENT_CONFIG = {
-  bankName: 'MBBank',
-  bankAccount: '0996358358',
-  accountName: 'NGUYEN XUAN LINH',
+  bankName: 'VietinBank',
+  bankAccount: '105870396069',
+  accountName: 'NGUYEN VAN PHU',
   qrPrefix: 'SEVQR',
   timeoutMinutes: 15
 };
@@ -110,6 +110,11 @@ module.exports = async (req, res) => {
       // Fallback mặc định
     }
 
+    // Chuẩn hóa tên ngân hàng hiển thị (loại bỏ mã kỹ thuật ICB / CTG)
+    if (!bankConfig.bankName || bankConfig.bankName === 'ICB' || bankConfig.bankName === 'CTG') {
+      bankConfig.bankName = 'VietinBank';
+    }
+
     // 3. Lấy giá chuẩn của sản phẩm từ Database Server (Chống Price Tampering)
     let productTitle = 'Công cụ AI';
     let officialAmount = 99000;
@@ -168,7 +173,9 @@ module.exports = async (req, res) => {
 
           const orderCode = existingOrder.code;
           const transferContent = existingOrder.transfer_content || `${bankConfig.qrPrefix} ${orderCode}`;
-          const qrUrl = `https://qr.sepay.vn/img?bank=${encodeURIComponent(bankConfig.bankName)}&acc=${encodeURIComponent(bankConfig.bankAccount)}&template=compact&amount=${existingOrder.amount}&des=${encodeURIComponent(transferContent)}`;
+          const qrBank = (bankConfig.bankName === 'ICB' || bankConfig.bankName === 'CTG' || !bankConfig.bankName) ? 'VietinBank' : bankConfig.bankName;
+          const qrHolder = encodeURIComponent(bankConfig.accountName || 'NGUYEN VAN PHU');
+          const qrUrl = `https://vietqr.app/img?bank=${encodeURIComponent(qrBank)}&acc=${encodeURIComponent(bankConfig.bankAccount)}&template=compact&amount=${existingOrder.amount}&des=${encodeURIComponent(transferContent)}&showinfo=true&holder=${qrHolder}`;
 
           return res.status(200).json({
             success: true,
@@ -227,7 +234,9 @@ module.exports = async (req, res) => {
       console.error('[CreateOrder] Lỗi tạo đơn trên Supabase:', errTxt);
     }
 
-    const qrUrl = `https://qr.sepay.vn/img?bank=${encodeURIComponent(bankConfig.bankName)}&acc=${encodeURIComponent(bankConfig.bankAccount)}&template=compact&amount=${officialAmount}&des=${encodeURIComponent(transferContent)}`;
+    const qrBank = (bankConfig.bankName === 'ICB' || bankConfig.bankName === 'CTG' || !bankConfig.bankName) ? 'VietinBank' : bankConfig.bankName;
+    const qrHolder = encodeURIComponent(bankConfig.accountName || 'NGUYEN VAN PHU');
+    const qrUrl = `https://vietqr.app/img?bank=${encodeURIComponent(qrBank)}&acc=${encodeURIComponent(bankConfig.bankAccount)}&template=compact&amount=${officialAmount}&des=${encodeURIComponent(transferContent)}&showinfo=true&holder=${qrHolder}`;
     const expiresAt = Date.now() + timeoutSec * 1000;
 
     return res.status(200).json({
