@@ -83,83 +83,166 @@
 
       <!-- ==== TRANG TÀI KHOẢN (ĐÃ ĐĂNG NHẬP) ==== -->
       <div id="khuTK">
-        <!-- User Profile Header Card -->
-        <div class="user-header-card">
-          <div class="user-profile-meta">
-            <div class="user-avatar-circle" id="userAvatar">G</div>
-            <div class="user-profile-info">
-              <h1 data-i18n="acc_my_account">Tài khoản của tôi</h1>
-              <p>
-                <span id="tkEmail">ganhteam321@gmail.com</span>
-                <span style="font-size:11px;font-weight:700;color:var(--mint);background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);padding:1px 8px;border-radius:100px" data-i18n="acc_verified">✓ Đã xác thực</span>
-              </p>
+        <div class="acc-container">
+          <!-- Tiêu đề trang -->
+          <h1 class="acc-page-title" data-i18n="acc_my_account">Tài khoản của bạn</h1>
+
+          <!-- Card 1: Thông tin cá nhân (Ảnh 2) -->
+          <div class="acc-card">
+            <div class="acc-card-header">
+              <h3 class="acc-card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Thông tin cá nhân</span>
+              </h3>
+              <div class="acc-avatar-small" id="userAvatar">G</div>
+            </div>
+
+            <div class="acc-info-list">
+              <!-- 1. Email -->
+              <div class="acc-info-item">
+                <span class="acc-info-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </span>
+                <div class="acc-info-body">
+                  <span class="acc-info-text">
+                    <span id="tkEmail">ganhteam321@gmail.com</span>
+                    <span class="acc-badge-verified" data-i18n="acc_verified">✓ Đã xác thực</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- 2. Họ và tên -->
+              <div class="acc-info-item">
+                <span class="acc-info-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg>
+                </span>
+                <div class="acc-info-body">
+                  <span class="acc-info-text acc-name-text" id="tkHoTen">GIA CÁT LƯỢNG</span>
+                </div>
+              </div>
+
+              <!-- 3. Số điện thoại & Bổ sung -->
+              <div class="acc-info-item">
+                <span class="acc-info-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                </span>
+                <div class="acc-info-body">
+                  <div class="acc-phone-display-wrap">
+                    <span class="acc-info-text" id="tkPhoneDisplay">Chưa có số điện thoại</span>
+                    <button type="button" class="acc-btn-edit-phone" id="btnTogglePhoneEdit" title="Cập nhật số điện thoại">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    </button>
+                  </div>
+                  <p class="acc-sub-caption">Số điện thoại này sẽ hiển thị làm Zalo liên hệ cho các sản phẩm bạn tạo và nhận hỗ trợ đơn hàng</p>
+
+                  <!-- Khung nhập / sửa số điện thoại -->
+                  <div id="boSungSdt" style="display:none;margin-top:10px">
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                      <input class="input" id="bs_sdt" type="tel" placeholder="Nhập số điện thoại (VD: 0912345678)" style="min-height:40px;flex:1;min-width:200px;font-size:13.5px">
+                      <button class="btn btn-primary" id="bsNut" type="button" style="min-height:40px;padding:0 18px;font-size:13.5px" data-i18n="acc_save_phone">Lưu số điện thoại</button>
+                      <button class="btn btn-secondary" id="btnCancelPhone" type="button" style="min-height:40px;padding:0 14px;font-size:13px">Hủy</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. Ngày tham gia -->
+              <div class="acc-info-item">
+                <span class="acc-info-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </span>
+                <div class="acc-info-body">
+                  <span class="acc-info-text">Tham gia từ <strong id="tkNgayThamGia">05 tháng 09 2026</strong></span>
+                </div>
+              </div>
             </div>
           </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <button class="btn btn-secondary btn-sm" id="nutThoat" type="button" style="color:var(--danger);border-color:rgba(255,138,128,0.3)" data-i18n="acc_logout">Đăng xuất</button>
-          </div>
-        </div>
 
-        <!-- Alert Bổ sung số điện thoại -->
-        <div id="boSungSdt" style="max-width:860px;margin:0 auto 20px;padding:18px 22px;border-radius:16px;background:linear-gradient(135deg,rgba(45,212,191,.1),rgba(251,191,36,.07));border:1px solid var(--border-strong)">
-          <p style="font-weight:700;margin-bottom:4px;font-size:15px;color:var(--heading)" data-i18n="acc_add_phone_title">📱 Bổ sung số điện thoại</p>
-          <p class="caption" style="margin-bottom:12px;color:var(--body)" data-i18n="acc_add_phone_desc">Tài khoản của bạn chưa có số điện thoại. Vui lòng bổ sung để nhận hỗ trợ và mã kích hoạt.</p>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
-            <div class="field" style="flex:1;min-width:200px;margin:0">
-              <label for="bs_sdt" style="font-size:12px">Số điện thoại</label>
-              <input class="input" id="bs_sdt" type="tel" placeholder="0912345678" style="min-height:42px">
+          <!-- Card 2: Gói đăng ký (Ảnh 2) -->
+          <div class="acc-card">
+            <div class="acc-card-header" style="margin-bottom:12px">
+              <h3 class="acc-card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14v2H5v-2z"></path></svg>
+                <span data-i18n="acc_member_plan">Gói đăng ký</span>
+              </h3>
             </div>
-            <button class="btn btn-primary" id="bsNut" type="button" style="min-height:42px;padding:0 18px;font-size:14px" data-i18n="acc_save_phone">Lưu số điện thoại</button>
-          </div>
-        </div>
-
-        <!-- 3 Thống kê KPI -->
-        <div class="thongke">
-          <div class="o">
-            <div style="font-size:22px;margin-bottom:6px">📦</div>
-            <p class="so" id="tkTongDon">3</p>
-            <p class="nh" data-i18n="acc_stat_orders">Tổng đơn hàng</p>
-          </div>
-          <div class="o">
-            <div style="font-size:22px;margin-bottom:6px">💳</div>
-            <p class="so" id="tkTongTien">9.000đ</p>
-            <p class="nh" data-i18n="acc_stat_spent">Tổng chi tiêu</p>
-          </div>
-          <div class="o">
-            <div style="font-size:22px;margin-bottom:6px">⚡</div>
-            <p class="so" id="tkGanNhat">8/9/2026</p>
-            <p class="nh" data-i18n="acc_stat_latest">Giao dịch gần nhất</p>
-          </div>
-        </div>
-
-        <!-- 2 Cột: Gói thành viên & Bảo mật -->
-        <div class="tk-luoi">
-          <div class="tk-o">
-            <h3 data-i18n="acc_member_plan">Gói thành viên</h3>
-            <p class="caption" style="margin-bottom:16px" data-i18n="acc_member_plan_desc">Bạn chưa có gói thành viên. Nâng cấp để truy cập toàn bộ kho ứng dụng AI không giới hạn.</p>
-            <a class="btn btn-primary btn-sm" href="index.html#san-pham" data-i18n="acc_member_cta">Khám phá sản phẩm ➔</a>
+            <div class="acc-plan-box">
+              <div>
+                <h4 class="acc-plan-tier" id="tkTenGoi">Gói miễn phí</h4>
+                <p class="acc-sub-caption" id="tkGoiDesc">Nâng cấp để truy cập tất cả prompt & công cụ AI premium</p>
+              </div>
+              <a class="btn-plan-upgrade" href="index.html#san-pham">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14v2H5v-2z"></path></svg>
+                <span>Nâng cấp</span>
+              </a>
+            </div>
           </div>
 
-          <div class="tk-o">
-            <h3 data-i18n="acc_security">Bảo mật & Đổi mật khẩu</h3>
-            <form id="doiMKForm">
-              <div class="field">
-                <label for="bm1" style="font-size:12.5px" data-i18n="acc_new_pw">Mật khẩu mới</label>
+          <!-- Card 3: Thống kê Bento Stats (Ảnh 2) -->
+          <div class="acc-stats-grid">
+            <div class="acc-stat-card">
+              <div class="acc-stat-icon-wrap acc-stat-purple">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+              </div>
+              <div class="acc-stat-content">
+                <div class="acc-stat-num" id="tkTongDon">16</div>
+                <div class="acc-stat-label" data-i18n="acc_stat_orders">Tổng đơn hàng</div>
+              </div>
+            </div>
+
+            <div class="acc-stat-card">
+              <div class="acc-stat-icon-wrap acc-stat-amber">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+              </div>
+              <div class="acc-stat-content">
+                <div class="acc-stat-num" id="tkTongTien">108.000đ</div>
+                <div class="acc-stat-label" data-i18n="acc_stat_spent">Tổng chi tiêu</div>
+              </div>
+            </div>
+
+            <div class="acc-stat-card">
+              <div class="acc-stat-icon-wrap acc-stat-emerald">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              </div>
+              <div class="acc-stat-content">
+                <div class="acc-stat-num" id="tkGanNhat">16/10/2026</div>
+                <div class="acc-stat-label" data-i18n="acc_stat_latest">Giao dịch gần nhất</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Bảo mật tài khoản -->
+          <div class="acc-card">
+            <h3 class="acc-card-title" style="margin-bottom:14px">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <span data-i18n="acc_security">Bảo mật tài khoản</span>
+            </h3>
+            <form id="doiMKForm" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+              <div class="field" style="flex:1;min-width:240px;margin:0">
+                <label for="bm1" style="font-size:12.5px;font-weight:600;color:var(--heading)" data-i18n="acc_new_pw">Mật khẩu mới</label>
                 <input class="input" id="bm1" type="password" minlength="6" placeholder="Nhập ít nhất 6 ký tự..." data-i18n-placeholder="acc_new_pw_ph" style="min-height:42px" required>
               </div>
-              <button class="btn btn-secondary btn-sm" type="submit" id="bmNut" data-i18n="acc_btn_update_pw">Cập nhật mật khẩu</button>
+              <button class="btn btn-secondary btn-sm" type="submit" id="bmNut" style="min-height:42px;padding:0 20px;font-weight:700" data-i18n="acc_btn_update_pw">Đổi mật khẩu</button>
             </form>
           </div>
-        </div>
 
-        <!-- Lịch sử mua hàng -->
-        <div style="max-width:860px;margin:28px auto 0">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-            <h3 style="font-size:18px;font-weight:800;color:var(--heading)" data-i18n="acc_history_title">Lịch sử mua hàng</h3>
-            <span style="font-size:12px;color:var(--caption)" data-i18n="acc_history_sync">Dữ liệu đồng bộ thời gian thực</span>
+          <!-- Nút đăng xuất theo ảnh 2 -->
+          <div style="margin-top:20px;margin-bottom:28px">
+            <button class="acc-btn-logout" id="nutThoat" type="button" data-i18n="acc_logout">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              <span>Đăng xuất</span>
+            </button>
           </div>
-          <div id="dsDon">
-            <!-- Rendered by JS -->
+
+          <!-- Lịch sử mua hàng -->
+          <div style="margin-top:32px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+              <h3 style="font-size:19px;font-weight:800;color:var(--heading);margin:0" data-i18n="acc_history_title">Lịch sử mua hàng</h3>
+              <span style="font-size:12px;color:var(--caption)" data-i18n="acc_history_sync">Dữ liệu đồng bộ thời gian thực</span>
+            </div>
+            <div id="dsDon">
+              <!-- Rendered by JS -->
+            </div>
           </div>
         </div>
       </div>
@@ -423,23 +506,47 @@
           $('#khuTK').hidden = false;
 
           // Cập nhật thông tin profile
-          $('#tkEmail').textContent = currentUser.email;
+          if ($('#tkEmail')) $('#tkEmail').textContent = currentUser.email;
           var avatarEl = $('#userAvatar');
           if (avatarEl) {
             if (currentUser.avatarUrl) {
               avatarEl.innerHTML = `<img src="${currentUser.avatarUrl}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
             } else {
-              avatarEl.textContent = (currentUser.fullName || currentUser.email).charAt(0).toUpperCase();
+              avatarEl.textContent = (currentUser.fullName || currentUser.name || currentUser.email).charAt(0).toUpperCase();
             }
           }
 
+          // Họ và tên
+          var hoTenEl = $('#tkHoTen');
+          if (hoTenEl) {
+            var rawName = currentUser.fullName || currentUser.name || (currentUser.email ? currentUser.email.split('@')[0] : 'GIA CÁT LƯỢNG');
+            hoTenEl.textContent = rawName.toUpperCase();
+          }
+
           // Số điện thoại
+          var phoneDisplay = $('#tkPhoneDisplay');
+          var bsInput = $('#bs_sdt');
           if (currentUser.phone) {
-            var bsInput = $('#bs_sdt');
+            if (phoneDisplay) phoneDisplay.textContent = currentUser.phone;
             if (bsInput) bsInput.value = currentUser.phone;
-            $('#boSungSdt').hidden = true;
           } else {
-            $('#boSungSdt').hidden = false;
+            if (phoneDisplay) phoneDisplay.textContent = 'Chưa có số điện thoại';
+            if (bsInput) bsInput.value = '';
+          }
+
+          // Ngày tham gia
+          var joinEl = $('#tkNgayThamGia');
+          if (joinEl) {
+            if (currentUser.created_at) {
+              try {
+                var d = new Date(currentUser.created_at);
+                joinEl.textContent = `${String(d.getDate()).padStart(2, '0')} tháng ${String(d.getMonth() + 1).padStart(2, '0')} ${d.getFullYear()}`;
+              } catch(e) {
+                joinEl.textContent = '05 tháng 09 2026';
+              }
+            } else {
+              joinEl.textContent = '05 tháng 09 2026';
+            }
           }
 
           updateStats();
@@ -555,6 +662,28 @@
         updateUI();
       });
 
+      // Toggle sửa số điện thoại
+      var btnTogglePhone = $('#btnTogglePhoneEdit');
+      if (btnTogglePhone) {
+        btnTogglePhone.addEventListener('click', function(){
+          var box = $('#boSungSdt');
+          if (box) {
+            var isHidden = (box.style.display === 'none' || box.hidden);
+            box.style.display = isHidden ? 'block' : 'none';
+            box.hidden = false;
+            if (isHidden && $('#bs_sdt')) $('#bs_sdt').focus();
+          }
+        });
+      }
+
+      var btnCancelPhone = $('#btnCancelPhone');
+      if (btnCancelPhone) {
+        btnCancelPhone.addEventListener('click', function(){
+          var box = $('#boSungSdt');
+          if (box) box.style.display = 'none';
+        });
+      }
+
       // Lưu số điện thoại
       $('#bsNut').addEventListener('click', async function(){
         var s = $('#bs_sdt').value.trim();
@@ -563,7 +692,10 @@
           await window.SupabaseDB.updatePhone(currentUser.id, s);
         }
         if (currentUser) currentUser.phone = s;
-        $('#boSungSdt').hidden = true;
+        var phoneDisplay = $('#tkPhoneDisplay');
+        if (phoneDisplay) phoneDisplay.textContent = s;
+        var box = $('#boSungSdt');
+        if (box) box.style.display = 'none';
         alert('✓ Đã cập nhật số điện thoại thành công!');
       });
 

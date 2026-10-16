@@ -1912,7 +1912,301 @@ footer.site a:hover {
   text-decoration: underline;
 }
 
-/* User Profile Header Card */
+/* =============================================================================
+   NEW ACCOUNT PAGE LAYOUT (ADAPTED FROM IMAGE 2 WITH IMAGE 1'S WARM AESTHETICS)
+   ============================================================================= */
+
+.acc-container {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.acc-page-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--heading);
+  margin-bottom: 22px;
+  line-height: 1.25;
+}
+
+.acc-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(120, 80, 20, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.acc-card:hover {
+  box-shadow: 0 6px 24px rgba(120, 80, 20, 0.07);
+}
+
+.acc-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.acc-card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--heading);
+  margin: 0;
+}
+
+.acc-card-title svg {
+  color: #D97706;
+  flex-shrink: 0;
+}
+
+.acc-avatar-small {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #FFFFFF;
+  font-size: 19px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 12px rgba(217, 119, 6, 0.35);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Rows in Card 1 (Thông tin cá nhân) */
+.acc-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.acc-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14.5px;
+  color: var(--heading);
+}
+
+.acc-info-icon {
+  width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #D97706;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.acc-info-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.acc-info-text {
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.acc-name-text {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--heading);
+}
+
+.acc-badge-verified {
+  font-size: 11px;
+  font-weight: 700;
+  color: #D97706;
+  background: rgba(217, 119, 6, 0.1);
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  padding: 2px 8px;
+  border-radius: 100px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.acc-phone-display-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.acc-btn-edit-phone {
+  background: none;
+  border: none;
+  color: #D97706;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.acc-btn-edit-phone:hover {
+  background: rgba(217, 119, 6, 0.12);
+  transform: scale(1.1);
+}
+
+.acc-sub-caption {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.45;
+}
+
+/* Card 2 (Gói đăng ký) */
+.acc-plan-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.acc-plan-tier {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: var(--heading);
+  margin: 0;
+}
+
+.btn-plan-upgrade {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #FFFFFF !important;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-plan-upgrade:hover {
+  background: linear-gradient(135deg, #EA580C, #D97706);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.45);
+}
+
+/* Bento Stats Grid */
+.acc-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .acc-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.acc-stat-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(120, 80, 20, 0.04);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.acc-stat-card:hover {
+  transform: translateY(-2px);
+  border-color: #F59E0B;
+}
+
+.acc-stat-icon-wrap {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.acc-stat-purple {
+  background: rgba(139, 92, 246, 0.12);
+  color: #7c3aed;
+}
+
+.acc-stat-amber {
+  background: rgba(245, 158, 11, 0.15);
+  color: #d97706;
+}
+
+.acc-stat-emerald {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.acc-stat-content {
+  min-width: 0;
+}
+
+.acc-stat-num {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--heading);
+  line-height: 1.2;
+}
+
+.acc-stat-label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* Đăng xuất button */
+.acc-btn-logout {
+  background: #FFFFFF;
+  color: #EF4444;
+  border: 1.5px solid rgba(239, 68, 68, 0.35);
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.06);
+}
+
+.acc-btn-logout:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: #EF4444;
+  transform: translateY(-1px);
+}
+
+/* Legacy fallback styles for compatibility */
 .user-header-card {
   max-width: 880px;
   margin: 0 auto 24px;
@@ -1927,11 +2221,7 @@ footer.site a:hover {
   flex-wrap: wrap;
   box-shadow: 0 4px 20px rgba(120, 80, 20, 0.05);
 }
-.user-profile-meta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
+.user-profile-meta { display: flex; align-items: center; gap: 16px; }
 .user-avatar-circle {
   width: 50px;
   height: 50px;
@@ -1946,89 +2236,16 @@ footer.site a:hover {
   box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
   flex-shrink: 0;
 }
-.user-profile-info h1 {
-  font-size: 21px;
-  font-weight: 800;
-  color: var(--heading);
-  line-height: 1.25;
-}
-.user-profile-info p {
-  font-size: 13.5px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 3px;
-}
-
-/* Bento Statistics Counters */
-.thongke {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-  max-width: 880px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.thongke .o {
-  background: #FFFFFF;
-  border: 1.5px solid var(--border);
-  border-radius: 18px;
-  padding: 22px 16px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s, border-color 0.2s;
-  box-shadow: 0 4px 18px rgba(120, 80, 20, 0.04);
-}
-.thongke .o:hover {
-  transform: translateY(-2px);
-  border-color: #F59E0B;
-}
-.thongke .o::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #F59E0B, #D97706);
-}
-.thongke .so {
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--heading);
-  line-height: 1.2;
-}
-.thongke .nh {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 6px;
-}
-
-/* User Account Columns */
-.tk-luoi {
-  display: grid;
-  gap: 20px;
-  max-width: 880px;
-  margin: 0 auto;
-}
-@media (min-width: 860px) {
-  .tk-luoi { grid-template-columns: 1fr 1fr; }
-}
-.tk-o {
-  background: #FFFFFF;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-card);
-  padding: 26px;
-  box-shadow: 0 4px 18px rgba(120, 80, 20, 0.04);
-}
-.tk-o h3 {
-  font-size: 17.5px;
-  margin-bottom: 14px;
-  color: var(--heading);
-}
+.user-profile-info h1 { font-size: 21px; font-weight: 800; color: var(--heading); line-height: 1.25; }
+.user-profile-info p { font-size: 13.5px; color: var(--muted); display: flex; align-items: center; gap: 8px; margin-top: 3px; }
+.thongke { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; max-width: 880px; margin-left: auto; margin-right: auto; }
+.thongke .o { background: #FFFFFF; border: 1.5px solid var(--border); border-radius: 18px; padding: 22px 16px; text-align: center; position: relative; overflow: hidden; box-shadow: 0 4px 18px rgba(120, 80, 20, 0.04); }
+.thongke .so { font-size: 26px; font-weight: 800; color: var(--heading); line-height: 1.2; }
+.thongke .nh { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.tk-luoi { display: grid; gap: 20px; max-width: 880px; margin: 0 auto; }
+@media (min-width: 860px) { .tk-luoi { grid-template-columns: 1fr 1fr; } }
+.tk-o { background: #FFFFFF; border: 1.5px solid var(--border); border-radius: var(--radius-card); padding: 26px; box-shadow: 0 4px 18px rgba(120, 80, 20, 0.04); }
+.tk-o h3 { font-size: 17.5px; margin-bottom: 14px; color: var(--heading); }
 
 /* Order List Items */
 .don {

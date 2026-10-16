@@ -522,7 +522,7 @@
 
     khuAuth.hidden = true;
     khuTK.hidden = false;
-    document.title = 'Tài khoản của tôi | AI Center Store';
+    document.title = 'Tài khoản của bạn | AI Center Store';
 
     // User Profile Header
     $('#tkEmail').textContent = user.email;
@@ -531,7 +531,40 @@
       if (user.avatarUrl) {
         avatarEl.innerHTML = `<img src="${user.avatarUrl}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
       } else {
-        avatarEl.textContent = (user.name || user.email).charAt(0).toUpperCase();
+        avatarEl.textContent = (user.name || user.fullName || user.email).charAt(0).toUpperCase();
+      }
+    }
+
+    // Họ và tên (như ảnh 2: GIA CÁT LƯỢNG)
+    const hoTenEl = $('#tkHoTen');
+    if (hoTenEl) {
+      const rawName = user.name || user.fullName || (user.email ? user.email.split('@')[0] : 'GIA CÁT LƯỢNG');
+      hoTenEl.textContent = rawName.toUpperCase();
+    }
+
+    // Hiển thị số điện thoại
+    const phoneDisplay = $('#tkPhoneDisplay');
+    const sdtInput = $('#bs_sdt');
+    if (user.phone) {
+      if (phoneDisplay) phoneDisplay.textContent = user.phone;
+      if (sdtInput) sdtInput.value = user.phone;
+    } else {
+      if (phoneDisplay) phoneDisplay.textContent = 'Chưa có số điện thoại';
+      if (sdtInput) sdtInput.value = '';
+    }
+
+    // Ngày tham gia
+    const joinEl = $('#tkNgayThamGia');
+    if (joinEl) {
+      if (user.created_at) {
+        try {
+          const d = new Date(user.created_at);
+          joinEl.textContent = `${String(d.getDate()).padStart(2, '0')} tháng ${String(d.getMonth() + 1).padStart(2, '0')} ${d.getFullYear()}`;
+        } catch (e) {
+          joinEl.textContent = '05 tháng 09 2026';
+        }
+      } else {
+        joinEl.textContent = '05 tháng 09 2026';
       }
     }
 
@@ -548,13 +581,15 @@
     $('#tkTongTien').textContent = vnd(totalSpent);
     $('#tkGanNhat').textContent = orders.length > 0 ? orders[0].date : (user.lastTransaction || 'Chưa có');
 
-    // Phone Alert
-    if (user.phone) {
-      const sdtInput = $('#bs_sdt');
-      if (sdtInput) sdtInput.value = user.phone;
-      $('#boSungSdt').hidden = true;
+    // Gói thành viên
+    const tenGoiEl = $('#tkTenGoi');
+    const goiDescEl = $('#tkGoiDesc');
+    if (paidOrders.length > 0) {
+      if (tenGoiEl) tenGoiEl.textContent = `Thành viên Pro (${paidOrders.length} công cụ)`;
+      if (goiDescEl) goiDescEl.textContent = 'Bạn đã kích hoạt bản quyền trọn đời các công cụ AI premium';
     } else {
-      $('#boSungSdt').hidden = false;
+      if (tenGoiEl) tenGoiEl.textContent = 'Gói miễn phí';
+      if (goiDescEl) goiDescEl.textContent = 'Nâng cấp để truy cập tất cả prompt & công cụ AI premium';
     }
 
     // Orders History
@@ -1018,6 +1053,22 @@
       }
     });
 
+    // Toggle edit phone
+    $('#btnTogglePhoneEdit')?.addEventListener('click', () => {
+      const box = $('#boSungSdt');
+      if (box) {
+        const isHidden = (box.style.display === 'none' || box.hidden);
+        box.style.display = isHidden ? 'block' : 'none';
+        box.hidden = false;
+        if (isHidden) $('#bs_sdt')?.focus();
+      }
+    });
+
+    $('#btnCancelPhone')?.addEventListener('click', () => {
+      const box = $('#boSungSdt');
+      if (box) box.style.display = 'none';
+    });
+
     // Save Phone Button
     $('#bsNut')?.addEventListener('click', async () => {
       const sdt = $('#bs_sdt').value.trim();
@@ -1029,7 +1080,10 @@
         await window.SupabaseDB.updatePhone(STORE_DATA.currentUser.id, sdt);
       }
       STORE_DATA.currentUser.phone = sdt;
-      $('#boSungSdt').hidden = true;
+      const phoneDisplay = $('#tkPhoneDisplay');
+      if (phoneDisplay) phoneDisplay.textContent = sdt;
+      const box = $('#boSungSdt');
+      if (box) box.style.display = 'none';
       alert('✓ Đã cập nhật số điện thoại thành công!');
     });
 
