@@ -572,10 +572,10 @@
     const current = DB.getAuthor() || {};
     const updated = {
       ...current,
-      name: $('#author_name')?.value.trim() || 'Xuân Linh',
+      name: $('#author_name')?.value.trim() || 'Phú Nguyễn',
       title: $('#author_title')?.value.trim() || 'Admin & Sáng lập viên',
-      phone: $('#author_phone')?.value.trim() || '0996 358 358',
-      zalo: $('#author_zalo')?.value.trim() || '0996358358',
+      phone: $('#author_phone')?.value.trim() || '0852 241 386',
+      zalo: $('#author_zalo')?.value.trim() || '0852241386',
       facebook_url: $('#author_facebook')?.value.trim() || 'https://www.facebook.com',
       youtube_url: $('#author_youtube')?.value.trim() || 'https://www.youtube.com',
       tiktok_url: $('#author_tiktok')?.value.trim() || 'https://www.tiktok.com',

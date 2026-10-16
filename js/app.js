@@ -378,7 +378,7 @@
 
     // Breadcrumbs
     $('#vet').textContent = product.title;
-    document.title = `${product.title} | AI Center Store`;
+    document.title = `${product.title} | AI Store`;
 
     // Title & Badges
     $('#ten').innerHTML = `${esc(product.title)} ${product.version ? `<span class="ver">${esc(product.version)}</span>` : ''}`;
@@ -450,12 +450,19 @@
     const rawVideoId = product.demo_video_id;
     const videoId = (typeof extractYouTubeId === 'function' ? extractYouTubeId(rawVideoId) : rawVideoId) || 'aoG_YF3C_bM';
     const isFileProtocol = window.location.protocol === 'file:';
+    const isSaved = isProductSaved(product.id);
 
     if (videoId && (product.format === '9:16' || product.format === '16:9' || product.format === 'video')) {
       const is916 = product.format === '9:16';
       mediaBox.innerHTML = `
         <div class="video-wrapper">
           <div class="ct-video ${is916 ? 'v916' : 'v169'}">
+            <!-- Icon Lưu ở góc trên phải tại ảnh 3 -->
+            <button type="button" class="btn-save-video-corner ${isSaved ? 'saved' : ''}" id="btnSaveDetailProduct" title="${isSaved ? 'Đã lưu sản phẩm (Bấm để bỏ lưu)' : 'Lưu sản phẩm'}" aria-label="Lưu sản phẩm">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </button>
             <iframe 
               src="https://www.youtube.com/embed/${videoId}?rel=0&playsinline=1" 
               title="${esc(product.title)}" 
@@ -486,10 +493,43 @@
       `;
     } else {
       mediaBox.innerHTML = `
-        <div class="ct-anh" style="padding:20px;text-align:center">
+        <div class="ct-anh" style="position:relative;padding:20px;text-align:center">
+          <button type="button" class="btn-save-video-corner ${isSaved ? 'saved' : ''}" id="btnSaveDetailProduct" title="${isSaved ? 'Đã lưu sản phẩm (Bấm để bỏ lưu)' : 'Lưu sản phẩm'}" aria-label="Lưu sản phẩm">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </button>
           <img src="${generatePosterSVG(product)}" alt="${esc(product.title)}" style="max-height:450px;margin:0 auto;border-radius:14px">
         </div>
       `;
+    }
+
+    // Attach bookmark click event
+    const btnSave = $('#btnSaveDetailProduct');
+    if (btnSave) {
+      btnSave.onclick = (e) => {
+        e.stopPropagation();
+        const nowSaved = toggleSaveProduct(product.id);
+        if (nowSaved) {
+          btnSave.classList.add('saved');
+          btnSave.title = 'Đã lưu sản phẩm (Bấm để bỏ lưu)';
+          btnSave.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2.2">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+          `;
+          showToast('✓ Đã lưu sản phẩm vào danh sách đã lưu!');
+        } else {
+          btnSave.classList.remove('saved');
+          btnSave.title = 'Lưu sản phẩm';
+          btnSave.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+          `;
+          showToast('✓ Đã bỏ lưu sản phẩm.');
+        }
+      };
     }
 
     // Related Products (4 products)
@@ -502,10 +542,291 @@
   }
 
   // =========================================
+  // BOOKMARK / SAVED PRODUCTS STORAGE HELPERS
+  // =========================================
+  const SAVED_PRODUCTS_KEY = 'aic_saved_products';
+
+  function getSavedProductIds() {
+    try {
+      const raw = localStorage.getItem(SAVED_PRODUCTS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function isProductSaved(productId) {
+    const ids = getSavedProductIds();
+    return ids.includes(productId);
+  }
+
+  function toggleSaveProduct(productId) {
+    let ids = getSavedProductIds();
+    const index = ids.indexOf(productId);
+    let saved = false;
+    if (index > -1) {
+      ids.splice(index, 1);
+      saved = false;
+    } else {
+      ids.unshift(productId);
+      saved = true;
+    }
+    try {
+      localStorage.setItem(SAVED_PRODUCTS_KEY, JSON.stringify(ids));
+    } catch (e) {}
+
+    const daLuuEl = document.getElementById('tkDaLuu');
+    if (daLuuEl) {
+      daLuuEl.textContent = ids.length;
+    }
+
+    return saved;
+  }
+
+  window.SAVED_PRODUCTS_KEY = SAVED_PRODUCTS_KEY;
+  window.getSavedProductIds = getSavedProductIds;
+  window.isProductSaved = isProductSaved;
+  window.toggleSaveProduct = toggleSaveProduct;
+
+  // =========================================
   // ACCOUNT & AUTH CONTROLLER
   // =========================================
   let isLoggedIn = true; // Default logged in as ganhteam321@gmail.com matching screenshot
   let authMode = 'dangnhap'; // 'dangnhap' | 'dangky' | 'quen'
+  let currentAccountTab = 'orders'; // 'orders' | 'pending' | 'saved'
+  let currentAccountPage = 1;
+  const ACCOUNT_PAGE_SIZE = 10;
+
+  function renderAccountTabContent() {
+    const user = STORE_DATA.currentUser;
+    const allOrders = (window.DB && window.DB.getOrders) ? window.DB.getOrders() : (user.orders || []);
+    const orders = (user.role === 'admin' || user.email === 'ganhteam321@gmail.com')
+      ? allOrders
+      : allOrders.filter(o => !o.customerEmail || o.customerEmail.toLowerCase() === user.email.toLowerCase());
+
+    const paidOrders = orders.filter(o => o.status === 'paid');
+    const pendingOrders = orders.filter(o => o.status !== 'paid');
+    const savedIds = getSavedProductIds();
+    const allActiveProducts = (window.DB && window.DB.getActiveProducts) ? window.DB.getActiveProducts() : STORE_DATA.products;
+    const savedProducts = savedIds.map(id => allActiveProducts.find(p => p.id === id)).filter(Boolean);
+
+    // Update stat numbers (Tổng đơn hàng chỉ hiện đơn đã thanh toán thành công)
+    if ($('#tkTongDon')) $('#tkTongDon').textContent = paidOrders.length;
+    if ($('#tkChoThanhToan')) $('#tkChoThanhToan').textContent = pendingOrders.length;
+    if ($('#tkDaLuu')) $('#tkDaLuu').textContent = savedProducts.length;
+
+    // Update active tab styles on 3 cards
+    const cardOrders = $('#statCardAllOrders');
+    const cardPending = $('#statCardPendingOrders');
+    const cardSaved = $('#statCardSavedProducts');
+
+    if (cardOrders) cardOrders.classList.toggle('active', currentAccountTab === 'orders');
+    if (cardPending) cardPending.classList.toggle('active', currentAccountTab === 'pending');
+    if (cardSaved) cardSaved.classList.toggle('active', currentAccountTab === 'saved');
+
+    const headingEl = $('#accTabHeading');
+    const subHeadingEl = $('#accTabSubHeading');
+    const badgeEl = $('#accTabCountBadge');
+    const dsDon = $('#dsDon');
+    const paginationEl = $('#accPagination');
+
+    let items = [];
+    let isOrdersType = false;
+
+    if (currentAccountTab === 'orders') {
+      if (headingEl) headingEl.textContent = 'Đơn hàng thành công';
+      if (subHeadingEl) subHeadingEl.textContent = 'Danh sách các đơn hàng đã thanh toán thành công (Tối đa 10 đơn hàng trên mỗi trang)';
+      if (badgeEl) badgeEl.textContent = `${paidOrders.length} đơn thành công`;
+      items = paidOrders;
+      isOrdersType = true;
+    } else if (currentAccountTab === 'pending') {
+      if (headingEl) headingEl.textContent = 'Đơn hàng chờ thanh toán';
+      if (subHeadingEl) subHeadingEl.textContent = 'Các đơn hàng chưa hoàn tất thanh toán (Tối đa 10 đơn hàng mỗi trang)';
+      if (badgeEl) badgeEl.textContent = `${pendingOrders.length} đơn chờ`;
+      items = pendingOrders;
+      isOrdersType = true;
+    } else {
+      if (headingEl) headingEl.textContent = 'Sản phẩm đã lưu';
+      if (subHeadingEl) subHeadingEl.textContent = 'Danh sách công cụ & kịch bản bạn đã lưu (Tối đa 10 sản phẩm mỗi trang)';
+      if (badgeEl) badgeEl.textContent = `${savedProducts.length} sản phẩm`;
+      items = savedProducts;
+      isOrdersType = false;
+    }
+
+    const totalPages = Math.ceil(items.length / ACCOUNT_PAGE_SIZE) || 1;
+    if (currentAccountPage > totalPages) currentAccountPage = totalPages;
+    if (currentAccountPage < 1) currentAccountPage = 1;
+
+    const startIdx = (currentAccountPage - 1) * ACCOUNT_PAGE_SIZE;
+    const pageItems = items.slice(startIdx, startIdx + ACCOUNT_PAGE_SIZE);
+
+    if (!dsDon) return;
+
+    if (!pageItems || pageItems.length === 0) {
+      if (currentAccountTab === 'saved') {
+        dsDon.innerHTML = `
+          <div style="text-align:center;padding:36px 16px;background:#FFFFFF;border:1.5px dashed var(--border);border-radius:18px">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--muted);margin-bottom:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+            <p style="font-weight:700;color:var(--heading);margin-bottom:6px">Chưa có sản phẩm nào được lưu</p>
+            <p class="caption" style="margin-bottom:16px">Hãy bấm vào biểu tượng "Lưu" ở góc trên của video hoặc sản phẩm để lưu lại xem sau.</p>
+            <a href="#san-pham" class="btn btn-primary btn-sm" style="display:inline-flex">Khám phá sản phẩm ngay</a>
+          </div>
+        `;
+      } else if (currentAccountTab === 'pending') {
+        dsDon.innerHTML = `
+          <div style="text-align:center;padding:36px 16px;background:#FFFFFF;border:1.5px dashed var(--border);border-radius:18px">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:#059669;margin-bottom:10px"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            <p style="font-weight:700;color:var(--heading);margin-bottom:6px">Không có đơn hàng nào chờ thanh toán</p>
+            <p class="caption">Tuyệt vời! Tất cả đơn hàng của bạn đều đã được thanh toán hoàn tất.</p>
+          </div>
+        `;
+      } else {
+        dsDon.innerHTML = `
+          <div style="text-align:center;padding:36px 16px;background:#FFFFFF;border:1.5px dashed var(--border);border-radius:18px">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--mint);margin-bottom:10px"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            <p style="font-weight:700;color:var(--heading);margin-bottom:6px">Chưa có đơn hàng nào đã thanh toán</p>
+            <p class="caption">Các đơn hàng thanh toán thành công sẽ xuất hiện tại đây để bạn nhận sản phẩm.</p>
+          </div>
+        `;
+      }
+    } else {
+      if (isOrdersType) {
+        dsDon.innerHTML = pageItems.map(o => {
+          const p = (window.DB && window.DB.getProductById) ? window.DB.getProductById(o.id || o.productId) : null;
+          const poster = (p && window.generatePosterSVG) ? window.generatePosterSVG(p) : ((window.generatePosterSVG) ? window.generatePosterSVG({ title: o.title, id: o.id }) : '');
+          const title = (p && p.title) ? p.title : (o.title ? o.title.replace(/^app-/, 'App ').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'Sản phẩm AI');
+          const isPaid = o.status === 'paid';
+          const targetUrl = o.accessUrl || (p ? `#san-pham?id=${p.id}` : '#');
+
+          return `
+            <div class="don">
+              <div class="don-left">
+                <img src="${poster}" class="don-thumb" alt="${esc(title)}">
+                <div style="min-width:0">
+                  <p class="t">
+                    <span style="font-weight:700">${esc(title)}</span>
+                    <span class="badge ${isPaid ? 'badge-paid' : 'badge-pend'}">${isPaid ? '✓ Đã thanh toán' : '⏳ Chờ thanh toán'}</span>
+                  </p>
+                  <p class="m">
+                    <code style="font-size:12px;color:var(--heading)">${esc(o.code)}</code> · <span>${esc(o.date)}</span> · <b style="color:var(--mint)">${vnd(o.amount)}</b>
+                  </p>
+                </div>
+              </div>
+              <div>
+                ${isPaid ? `
+                  <a class="btn btn-secondary btn-sm" href="${targetUrl}" style="border-color:var(--mint);color:var(--mint);font-weight:700;white-space:nowrap">
+                    Nhận sản phẩm ➔
+                  </a>
+                ` : `
+                  <a class="btn btn-primary btn-sm" href="#san-pham?id=${o.id}" style="font-size:12.5px;white-space:nowrap">
+                    Thanh toán ngay
+                  </a>
+                `}
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        // Saved products
+        dsDon.innerHTML = pageItems.map(p => {
+          const poster = (window.generatePosterSVG) ? window.generatePosterSVG(p) : '';
+          const priceFormatted = vnd(p.price);
+          const formatBadge = p.format === '9:16' ? '9:16 Video' : (p.category === 'flow' ? 'Veo3 Flow' : 'Chatbot AI');
+
+          return `
+            <div class="don saved-product-row" data-id="${p.id}">
+              <div class="don-left">
+                <img src="${poster}" class="don-thumb" alt="${esc(p.title)}">
+                <div style="min-width:0">
+                  <p class="t">
+                    <span style="font-weight:700">${esc(p.title)}</span>
+                    <span class="badge" style="background:rgba(217,119,6,0.12);color:#D97706;border:1px solid rgba(217,119,6,0.25)">★ ${formatBadge}</span>
+                  </p>
+                  <p class="m">
+                    <b style="color:var(--mint);font-size:14px">${priceFormatted}</b>
+                    ${p.original_price ? `<span style="text-decoration:line-through;font-size:12px;color:var(--muted)">${vnd(p.original_price)}</span>` : ''}
+                    <span style="color:var(--muted);font-size:12px">· Đã lưu</span>
+                  </p>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+                <a class="btn btn-primary btn-sm" href="#san-pham?id=${p.id}" style="font-size:12.5px;white-space:nowrap;padding:7px 14px">
+                  Xem chi tiết
+                </a>
+                <button type="button" class="btn btn-secondary btn-sm btn-unsave-acc" data-id="${p.id}" title="Bỏ lưu" style="min-height:36px;padding:0 12px;font-size:12px;color:#EF4444;border-color:rgba(239,68,68,0.3)">
+                  ✕ Bỏ lưu
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Attach un-save buttons
+        dsDon.querySelectorAll('.btn-unsave-acc').forEach(btn => {
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            const pId = btn.getAttribute('data-id');
+            toggleSaveProduct(pId);
+            showToast('✓ Đã bỏ lưu sản phẩm.');
+            renderAccountTabContent();
+          };
+        });
+      }
+    }
+
+    // Render pagination buttons if items > 10
+    if (paginationEl) {
+      if (items.length > ACCOUNT_PAGE_SIZE) {
+        paginationEl.style.display = 'flex';
+        let pagHtml = `
+          <button type="button" class="acc-page-btn" id="accPagePrev" ${currentAccountPage === 1 ? 'disabled' : ''} title="Trang trước">
+            « Trước
+          </button>
+        `;
+        for (let i = 1; i <= totalPages; i++) {
+          pagHtml += `
+            <button type="button" class="acc-page-btn ${i === currentAccountPage ? 'active' : ''}" data-page="${i}">
+              ${i}
+            </button>
+          `;
+        }
+        pagHtml += `
+          <button type="button" class="acc-page-btn" id="accPageNext" ${currentAccountPage === totalPages ? 'disabled' : ''} title="Trang sau">
+            Sau »
+          </button>
+        `;
+        paginationEl.innerHTML = pagHtml;
+
+        const prevBtn = $('#accPagePrev');
+        if (prevBtn) {
+          prevBtn.onclick = () => {
+            if (currentAccountPage > 1) {
+              currentAccountPage--;
+              renderAccountTabContent();
+            }
+          };
+        }
+        const nextBtn = $('#accPageNext');
+        if (nextBtn) {
+          nextBtn.onclick = () => {
+            if (currentAccountPage < totalPages) {
+              currentAccountPage++;
+              renderAccountTabContent();
+            }
+          };
+        }
+        paginationEl.querySelectorAll('.acc-page-btn[data-page]').forEach(b => {
+          b.onclick = () => {
+            currentAccountPage = parseInt(b.getAttribute('data-page'), 10);
+            renderAccountTabContent();
+          };
+        });
+      } else {
+        paginationEl.style.display = 'none';
+        paginationEl.innerHTML = '';
+      }
+    }
+  }
 
   function renderAccountView() {
     const user = STORE_DATA.currentUser;
@@ -516,13 +837,13 @@
       khuTK.hidden = true;
       khuAuth.hidden = false;
       renderAuthForm();
-      document.title = 'Đăng nhập | AI Center Store';
+      document.title = 'Đăng nhập | AI Store';
       return;
     }
 
     khuAuth.hidden = true;
     khuTK.hidden = false;
-    document.title = 'Tài khoản của bạn | AI Center Store';
+    document.title = 'Tài khoản của bạn | AI Store';
 
     // User Profile Header
     $('#tkEmail').textContent = user.email;
@@ -568,73 +889,39 @@
       }
     }
 
-    // Statistics
-    const allOrders = (window.DB && window.DB.getOrders) ? window.DB.getOrders() : (user.orders || []);
-    const orders = (user.role === 'admin' || user.email === 'ganhteam321@gmail.com')
-      ? allOrders
-      : allOrders.filter(o => !o.customerEmail || o.customerEmail.toLowerCase() === user.email.toLowerCase());
-
-    const paidOrders = orders.filter(o => o.status === 'paid');
-    const totalSpent = paidOrders.reduce((sum, o) => sum + (o.amount || 0), 0);
-
-    $('#tkTongDon').textContent = orders.length;
-    $('#tkTongTien').textContent = vnd(totalSpent);
-    $('#tkGanNhat').textContent = orders.length > 0 ? orders[0].date : (user.lastTransaction || 'Chưa có');
-
-    // Gói thành viên
-    const tenGoiEl = $('#tkTenGoi');
-    const goiDescEl = $('#tkGoiDesc');
-    if (paidOrders.length > 0) {
-      if (tenGoiEl) tenGoiEl.textContent = `Thành viên Pro (${paidOrders.length} công cụ)`;
-      if (goiDescEl) goiDescEl.textContent = 'Bạn đã kích hoạt bản quyền trọn đời các công cụ AI premium';
-    } else {
-      if (tenGoiEl) tenGoiEl.textContent = 'Gói miễn phí';
-      if (goiDescEl) goiDescEl.textContent = 'Nâng cấp để truy cập tất cả prompt & công cụ AI premium';
+    // Bind stat card clicks (Tabs: All Orders, Pending Orders, Saved Products)
+    const cardOrders = $('#statCardAllOrders');
+    if (cardOrders && !cardOrders._bound) {
+      cardOrders._bound = true;
+      cardOrders.onclick = () => {
+        currentAccountTab = 'orders';
+        currentAccountPage = 1;
+        renderAccountTabContent();
+      };
     }
 
-    // Orders History
-    const dsDon = $('#dsDon');
-    if (dsDon) {
-      if (!orders || orders.length === 0) {
-        dsDon.innerHTML = '<p class="caption" style="text-align:center;padding:24px">Chưa có đơn hàng nào.</p>';
-      } else {
-        dsDon.innerHTML = orders.map(o => {
-          const p = (window.DB && window.DB.getProductById) ? window.DB.getProductById(o.id || o.productId) : null;
-          const poster = (p && window.generatePosterSVG) ? window.generatePosterSVG(p) : ((window.generatePosterSVG) ? window.generatePosterSVG({ title: o.title, id: o.id }) : '');
-          const title = (p && p.title) ? p.title : (o.title ? o.title.replace(/^app-/, 'App ').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'Sản phẩm AI');
-          const isPaid = o.status === 'paid';
-          const targetUrl = o.accessUrl || (p ? `#san-pham?id=${p.id}` : '#');
-
-          return `
-            <div class="don">
-              <div class="don-left">
-                <img src="${poster}" class="don-thumb" alt="${esc(title)}">
-                <div style="min-width:0">
-                  <p class="t">
-                    <span style="font-weight:700">${esc(title)}</span>
-                    <span class="badge ${isPaid ? 'badge-paid' : 'badge-pend'}">${isPaid ? '✓ Đã thanh toán' : '⏳ Chờ thanh toán'}</span>
-                  </p>
-                  <p class="m">
-                    <code style="font-size:12px;color:var(--heading)">${esc(o.code)}</code> · <span>${esc(o.date)}</span> · <b style="color:var(--mint)">${vnd(o.amount)}</b>
-                  </p>
-                </div>
-              </div>
-              <div>
-                ${isPaid ? `
-                  <a class="btn btn-secondary btn-sm" href="${targetUrl}" style="border-color:var(--mint);color:var(--mint);font-weight:700;white-space:nowrap">
-                    Nhận sản phẩm ➔
-                  </a>
-                ` : `
-                  <a class="btn btn-primary btn-sm" href="#san-pham?id=${o.id}" style="font-size:12.5px;white-space:nowrap">
-                    Thanh toán ngay
-                  </a>
-                `}
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
+    const cardPending = $('#statCardPendingOrders');
+    if (cardPending && !cardPending._bound) {
+      cardPending._bound = true;
+      cardPending.onclick = () => {
+        currentAccountTab = 'pending';
+        currentAccountPage = 1;
+        renderAccountTabContent();
+      };
     }
+
+    const cardSaved = $('#statCardSavedProducts');
+    if (cardSaved && !cardSaved._bound) {
+      cardSaved._bound = true;
+      cardSaved.onclick = () => {
+        currentAccountTab = 'saved';
+        currentAccountPage = 1;
+        renderAccountTabContent();
+      };
+    }
+
+    // Render active tab content and pagination
+    renderAccountTabContent();
   }
 
   function renderAuthForm() {
@@ -794,7 +1081,7 @@
       detailView.hidden = true;
       accountView.hidden = true;
 
-      document.title = 'AI Center Store — Kho App & Chatbot Tạo Video AI';
+      document.title = 'AI Store — Kho App & Chatbot Tạo Video AI';
       renderHomeCatalog();
 
       if (wasViewingDetail) {
@@ -1087,6 +1374,22 @@
       alert('✓ Đã cập nhật số điện thoại thành công!');
     });
 
+    // Toggle edit password (Bảo mật tài khoản ẩn giống số điện thoại)
+    $('#btnTogglePassEdit')?.addEventListener('click', () => {
+      const box = $('#khungDoiMK');
+      if (box) {
+        const isHidden = (box.style.display === 'none' || box.hidden);
+        box.style.display = isHidden ? 'block' : 'none';
+        box.hidden = false;
+        if (isHidden) $('#bm1')?.focus();
+      }
+    });
+
+    $('#btnCancelPass')?.addEventListener('click', () => {
+      const box = $('#khungDoiMK');
+      if (box) box.style.display = 'none';
+    });
+
     // Change Password Form
     $('#doiMKForm')?.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -1095,8 +1398,45 @@
         alert('Mật khẩu mới phải từ 6 ký tự trở lên.');
         return;
       }
-      alert('Đã đổi mật khẩu thành công!');
+      alert('✓ Đã đổi mật khẩu thành công!');
       $('#bm1').value = '';
+      const box = $('#khungDoiMK');
+      if (box) box.style.display = 'none';
+    });
+
+    // Toggle edit account name
+    $('#btnToggleNameEdit')?.addEventListener('click', () => {
+      const box = $('#boSungTen');
+      if (box) {
+        const isHidden = (box.style.display === 'none' || box.hidden);
+        box.style.display = isHidden ? 'block' : 'none';
+        box.hidden = false;
+        if (isHidden) {
+          const currentName = $('#tkHoTen')?.textContent || '';
+          if ($('#bs_ten')) $('#bs_ten').value = currentName;
+          $('#bs_ten')?.focus();
+        }
+      }
+    });
+
+    $('#btnCancelName')?.addEventListener('click', () => {
+      const box = $('#boSungTen');
+      if (box) box.style.display = 'none';
+    });
+
+    $('#btnSaveName')?.addEventListener('click', () => {
+      const name = $('#bs_ten')?.value.trim();
+      if (!name || name.length < 2) {
+        alert('Vui lòng nhập tên hợp lệ (từ 2 ký tự)');
+        return;
+      }
+      STORE_DATA.currentUser.fullName = name;
+      STORE_DATA.currentUser.name = name;
+      const hoTenEl = $('#tkHoTen');
+      if (hoTenEl) hoTenEl.textContent = name.toUpperCase();
+      const box = $('#boSungTen');
+      if (box) box.style.display = 'none';
+      alert('✓ Đã cập nhật tên tài khoản thành công!');
     });
 
     // Hash change routing
@@ -1150,8 +1490,8 @@
     // 1. Author profile from DB
     const author = (typeof DB !== 'undefined' && DB.getAuthor) ? DB.getAuthor() : null;
     if (author) {
-      if ($('#footerAuthorName')) $('#footerAuthorName').textContent = author.name || 'Xuân Linh';
-      if ($('#footerAuthorPhone')) $('#footerAuthorPhone').textContent = author.phone || '0996 358 358';
+      if ($('#footerAuthorName')) $('#footerAuthorName').textContent = author.name || 'Phú Nguyễn';
+      if ($('#footerAuthorPhone')) $('#footerAuthorPhone').textContent = author.phone || '0852 241 386';
       if ($('#footerLinkFb') && author.facebook_url) $('#footerLinkFb').href = author.facebook_url;
       if ($('#footerLinkYt') && author.youtube_url) $('#footerLinkYt').href = author.youtube_url;
       if ($('#footerLinkTiktok') && author.tiktok_url) $('#footerLinkTiktok').href = author.tiktok_url;

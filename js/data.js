@@ -611,7 +611,7 @@ const DB = {
       const initialUsers = [
         {
           email: "ganhteam321@gmail.com",
-          phone: "0996358358",
+          phone: "0852241386",
           role: "customer",
           status: "active",
           createdAt: "8/9/2026",
@@ -641,9 +641,9 @@ const DB = {
     }
     if (!localStorage.getItem(this.KEYS.SETTINGS)) {
       const initialSettings = {
-        storeName: "AI Center Store — Kho App & Chatbot Tạo Video AI",
-        hotline: "0996 358 358",
-        supportZalo: "0996358358",
+        storeName: "AI Store",
+        hotline: "0852 241 386",
+        supportZalo: "0852241386",
         storageMode: "server_synced"
       };
       localStorage.setItem(this.KEYS.SETTINGS, JSON.stringify(initialSettings));
@@ -813,10 +813,10 @@ const DB = {
   getAuthor() {
     try {
       return JSON.parse(localStorage.getItem(this.KEYS.AUTHOR)) || {
-        name: "Xuân Linh",
+        name: "Phú Nguyễn",
         title: "Admin & Sáng lập viên",
-        phone: "0996 358 358",
-        zalo: "0996358358",
+        phone: "0852 241 386",
+        zalo: "0852241386",
         email: "ganhteam321@gmail.com",
         youtube_url: "https://www.youtube.com",
         facebook_url: "https://www.facebook.com",
@@ -826,10 +826,10 @@ const DB = {
       };
     } catch (e) {
       return {
-        name: "Xuân Linh",
+        name: "Phú Nguyễn",
         title: "Admin & Sáng lập viên",
-        phone: "0996 358 358",
-        zalo: "0996358358",
+        phone: "0852 241 386",
+        zalo: "0852241386",
         email: "ganhteam321@gmail.com",
         youtube_url: "https://www.youtube.com",
         facebook_url: "https://www.facebook.com",
@@ -852,9 +852,9 @@ const DB = {
   getSettings() {
     try {
       return JSON.parse(localStorage.getItem(this.KEYS.SETTINGS)) || {
-        storeName: "AI Center Store — Kho App & Chatbot Tạo Video AI",
-        hotline: "0996 358 358",
-        supportZalo: "0996358358",
+        storeName: "AI Store",
+        hotline: "0852 241 386",
+        supportZalo: "0852241386",
         storageMode: "server_synced"
       };
     } catch (e) {

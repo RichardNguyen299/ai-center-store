@@ -1,15 +1,15 @@
-﻿{
+{
     "version":  "v2.6",
     "lastUpdated":  "2026-10-12T04:18:28.696Z",
     "settings":  {
-                     "hotline":  "0996 358 358",
-                     "storeName":  "AI Center Store — Kho App \u0026 Chatbot Tạo Video AI",
+                     "hotline":  "0852 241 386",
+                     "storeName":  "AI Store",
                      "storageMode":  "supabase_cloud",
-                     "supportZalo":  "0996358358",
+                     "supportZalo":  "0852241386",
                      "payment":  {
-                                     "bankName":  "MBBank",
-                                     "bankAccount":  "0996358358",
-                                     "accountName":  "NGUYEN XUAN LINH",
+                                     "bankName":  "VietinBank",
+                                     "bankAccount":  "105870396069",
+                                     "accountName":  "NGUYEN VAN PHU",
                                      "qrPrefix":  "SEVQR",
                                      "sepayApiKey":  ""
                                  }

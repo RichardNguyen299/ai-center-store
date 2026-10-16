@@ -1,10 +1,20 @@
 -- =============================================================================
--- AI CENTER STORE - SUPABASE DATABASE SCHEMA
--- Hệ thống cơ sở dữ liệu PostgreSQL cho AI Center Store (Vercel + Supabase)
+-- AI STORE - SUPABASE DATABASE SCHEMA (CHUẨN HOÁ 2026)
+-- Hệ thống cơ sở dữ liệu PostgreSQL cho AI Store (Vercel + Supabase)
 -- =============================================================================
+
+-- =============================================================================
+-- 0. DỌN DẸP / XOÁ BẢNG CŨ (RESET TOÀN BỘ DATABASE SẠCH SẼ VỀ BAN ĐẦU)
+-- =============================================================================
+DROP TABLE IF EXISTS public.orders CASCADE;
+DROP TABLE IF EXISTS public.products CASCADE;
+DROP TABLE IF EXISTS public.settings CASCADE;
+DROP TABLE IF EXISTS public.authors CASCADE;
+DROP TABLE IF EXISTS public.profiles CASCADE;
 
 -- 1. BẬT TIỆN ÍCH MỞ RỘNG
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- =============================================================================
 -- 2. BẢNG PROFILES (HỒ SƠ NGƯỜI DÙNG)
@@ -67,7 +77,7 @@ CREATE TABLE IF NOT EXISTS public.orders (
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   access_url TEXT,
   unlocked_content TEXT DEFAULT '',
-  payment_gateway TEXT DEFAULT 'MBBank',
+  payment_gateway TEXT DEFAULT 'VietinBank',
   transaction_id TEXT DEFAULT '',
   transfer_content TEXT DEFAULT '',
   paid_at TIMESTAMPTZ,
@@ -91,10 +101,10 @@ CREATE TABLE IF NOT EXISTS public.settings (
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS public.authors (
   id TEXT PRIMARY KEY DEFAULT 'default',
-  name TEXT NOT NULL DEFAULT 'Xuân Linh',
+  name TEXT NOT NULL DEFAULT 'Phú Nguyễn',
   title TEXT DEFAULT 'Admin & Sáng lập viên',
-  phone TEXT DEFAULT '0996 358 358',
-  zalo TEXT DEFAULT '0996358358',
+  phone TEXT DEFAULT '0852 241 386',
+  zalo TEXT DEFAULT '0852241386',
   email TEXT DEFAULT 'ganhteam321@gmail.com',
   youtube_url TEXT DEFAULT 'https://www.youtube.com',
   facebook_url TEXT DEFAULT 'https://www.facebook.com',
@@ -257,9 +267,9 @@ INSERT INTO public.settings (key, value)
 VALUES (
   'general',
   '{
-    "storeName": "AI Center Store — Kho App & Chatbot Tạo Video AI",
-    "hotline": "0996 358 358",
-    "supportZalo": "0996358358",
+    "storeName": "AI Store",
+    "hotline": "0852 241 386",
+    "supportZalo": "0852241386",
     "storageMode": "supabase_cloud"
   }'::jsonb
 )
@@ -270,9 +280,9 @@ INSERT INTO public.settings (key, value)
 VALUES (
   'payment',
   '{
-    "bankName": "MBBank",
-    "bankAccount": "0996358358",
-    "accountName": "NGUYEN XUAN LINH",
+    "bankName": "VietinBank",
+    "bankAccount": "105870396069",
+    "accountName": "NGUYEN VAN PHU",
     "qrPrefix": "SEVQR",
     "sepayApiKey": ""
   }'::jsonb
@@ -283,10 +293,10 @@ ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
 INSERT INTO public.authors (id, name, title, phone, zalo, email, youtube_url, facebook_url, tiktok_url, bio)
 VALUES (
   'default',
-  'Xuân Linh',
+  'Phú Nguyễn',
   'Admin & Sáng lập viên',
-  '0996 358 358',
-  '0996358358',
+  '0852 241 386',
+  '0852241386',
   'ganhteam321@gmail.com',
   'https://www.youtube.com',
   'https://www.facebook.com',

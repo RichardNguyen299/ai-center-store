@@ -9,13 +9,13 @@
   const DICT = {
     vi: {
       // Branding & Metadata
-      site_title: 'AI Center Store — Kho App & Chatbot Tạo Video AI',
+      site_title: 'AI Store — Kho App & Chatbot Tạo Video AI',
       brand_sub: 'App & Chatbot tạo video AI',
       nav_products: 'Sản phẩm',
       nav_account: 'Tài khoản',
 
       // Hero Section
-      hero_badge: 'AI Center Store · Hệ Thống Tự Động Hóa Video Veo 3',
+      hero_badge: 'AI Store · Hệ Thống Tự Động Hóa Video Veo 3',
       hero_h1: 'Kho App & Chatbot <span class="mint gradient-text">tạo video AI</span>',
       hero_lead: 'Sản xuất video thương mại triệu view trong vài phút với Google Flow & Chatbot tạo prompt — Mua 1 lần, sở hữu vĩnh viễn, nhận link tự động sau 30 giây.',
       search_placeholder: 'Tìm kiếm app Flow, chatbot kịch bản, mẫu video TikTok...',
@@ -57,16 +57,16 @@
 
       // Why Choose Us Section
       why_eyebrow: 'GIÁ TRỊ VƯỢT TRỘI',
-      why_title: 'Vì sao 1.200+ Creator chọn AI Center Store?',
+      why_title: 'Vì sao 1.200+ Creator chọn AI Store?',
       why_1_title: 'Nhận link ngay sau thanh toán',
       why_1_desc: 'Hệ thống xác nhận chuyển khoản tự động và mở link sản phẩm cho bạn trong chưa đầy một phút, bất kể ngày đêm.',
       why_2_title: 'Cập nhật miễn phí trọn đời',
       why_2_desc: 'Sản phẩm được cập nhật tính năng và prompt mới liên tục. Bạn vào lại bằng mã đơn đã mua mà không phải trả thêm phí.',
       why_3_title: 'Hỗ trợ trực tiếp 1:1 qua Zalo',
-      why_3_desc: 'Gặp vướng mắc khi cài đặt hoặc chạy app? Nhắn ngay Zalo hotline 0996 358 358 để được chuyên viên kỹ thuật hỗ trợ tận tình.',
+      why_3_desc: 'Gặp vướng mắc khi cài đặt hoặc chạy app? Nhắn ngay Zalo hotline 0852 241 386 để được chuyên viên kỹ thuật hỗ trợ tận tình.',
 
       // Ecosystem Section
-      eco_eyebrow: 'HỆ SINH THÁI AI CENTER',
+      eco_eyebrow: 'HỆ SINH THÁI AI STORE',
       eco_title: 'Khám phá toàn bộ nền tảng của chúng tôi',
       eco_here: 'Bạn đang ở đây',
 
@@ -86,7 +86,7 @@
       detail_p1: 'Thanh toán chuyển khoản, hệ thống mở link tự động',
       detail_p2: 'Có mã voucher? Nhập ở bước thanh toán để được giảm ngay',
       detail_p3: 'Cập nhật phiên bản mới miễn phí — vào lại bằng mã đơn',
-      detail_p4: 'Hỗ trợ cài đặt qua Zalo: 0996 358 358',
+      detail_p4: 'Hỗ trợ cài đặt qua Zalo: 0852 241 386',
 
       // Account & Auth (tai-khoan.html)
       auth_login_title: 'Đăng nhập',
@@ -114,6 +114,8 @@
       acc_add_phone_desc: 'Tài khoản của bạn chưa có số điện thoại. Vui lòng bổ sung để nhận hỗ trợ và mã kích hoạt.',
       acc_save_phone: 'Lưu số điện thoại',
       acc_stat_orders: 'Tổng đơn hàng',
+      acc_stat_pending: 'Chờ thanh toán',
+      acc_stat_saved: 'Đã lưu',
       acc_stat_spent: 'Tổng chi tiêu',
       acc_stat_latest: 'Giao dịch gần nhất',
       acc_member_plan: 'Gói thành viên',
@@ -144,18 +146,18 @@
       footer_yt: 'Kênh Youtube',
       footer_tiktok: 'Kênh TikTok',
       footer_hotline_prefix: 'Hotline / Zalo: ',
-      footer_copyright: 'Copyright 2026 — AI Center Store. All rights reserved.',
+      footer_copyright: 'Copyright 2026 — AI Store. All rights reserved.',
       btn_back_to_top: 'Lên đầu trang'
     },
     en: {
       // Branding & Metadata
-      site_title: 'AI Center Store — AI Video Apps & Chatbots Hub',
+      site_title: 'AI Store — AI Video Apps & Chatbots Hub',
       brand_sub: 'AI Video Apps & Chatbots',
       nav_products: 'Products',
       nav_account: 'Account',
 
       // Hero Section
-      hero_badge: 'AI Center Store · Veo 3 Video Automation System',
+      hero_badge: 'AI Store · Veo 3 Video Automation System',
       hero_h1: 'AI Video Apps & Chatbots <span class="mint gradient-text">Store</span>',
       hero_lead: 'Produce million-view commercial videos in minutes with Google Flow & prompt chatbots — Pay once, lifetime ownership, instant download in 30 seconds.',
       search_placeholder: 'Search Flow apps, script chatbots, TikTok video templates...',
@@ -197,16 +199,16 @@
 
       // Why Choose Us Section
       why_eyebrow: 'WHY CHOOSE US',
-      why_title: 'Why 1,200+ Creators Trust AI Center Store?',
+      why_title: 'Why 1,200+ Creators Trust AI Store?',
       why_1_title: 'Instant Download After Payment',
       why_1_desc: 'Automated transfer verification unlocks your product link in less than one minute, day or night.',
       why_2_title: 'Free Lifetime Updates',
       why_2_desc: 'Products are continuously updated with new features and prompts. Re-access anytime using your order code.',
       why_3_title: '1-on-1 Direct Support via Zalo',
-      why_3_desc: 'Need help installing or running apps? Reach out to our hotline on Zalo 0996 358 358 for dedicated assistance.',
+      why_3_desc: 'Need help installing or running apps? Reach out to our hotline on Zalo 0852 241 386 for dedicated assistance.',
 
       // Ecosystem Section
-      eco_eyebrow: 'AI CENTER ECOSYSTEM',
+      eco_eyebrow: 'AI STORE ECOSYSTEM',
       eco_title: 'Explore All Platforms in Our Ecosystem',
       eco_here: 'You are here',
 
@@ -226,7 +228,7 @@
       detail_p1: 'Bank transfer payment, automatic link release 24/7',
       detail_p2: 'Have a voucher? Enter at checkout for instant discount',
       detail_p3: 'Free lifetime updates — re-access using order ID',
-      detail_p4: 'Technical setup support via Zalo: 0996 358 358',
+      detail_p4: 'Technical setup support via Zalo: 0852 241 386',
 
       // Account & Auth (tai-khoan.html)
       auth_login_title: 'Sign In',
@@ -254,6 +256,8 @@
       acc_add_phone_desc: 'Your account does not have a phone number yet. Please add one to receive activation codes.',
       acc_save_phone: 'Save Phone Number',
       acc_stat_orders: 'Total Orders',
+      acc_stat_pending: 'Pending Payments',
+      acc_stat_saved: 'Saved Items',
       acc_stat_spent: 'Total Spent',
       acc_stat_latest: 'Latest Transaction',
       acc_member_plan: 'Membership Plan',
@@ -284,7 +288,7 @@
       footer_yt: 'YouTube Channel',
       footer_tiktok: 'TikTok Channel',
       footer_hotline_prefix: 'Hotline / Zalo: ',
-      footer_copyright: 'Copyright 2026 — AI Center Store. All rights reserved.',
+      footer_copyright: 'Copyright 2026 — AI Store. All rights reserved.',
       btn_back_to_top: 'Back to top'
     }
   };

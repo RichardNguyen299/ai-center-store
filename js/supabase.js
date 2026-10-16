@@ -482,10 +482,10 @@
       try {
         const row = {
           id: 'default',
-          name: author.name || 'Xuân Linh',
+          name: author.name || 'Phú Nguyễn',
           title: author.title || 'Admin & Sáng lập viên',
-          phone: author.phone || '0996 358 358',
-          zalo: author.zalo || '0996358358',
+          phone: author.phone || '0852 241 386',
+          zalo: author.zalo || '0852241386',
           email: author.email || 'ganhteam321@gmail.com',
           youtube_url: author.youtube_url || 'https://www.youtube.com',
           facebook_url: author.facebook_url || 'https://www.facebook.com',
